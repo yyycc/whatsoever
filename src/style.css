@@ -28,11 +28,11 @@
   --spacing-24: 6rem;
   --spacing-32: 8rem;
   --fontFamily-sans: "MontserratVariable", system-ui, -apple-system,
-    BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans",
-    sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
-    "Noto Color Emoji";
+  BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans",
+  sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+  "Noto Color Emoji";
   --fontFamily-serif: "Merriweather", "Georgia", Cambria, "Times New Roman",
-    Times, serif;
+  Times, serif;
   --font-body: var(--fontFamily-serif);
   --font-heading: var(--fontFamily-sans);
   --fontWeight-normal: 400;
@@ -313,8 +313,23 @@ a:focus {
   margin: var(--spacing-0);
 }
 
+/*.gatsby-highlight {*/
+/*  margin-bottom: var(--spacing-8);*/
+/*}*/
 .gatsby-highlight {
-  margin-bottom: var(--spacing-8);
+  font-size: var(--fontSize-0);
+  background-color: #fdfaf6;
+  border-radius: 0.3em;
+  margin: 0.5em 0;
+  overflow: auto;
+}
+
+.gatsby-highlight pre[class*="language-"] {
+  background-color: #fdfaf6;
+  margin: 0;
+  overflow: initial;
+  float: left; /* 1 */
+  min-width: 100%; /* 2 */
 }
 
 /* Media queries */
@@ -324,6 +339,7 @@ a:focus {
     padding: var(--spacing-0) var(--spacing-0) var(--spacing-0) var(--spacing-4);
     margin-left: var(--spacing-0);
   }
+
   ul,
   ol {
     list-style-position: inside;

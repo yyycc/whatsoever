@@ -69,14 +69,14 @@ position: absolute跟float其实很像，都能破坏正常的文档流，都能
 当对立方向同时发生定位的时候，position: absolute的元素也会具有流体特性，普通元素流体特性只有一个方向，默认是水平方向，但是绝对定位元素可以让垂直方向和水平方向同时保持流动性。通过下面这段可以实现水平垂直居中
 ``` css
 position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    width: 400px;
-    height: 300px;
-    background-color: #b9f2d8;
-    margin: auto;
+left: 0;
+top: 0;
+bottom: 0;
+right: 0;
+width: 400px;
+height: 300px;
+background-color: #b9f2d8;
+margin: auto;
 ```
 ##### 1.4. position: relative & fixed
 设置了position: relative的元素，可将其移至相对于其原来位置的地方，原来的位置遗留空白区域。他是相对于当前位置定位，不脱离文档流(所以好像不应该放在流的破坏下面说嗷)，不会影响文档中的其他元素。
