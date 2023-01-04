@@ -2,7 +2,7 @@
 .gatsby-code-button-container {
   line-height: 1;
   top: var(--spacing-10);
-  margin-top: -var(--spacing-10);
+  margin-top: calc(-1px - var(--spacing-10));
   right: var(--spacing-2);
 }
 .gatsby-code-button {
@@ -67,8 +67,8 @@
 /* highlight code line */
 .gatsby-highlight-code-line {
   background: #fbf0ea;
-  margin-left: -var(--spacing-6);
-  margin-right: -var(--spacing-6);
+  margin-left: calc(0px - var(--spacing-6));
+  margin-right: calc(0px - var(--spacing-6));
   padding-left: var(--spacing-5);
   padding-right: var(--spacing-6);
   border-left: var(--spacing-1) solid #f1beb6;
