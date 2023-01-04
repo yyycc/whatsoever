@@ -37,17 +37,23 @@ const config: GatsbyConfig = {
       options: {
         gatsbyRemarkPlugins: [
           {
+            resolve: `gatsby-remark-code-titles`,
+            options: {
+              className: 'whatsoever-code-title'
+            }
+          },
+          {
             resolve: 'gatsby-remark-code-buttons',
             options: {
               // Optional button container class name. Defaults
               // to 'gatsby-code-button-container'.
-              buttonContainerClass: `customButtonContainerClass`,
+              buttonContainerClass: `whatsoever-button-container-class`,
               // Optional button class name. Defaults to 'gatsby-code-button'.
-              buttonClass: `customButtonClass`,
+              buttonClass: `whatsoever-button-class`,
               // Optional button text. Defaults to ''.
               buttonText: ``,
               // Optional svg icon class name. Defaults to 'gatsby-code-button-icon'.
-              svgIconClass: `customSvgIconClass`,
+              svgIconClass: `whatsoever-svg-icon-class`,
               // Optional svg icon. Defaults to svg string and can be
               // replaced with any other valid svg. Use custom classes
               // in the svg string and skip `iconClass` option.
@@ -55,9 +61,9 @@ const config: GatsbyConfig = {
               // Optional tooltip text. Defaults to ''.
               tooltipText: ``,
               // Optional toaster class name. Defaults to ''.
-              toasterClass: `customToasterClass`,
+              toasterClass: `whatsoever-toaster-class`,
               // Optional toaster text class name. Defaults to ''.
-              toasterTextClass: `customToasterTextClass`,
+              toasterTextClass: `whatsoever-toaster-text-class`,
               // Optional toaster text. Defaults to ''.
               toasterText: '',
               // Optional toaster duration. Defaults to 3500.
@@ -73,13 +79,6 @@ const config: GatsbyConfig = {
           {
             resolve: `gatsby-remark-prismjs`,
             options: {
-              // Class prefix for <pre> tags containing syntax highlighting;
-              // defaults to 'language-' (e.g. <pre class="language-js">).
-              // If your site loads Prism into the browser at runtime,
-              // (e.g. for use with libraries like react-live),
-              // you may use this to prevent Prism from re-processing syntax.
-              // This is an uncommon use-case though;
-              // If you're unsure, it's best to use the default value.
               classPrefix: "language-",
               // This is used to allow setting a language for inline code
               // (i.e. single backticks) by creating a separator.

@@ -25,7 +25,7 @@ export const onClientEntry = function () {
           getSelection.addRange(selected as Range)
         }
       }
-      const copyButtonDom = document.querySelector('.customButtonClass')
+      const copyButtonDom = document.querySelector('.whatsoever-button-class')
       copyButtonDom.classList.add('copied');
       copyButtonDom.textContent = 'Copied!';
 
