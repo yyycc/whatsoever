@@ -71,6 +71,12 @@ const config: GatsbyConfig = {
             }
           },
           {
+            resolve: `gatsby-remark-figure-caption`,
+            options: {
+              figureClassName: 'whatsoever-figure-class',
+            },
+          },
+          {
             resolve: `gatsby-remark-images`,
             options: {
               maxWidth: 1200,
