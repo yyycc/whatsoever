@@ -2,7 +2,7 @@ import * as React from 'react'
 import { ConfigProvider, Anchor } from 'antd'
 import Layout from '../../components/layout'
 import Seo from '../../components/seo'
-import { graphql } from "gatsby";
+import { graphql } from "gatsby"
 
 const BlogPost = ({ data, children }) => {
   const { tableOfContents, frontmatter } = data.mdx
@@ -62,6 +62,6 @@ export const query = graphql`
   }
 `
 
-export const Head = () => <Seo title="Super Cool Blog Posts"/>
+export const Head = ({ data }) => <Seo title={data.mdx.frontmatter.title}/>
 
 export default BlogPost
