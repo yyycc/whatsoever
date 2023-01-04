@@ -34,7 +34,7 @@ const BlogPost = ({ data, children }) => {
 }
 
 function handleAnchorItem(data) {
-  return data.map(ele => {
+  return data?.map(ele => {
     const res = {
       key: ele.url,
       href: ele.url,
