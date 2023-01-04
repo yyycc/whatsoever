@@ -42,6 +42,7 @@ const config: GatsbyConfig = {
               className: 'whatsoever-code-title'
             }
           },
+          `gatsby-remark-autolink-headers`,
           {
             resolve: 'gatsby-remark-code-buttons',
             options: {

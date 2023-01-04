@@ -52,9 +52,11 @@
   --fontSize-5: 2.074rem;
   --fontSize-6: 2.488rem;
   --fontSize-7: 2.986rem;
-  --color-primary: #005b99;
+  --color-primary: #8a4baf; /* 同时修改ConfigProvider中设置的颜色 */
+  --color-primary-bg: #663399;
   --color-text: #2e353f;
   --color-text-light: #4f5969;
+  --color-text-secondary-light: #78757a;
   --color-heading: #1a202c;
   --color-heading-black: black;
   --color-accent: #d1dce5;
@@ -312,54 +314,6 @@ a:focus {
 
 .blog-post-nav ul {
   margin: var(--spacing-0);
-}
-
-/* image */
-.gatsby-resp-image-wrapper {
-  margin: 1.5rem 0;
-}
-
-/* highlight */
-
-.gatsby-highlight {
-  font-size: var(--fontSize-0);
-  background-color: var(--color-bg);
-  border-radius: 0.3em;
-  margin: 0.5em 0;
-  overflow: auto;
-}
-
-.gatsby-highlight pre[class*="language-"] {
-  background-color: var(--color-bg);
-  margin: 0;
-  overflow: initial;
-  float: left; /* 1 */
-  min-width: 100%; /* 2 */
-  padding: 1.5rem;
-}
-
-/* code title */
-
-.gatsby-code-title {
-  font-size: var(--fontSize-0);
-  border-bottom: 1px solid #faede5;
-  margin-bottom: 0.35rem;
-  padding: 1rem 1.5rem 1rem;
-  background-color: var(--color-bg);
-  color: #866c5b;
-  z-index: 0;
-  border-radius: 8px 8px 0 0;
-}
-
-/* highlight code line */
-.gatsby-highlight-code-line {
-  background: #fbf0ea;
-  margin-left: -1.5rem;
-  margin-right: -1.5rem;
-  padding-left: 1.25rem;
-  padding-right: 1.5rem;
-  border-left: 0.25rem solid #f1beb6;
-  display: block;
 }
 
 /* Media queries */

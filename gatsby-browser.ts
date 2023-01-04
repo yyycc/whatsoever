@@ -1,10 +1,8 @@
 import './src/normalize.css'
-
 import './src/style.css'
-
+import './src/styles/gatsby-plugin.scss'
 import 'prismjs/themes/prism-solarizedlight.css'
 
-import './src/styles/custom-code-buttons.scss'
 
 export const onClientEntry = function () {
   window.copyToClipboard = async function (str, toasterId) {

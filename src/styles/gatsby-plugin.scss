@@ -1,0 +1,76 @@
+/* copy button */
+.gatsby-code-button-container {
+  line-height: 1;
+  top: var(--spacing-10);
+  margin-top: -var(--spacing-10);
+  right: var(--spacing-2);
+}
+.gatsby-code-button {
+  border-radius: 5px;
+  padding: var(--spacing-2);
+  color: #635e69;
+  font-size: 0.75rem;
+  &:hover {
+    background-color: var(--color-primary-bg);
+    color: #ffffff;
+  }
+  &::after {
+    visibility: hidden!important;
+  }
+}
+.gatsby-code-button.copied {
+  color: #635e69;
+  background-color: unset;
+  cursor: not-allowed;
+  animation: opacity-hide-show 1.6s;
+}
+.gatsby-code-button-icon {}
+.gatsby-code-button-toaster {}
+.gatsby-code-button-toaster-text {}
+
+
+/* image */
+.gatsby-resp-image-wrapper {
+  margin: var(--spacing-6) 0;
+}
+
+/* highlight */
+.gatsby-highlight {
+  font-size: var(--fontSize-0);
+  background-color: var(--color-bg);
+  border-radius: 0.3em;
+  margin: var(--spacing-2) 0;
+  overflow: auto;
+}
+
+.gatsby-highlight pre[class*="language-"] {
+  background-color: var(--color-bg);
+  margin: 0;
+  overflow: initial;
+  float: left; /* 1 */
+  min-width: 100%; /* 2 */
+  padding: var(--spacing-6);
+}
+
+/* code title */
+.gatsby-code-title {
+  font-size: var(--fontSize-0);
+  border-bottom: 1px solid #faede5;
+  margin-bottom: 0.35rem;
+  padding: var(--spacing-4) var(--spacing-6) var(--spacing-4);
+  background-color: var(--color-bg);
+  color: #866c5b;
+  z-index: 0;
+  border-radius: var(--spacing-2) var(--spacing-2) 0 0;
+}
+
+/* highlight code line */
+.gatsby-highlight-code-line {
+  background: #fbf0ea;
+  margin-left: -var(--spacing-6);
+  margin-right: -var(--spacing-6);
+  padding-left: var(--spacing-5);
+  padding-right: var(--spacing-6);
+  border-left: var(--spacing-1) solid #f1beb6;
+  display: block;
+}
