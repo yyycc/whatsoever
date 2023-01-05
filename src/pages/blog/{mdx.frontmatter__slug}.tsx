@@ -1,17 +1,23 @@
 import * as React from 'react'
 import { ConfigProvider, Anchor } from 'antd'
+import { Disqus, CommentCount } from 'gatsby-plugin-disqus'
 import Layout from '../../components/layout'
 import Seo from '../../components/seo'
 import { graphql } from "gatsby"
 
 const BlogPost = ({ data, children }) => {
-  const { tableOfContents, frontmatter } = data.mdx
+  const { tableOfContents, frontmatter, id } = data.mdx
   const { title, date } = frontmatter
   const items = handleAnchorItem(tableOfContents.items)
-  console.log('data', items)
+  const disqusConfig = {
+    url: `${location.href}`,
+    identifier: id,
+    title: title,
+  }
   return (
     <Layout pageTitle={title}>
       <p>{date}</p>
+      <CommentCount config={disqusConfig} placeholder={'...'} />
       <div className="mdx-content">
         <div className="mdx-content-data">
           {children}
@@ -28,6 +34,7 @@ const BlogPost = ({ data, children }) => {
           </ConfigProvider>
         </div>}
       </div>
+      <Disqus config={disqusConfig}/>
       <footer>test</footer>
     </Layout>
   )
@@ -58,6 +65,7 @@ export const query = graphql`
         date(formatString: "MMMM D, YYYY")
       }
       tableOfContents
+      id
     }
   }
 `

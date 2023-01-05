@@ -19,6 +19,7 @@
     "@mdx-js/react": "^2.2.1",
     "antd": "^5.1.2",
     "gatsby": "^5.3.3",
+    "gatsby-plugin-disqus": "^1.2.4",
     "gatsby-plugin-image": "^3.3.2",
     "gatsby-plugin-manifest": "^5.3.1",
     "gatsby-plugin-mdx": "^5.3.1",
