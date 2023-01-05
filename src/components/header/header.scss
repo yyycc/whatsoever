@@ -1,0 +1,36 @@
+.header {
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+  border-bottom: 1px solid #f0f0f2;
+  z-index: 1;
+
+  &-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: var(--maxWidth-9xl);
+    margin: 0 auto;
+    padding: 0 2rem;
+
+    &-title {
+      font-size: var(--fontSize-5);
+      padding: var(--spacing-2) 0;
+
+      &-link {
+        color: var(--color-heading-black);
+      }
+    }
+
+    &-nav {
+      &-text {
+        padding: var(--spacing-3);
+        color: var(--color-heading-black);
+        &:hover {
+          color: var(--color-primary);
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
