@@ -7,10 +7,11 @@ import { graphql } from "gatsby"
 
 const BlogPost = ({ data, children }) => {
   const { tableOfContents, frontmatter, id } = data.mdx
+  const { siteUrl } = data.site.siteMetadata
   const { title, date } = frontmatter
   const items = handleAnchorItem(tableOfContents.items)
   const disqusConfig = {
-    url: `${location.href}`,
+    url: `${siteUrl}${location.pathname}`,
     identifier: id,
     title: title,
   }
@@ -66,6 +67,11 @@ export const query = graphql`
       }
       tableOfContents
       id
+    }
+    site {
+      siteMetadata {
+        siteUrl
+      }
     }
   }
 `
