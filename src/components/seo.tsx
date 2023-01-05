@@ -11,9 +11,10 @@ const Seo = ({ title }) => {
           }
         }
   `)
+  const tabTitle = title ? `${title} | ${data.site.siteMetadata.title}`: `${data.site.siteMetadata.title}`
 
   return (
-    <title>{title} | {data.site.siteMetadata.title}</title>
+    <title>{tabTitle}</title>
   )
 }
 
