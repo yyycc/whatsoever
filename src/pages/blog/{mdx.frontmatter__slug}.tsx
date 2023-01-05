@@ -19,7 +19,7 @@ const BlogPost = ({ data, children }) => {
   return (
     <Layout pageTitle={title}>
       <p>{date}</p>
-      <CommentCount config={disqusConfig} placeholder={'...'} />
+      {/*<CommentCount config={disqusConfig} placeholder={'...'} />*/}
       <div className="mdx-content">
         <div className="mdx-content-data">
           {children}
@@ -32,7 +32,7 @@ const BlogPost = ({ data, children }) => {
               },
             }}
           >
-            <Anchor targetOffset={20} items={items}/>
+            <Anchor affix={false} targetOffset={20} items={items}/>
           </ConfigProvider>
         </div>}
       </div>
