@@ -12,14 +12,6 @@ const config: GatsbyConfig = {
   // Learn more at: https://gatsby.dev/graphql-typegen
   graphqlTypegen: true,
   plugins: [
-    {
-      resolve: `gatsby-plugin-valine`,
-      options: {
-        appId: `U16yUflAALySICZhsJiwmobC-gzGzoHsz`,
-        appKey: `SuQzXF7zopGW41PIraZdurG3`,
-        avatar: `robohash`,
-      },
-    },
     "gatsby-plugin-image",
     {
       resolve: 'gatsby-source-filesystem',

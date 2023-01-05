@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { ConfigProvider, Anchor } from 'antd'
-import Valine from 'gatsby-plugin-valine'
 import Layout from '../../components/layout'
 import Seo from '../../components/seo'
 import { graphql } from "gatsby"
@@ -30,7 +29,6 @@ const BlogPost = ({ data, children }) => {
         </div>}
       </div>
       <footer>test</footer>
-      <Valine appid="U16yUflAALySICZhsJiwmobC-gzGzoHsz" appkey="SuQzXF7zopGW41PIraZdurG3"/>
     </Layout>
   )
 }
