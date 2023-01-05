@@ -8,13 +8,14 @@ import { graphql } from "gatsby"
 const BlogPost = ({ data, children }) => {
   const { tableOfContents, frontmatter, id } = data.mdx
   const { siteUrl } = data.site.siteMetadata
-  const { title, date } = frontmatter
+  const { title, slug, date } = frontmatter
   const items = handleAnchorItem(tableOfContents.items)
   const disqusConfig = {
-    url: `${siteUrl}${location.pathname}`,
+    url: `${siteUrl}/blog/${slug}`,
     identifier: id,
     title: title,
   }
+  console.log(disqusConfig)
   return (
     <Layout pageTitle={title}>
       <p>{date}</p>
@@ -63,6 +64,7 @@ export const query = graphql`
     mdx(id: {eq: $id}) {
       frontmatter {
         title
+        slug
         date(formatString: "MMMM D, YYYY")
       }
       tableOfContents
