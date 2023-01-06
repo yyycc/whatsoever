@@ -1,0 +1,9 @@
+.footer {
+  margin: var(--spacing-24) auto 0;
+  max-width: var(--maxWidth-9xl);
+  &-copy {
+    border-top: 1px solid #f0f0f2;
+    text-align: center;
+    padding: var(--spacing-12) 0;
+  }
+}

@@ -4,29 +4,34 @@
   top: var(--spacing-10);
   margin-top: calc(-1px - var(--spacing-10));
   right: var(--spacing-2);
+  z-index: unset;
 }
+
 .gatsby-code-button {
   border-radius: 5px;
   padding: var(--spacing-2);
   color: #635e69;
   font-size: 0.75rem;
+
   &:hover {
     background-color: var(--color-primary-bg);
     color: #ffffff;
   }
+
   &::after {
-    visibility: hidden!important;
+    visibility: hidden !important;
   }
 }
+
 .gatsby-code-button.copied {
   color: #635e69;
   background-color: unset;
   cursor: not-allowed;
   animation: opacity-hide-show 1.6s;
 }
-.gatsby-code-button-icon {}
-.gatsby-code-button-toaster {}
-.gatsby-code-button-toaster-text {}
+
+.gatsby-code-button-icon {
+}
 
 
 /* image */

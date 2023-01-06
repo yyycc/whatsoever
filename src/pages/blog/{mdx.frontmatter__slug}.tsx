@@ -15,11 +15,9 @@ const BlogPost = ({ data, children }) => {
     identifier: id,
     title: title,
   }
-  console.log(disqusConfig)
   return (
     <Layout pageTitle={title}>
       <p>{date}</p>
-      {/*<CommentCount config={disqusConfig} placeholder={'...'} />*/}
       <div className="mdx-content">
         <div className="mdx-content-data">
           {children}
@@ -37,7 +35,6 @@ const BlogPost = ({ data, children }) => {
         </div>}
       </div>
       <Disqus config={disqusConfig}/>
-      <footer>test</footer>
     </Layout>
   )
 }
