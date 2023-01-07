@@ -83,6 +83,7 @@ const config: GatsbyConfig = {
               maxWidth: 1200,
             },
           },
+          `gatsby-remark-gifs`,
           {
             resolve: `gatsby-remark-prismjs`,
             options: {

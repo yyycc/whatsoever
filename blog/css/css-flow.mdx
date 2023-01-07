@@ -39,16 +39,16 @@ BFC(block formatting context)，块级格式化上下文。在《CSS的世界》
 >如果一个元素具有 BFC，内部子元素再怎么翻江倒海、翻云覆雨，都不会影响外部的元素。
 
 BFC的触发条件：
-• \<html>根元素;
-• float 的值不为 none;
-• overflow 的值为 auto、scroll 或 hidden;
-• display 的值为 table-cell、table-caption 和 inline-block 中的任何一个;
-• position 的值不为 relative 和 static。
+- \<html>根元素;
+- float 的值不为 none;
+- overflow 的值为 auto、scroll 或 hidden;
+- display 的值为 table-cell、table-caption 和 inline-block 中的任何一个;
+- position 的值不为 relative 和 static。
 
 使用这些属性都可以触发BFC，但是他们自身都有一些古怪的特性，能担当布局大任的，总结下来也就所剩不多了：
-• overflow:auto/hidden，适用于 IE7 及以上版本浏览器;
-• display:inline-block，适用于 IE6 和 IE7;
-• display:table-cell，适用于 IE8 及以上版本浏览器。
+- overflow:auto/hidden，适用于 IE7 及以上版本浏览器;
+- display:inline-block，适用于 IE6 和 IE7;
+- display:table-cell，适用于 IE8 及以上版本浏览器。
 其中overflow表现最佳。
 
 说实在的我对overflow的印象一直都是，内容太多了，我需要滚动条，oh，来个overflow: auto，从来不知道它的结界特性。
