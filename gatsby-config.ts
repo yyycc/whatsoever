@@ -6,6 +6,8 @@ const config: GatsbyConfig = {
     siteUrl: `https://whatsoever.gatsbyjs.io/`,
     description: 'It is my blog called whatsoever',
     author: 'yy chen',
+    motto: 'Righty Tighty, Lefty Loosey',
+    github: 'https://github.com/yyycc',
   },
   // More easily incorporate content into your pages through automatic TypeScript type generation and better GraphQL IntelliSense.
   // If you use VSCode you can also use the GraphQL plugin
