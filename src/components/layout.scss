@@ -4,7 +4,7 @@
     color: var(--color-primary);
   }
   main {
-    padding: 0 2rem 0 4rem;
+    padding: 0 4rem;
     .mdx-content {
       display: flex;
       justify-content: center;
@@ -12,12 +12,19 @@
         padding: 0 0 0 4rem;
         position: sticky;
         width: 18rem;
-        top: calc(8rem);
+        top: 15rem;
         max-height: calc(((100vh - 17rem) - 3rem) - 3rem);
         flex-shrink: 0;
+        .ant-anchor-link-title {
+          &-active,
+          &:hover {
+            color: var(--color-primary);
+            text-decoration: underline;
+          }
+        }
       }
       &-data {
-        padding-top: 1.5rem;
+        max-width: 52rem;
       }
     }
   }
@@ -26,5 +33,11 @@
     color: gray;
     font-weight: 700;
     margin: 3rem 0;
+  }
+}
+
+@media (max-width: 65rem) {
+  .mdx-content-nav {
+    display: none;
   }
 }

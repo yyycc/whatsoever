@@ -149,15 +149,29 @@ const config: GatsbyConfig = {
       options: {
         name: `Whatsoever`,
         short_name: `whatsoever`,
-        start_url: `/blog`,
+        start_url: `/`,
         background_color: `#ffffff`,
         // This will impact how browsers show your PWA/website
         // https://css-tricks.com/meta-theme-color-and-trickery/
-        // theme_color: `#663399`,
+        theme_color: `#8a4baf`,
         display: `minimal-ui`,
-        icon: `src/images/favicon.jpeg` // This path is relative to the root of the site.
+        icon: 'src/images/favicon.jpeg',
+        icons: [
+          {
+            src: `src/images/maskable_icon_x192.png`,
+            sizes: `192x192`,
+            type: `image/png`,
+            purpose: `any maskable`
+          },
+          {
+            src: `src/images/maskable_icon_x512.png`,
+            sizes: `512x512`,
+            type: `image/png`,
+            purpose: `any maskable`
+          },
+        ]
       }
-    },{
+    }, {
       resolve: `gatsby-plugin-offline`,
       options: {
         precachePages: [`/about/`, `/blog/*`],

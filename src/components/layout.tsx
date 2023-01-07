@@ -19,7 +19,7 @@ const Layout = ({ pageTitle, children }) => {
     <div className='layout'>
       <Header data={data}/>
       <main>
-        <h1 className='heading'>{pageTitle}</h1>
+        {pageTitle && <h1 className='heading'>{pageTitle}</h1>}
         {children}
         <Footer/>
       </main>

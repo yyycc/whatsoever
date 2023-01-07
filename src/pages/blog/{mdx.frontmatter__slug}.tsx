@@ -16,10 +16,11 @@ const BlogPost = ({ data, children }) => {
     title: title,
   }
   return (
-    <Layout pageTitle={title}>
-      <p>{date}</p>
+    <Layout>
       <div className="mdx-content">
         <div className="mdx-content-data">
+          <h1 className='heading'>{title}</h1>
+          <p>{date}</p>
           {children}
         </div>
         {Boolean(items?.length) && <div className="mdx-content-nav">
@@ -30,7 +31,7 @@ const BlogPost = ({ data, children }) => {
               },
             }}
           >
-            <Anchor affix={false} targetOffset={20} items={items}/>
+            <Anchor affix={false} targetOffset={80} items={items}/>
           </ConfigProvider>
         </div>}
       </div>

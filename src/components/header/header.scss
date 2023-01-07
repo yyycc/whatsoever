@@ -26,10 +26,6 @@
       &-text {
         padding: var(--spacing-3);
         color: var(--color-heading-black);
-        &:hover {
-          color: var(--color-primary);
-          text-decoration: underline;
-        }
       }
     }
   }

@@ -15,18 +15,20 @@ css世界的定位和布局机制叫做**文档流**
 >浮动的本质就是为了实现文字环绕效果
 
 刚入职那两年，float真的用的很多，我印象中经常复制的一段话就是
-```
+``` css
 <div style="clear:both"/> // 清除浮动
 ```
 现在了解到原来float创造之处就是为了实现文字环绕效果的，仅此而已，那么它是如何实现文字环绕效果的呢？这边涉及到两个特性
 - float会让父元素的高度塌陷
 - 行框盒子和浮动元素的不可重叠性
 
-![float实现文字环绕](https://upload-images.jianshu.io/upload_images/27409662-2aae03cae294426a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![float实现文字环绕](./float-around.png)
+
 图片这个浮动元素塌陷，文字所在的这个块状盒子与图片是完全重叠的，又受到浮动元素的限制，没有任何重叠。
 
 然而想象力和创造力俱佳的程序员们把float的作用在布局上发挥得淋漓尽致，但是布局是不需要父元素塌陷的，这就出现了上面那段清除浮动的代码。
-![float布局](https://upload-images.jianshu.io/upload_images/27409662-2bf5fc3ea1afe3da.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+![float布局](./float.png)
 
 确实，给每个元素定好宽高，给个float: left，一个个元素像搭积木一样堆起来，确实容易好用，又好理解，至少比流要直观简单多了，但是问题也很多。比如在我用这种布局的时候，经常遇到改个宽度高度，整个结构就崩溃的情况，因为它是没有弹性的。
 好在有了flex这种弹性盒子布局之后，基本上就再也没用过float了。
@@ -53,7 +55,8 @@ BFC的触发条件：
 这边还有一个overflow: hidden的小知识:
 元素设置了 overflow:hidden 声明，里面内容高度溢出的时候，滚动依然存在，仅仅滚动条不存在。
 利用这个特性加上锚点定位可是实现图片切换效果
-![overflow: hidden实现tab切换显示](https://upload-images.jianshu.io/upload_images/27409662-6f135e34fcae008f.gif?imageMogr2/auto-orient/strip)
+
+![overflow: hidden实现tab切换显示](./overflow-hidden.gif)
 
 
 ##### 1.3. position: absolute
@@ -65,7 +68,9 @@ position: absolute跟float其实很像，都能破坏正常的文档流，都能
 当不设置left/top/right/bottom，它的效果就是相对定位(fixed也是)，但不占据css流的尺寸空间。这对于我们实现要在某个块角落加个小图标这种需求就很方便。
 虽然说元素 position:absolute 后的 display 计算值都是块状的，但是其定位的位置和没有设置 position:absolute 时候的位置相关。
 虽然设置了position: absolute后无论是内联的\<span>还是块状的\<div>，计算值都是 block，但是它们的位置还和没有应用 position:absolute 的时候一样，一个在后面，一个在下面如下图：
-![position: absolute](https://upload-images.jianshu.io/upload_images/27409662-100e9112cb7b6f21.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+![position: absolute](./position-absolute.png)
+
 当对立方向同时发生定位的时候，position: absolute的元素也会具有流体特性，普通元素流体特性只有一个方向，默认是水平方向，但是绝对定位元素可以让垂直方向和水平方向同时保持流动性。通过下面这段可以实现水平垂直居中
 ``` css
 position: absolute;
@@ -90,7 +95,9 @@ fixed更加强势，可以限制absolute的relative也对他毫无办法，唯�
 >direction 属性默认有这么一个特性，即可以改变替换元素或者 inline-block/inline-table 元素的水平呈现顺序。
 
 可以利用这个特性实现下图这种...显示在前面的效果
-![direction](https://upload-images.jianshu.io/upload_images/27409662-e7bfbd753abeb176.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+![direction](./direction.png)
+
 它还有一个黄金搭档unicode-bidi，能够让所有字符按照设置的方向排列。
 
 ##### 2.2. writing-mode

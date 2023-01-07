@@ -54,6 +54,9 @@
   --fontSize-6: 2.488rem;
   --fontSize-7: 2.986rem;
   --color-primary: #8a4baf; /* 同时修改ConfigProvider中设置的颜色 */
+  --color-primary-1: #dc7c08;
+  --color-primary-2: #1976d2;
+  --color-primary-3: #00b96b;
   --color-primary-bg: #663399;
   --color-text: #2e353f;
   --color-text-light: #4f5969;
@@ -233,11 +236,13 @@ table thead tr th {
 a {
   text-decoration: none;
   color: var(--color-primary);
-}
-
-a:hover,
-a:focus {
-  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+    color: var(--color-primary);
+  }
+  &:focus {
+    text-decoration: none;
+  }
 }
 
 /* Custom classes */
