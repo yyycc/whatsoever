@@ -86,3 +86,18 @@
   border-left: var(--spacing-1) solid #f1beb6;
   display: block;
 }
+
+/* image capture */
+.whatsoever-figure {
+  margin: 1.25rem 0;
+  text-align: center;
+}
+.whatsoever-figure figcaption {
+  min-width: 20%;
+  display: inline-block;
+  padding: 0.5rem;
+  margin: 0 auto;
+  border-bottom: 1px solid #eee;
+  font-size: var(--fontSize-0);
+  color: var(--color-text-secondary-light);
+}

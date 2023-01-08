@@ -1,4 +1,4 @@
-import type { GatsbyConfig } from "gatsby";
+import type { GatsbyConfig } from "gatsby"
 
 const config: GatsbyConfig = {
   siteMetadata: {
@@ -15,6 +15,14 @@ const config: GatsbyConfig = {
   // Learn more at: https://gatsby.dev/graphql-typegen
   graphqlTypegen: true,
   plugins: [
+    {
+      resolve: `gatsby-plugin-valine`,
+      options: {
+        appId: `U16yUflAALySICZhsJiwmobC-gzGzoHsz`,
+        appKey: `SuQzXF7zopGW41PIraZdurG3`,
+        avatar: `robohash`,
+      },
+    },
     "gatsby-plugin-image",
     {
       resolve: 'gatsby-source-filesystem',
@@ -59,6 +67,12 @@ const config: GatsbyConfig = {
               buttonClass: `whatsoever-button-class`,
               buttonText: `Copy`,
             }
+          },
+          {
+            resolve: `gatsby-remark-figure-caption`,
+            options: {
+              figureClassName: 'whatsoever-figure'
+            },
           },
           {
             resolve: `gatsby-remark-images`,
@@ -134,6 +148,6 @@ const config: GatsbyConfig = {
       },
     },
   ]
-};
+}
 
-export default config;
+export default config

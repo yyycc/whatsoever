@@ -1,20 +1,15 @@
 import * as React from 'react'
 import { ConfigProvider, Anchor } from 'antd'
-import { Disqus, CommentCount } from 'gatsby-plugin-disqus'
+import Valine from 'gatsby-plugin-valine'
 import Layout from '../../components/layout'
 import Seo from '../../components/seo'
 import { graphql } from "gatsby"
 
 const BlogPost = ({ data, children }) => {
-  const { tableOfContents, frontmatter, id } = data.mdx
-  const { siteUrl } = data.site.siteMetadata
-  const { title, slug, date } = frontmatter
+  const { tableOfContents, frontmatter } = data.mdx
+  const { title, date } = frontmatter
   const items = handleAnchorItem(tableOfContents.items)
-  const disqusConfig = {
-    url: `${siteUrl}/blog/${slug}`,
-    identifier: id,
-    title: title,
-  }
+
   return (
     <Layout>
       <div className="mdx-content">
@@ -35,7 +30,7 @@ const BlogPost = ({ data, children }) => {
           </ConfigProvider>
         </div>}
       </div>
-      <Disqus config={disqusConfig}/>
+      <Valine appid="U16yUflAALySICZhsJiwmobC-gzGzoHsz" appkey="SuQzXF7zopGW41PIraZdurG3"/>
     </Layout>
   )
 }
