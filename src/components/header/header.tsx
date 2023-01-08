@@ -19,9 +19,6 @@ const Header = ({ data }) => {
           <Link to="/about" className='header-content-nav-text'>
             About
           </Link>
-          <Link to="/blog" className='header-content-nav-text'>
-            Blog
-          </Link>
         </div>
       </div>
     </div>
