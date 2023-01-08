@@ -4,7 +4,9 @@
     color: var(--color-primary);
   }
   main {
-    padding: 0 4rem;
+    max-width: var(--maxWidth-9xl);
+    margin: 0 auto;
+    padding: 0 2rem;
     .mdx-content {
       display: flex;
       justify-content: center;
@@ -33,6 +35,16 @@
     color: gray;
     font-weight: 700;
     margin: 3rem 0;
+  }
+
+  .index {
+    display: flex;
+    justify-content: space-between;
+    &-right {
+      width: var(--maxWidth-xs);
+      padding: 0 var(--spacing-8);
+      border-left: 1px solid var(--color-border);
+    }
   }
 }
 

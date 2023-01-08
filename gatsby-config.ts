@@ -8,6 +8,7 @@ const config: GatsbyConfig = {
     author: 'yy chen',
     motto: 'Righty Tighty, Lefty Loosey',
     github: 'https://github.com/yyycc',
+    email: 'whatsoever_yy@163.com',
   },
   // More easily incorporate content into your pages through automatic TypeScript type generation and better GraphQL IntelliSense.
   // If you use VSCode you can also use the GraphQL plugin

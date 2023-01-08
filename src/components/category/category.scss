@@ -1,0 +1,33 @@
+.category {
+  padding-top: var(--spacing-8);
+
+  &-title {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--spacing-1);
+
+    &-div {
+      margin-left: var(--spacing-2);
+    }
+  }
+
+  &-list {
+    padding: var(--spacing-2) 0;
+
+    &-line {
+      display: flex;
+      padding-bottom: var(--spacing-1);
+      cursor: pointer;
+
+      &-active,
+      &:hover {
+        color: var(--color-primary);
+      }
+
+      &-count {
+        margin-left: var(--spacing-2);
+      }
+    }
+  }
+}

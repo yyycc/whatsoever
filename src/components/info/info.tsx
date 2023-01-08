@@ -1,20 +1,11 @@
 import { StaticImage } from "gatsby-plugin-image"
 import * as React from "react"
+import { GithubOutlined, MailOutlined } from '@ant-design/icons'
 import './info.scss'
-import { graphql, useStaticQuery } from "gatsby"
+import { Link, } from "gatsby"
 
-const Info = () => {
-  const data = useStaticQuery(graphql`
-        query {
-            site {
-                siteMetadata {
-                    motto
-                    github
-                }
-            }
-        }
-    `)
-  const { motto, github } = data.site.siteMetadata
+const Info = ({ data }) => {
+  const { motto, github, email } = data.site.siteMetadata
   return (
     <div className="info">
       <div className="info-profile">
@@ -24,7 +15,14 @@ const Info = () => {
         />
       </div>
       <div className="info-motto">{motto}</div>
-      <div className="info-media"></div>
+      <div className="info-media">
+        <Link target="_blank" to={github} className="info-media-icon">
+          <GithubOutlined style={{ color: 'black' }}/>
+        </Link>
+        <Link to={`mailto:${email}`} className="info-media-icon">
+          <MailOutlined style={{ color: 'black' }}/>
+        </Link>
+      </div>
     </div>
   )
 }
