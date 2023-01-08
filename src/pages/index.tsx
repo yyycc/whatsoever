@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { CalendarOutlined, DoubleRightOutlined } from '@ant-design/icons'
+import { CalendarOutlined, DoubleRightOutlined, TagOutlined } from '@ant-design/icons'
 import Layout from '../components/layout'
 import Seo from "../components/seo"
 import Info from "../components/info/info"
@@ -7,6 +7,7 @@ import { graphql, Link, useStaticQuery } from "gatsby"
 import Category from "../components/category/category"
 import { useState } from "react"
 import { Space } from "antd"
+import './index.scss'
 
 const IndexPage = () => {
   const [tag, setTag] = useState('')
@@ -41,11 +42,19 @@ const IndexPage = () => {
           {displayNodes.map(ele => {
             return <div key={ele.frontmatter.slug} className="index-left-list">
               <div className="index-left-list-title">
-                {ele.frontmatter.slug}
+                <Link to={`/blog/${ele.frontmatter.slug}`}>
+                  {ele.frontmatter.slug}
+                </Link>
               </div>
-              <Space className="index-left-list-date">
-                <CalendarOutlined/>
-                {ele.frontmatter.date}
+              <Space size="middle" className="index-left-list-infos">
+                <Space>
+                  <CalendarOutlined/>
+                  {ele.frontmatter.date}
+                </Space>
+                <Space>
+                  <TagOutlined/>
+                  {ele.frontmatter.tag}
+                </Space>
               </Space>
               <div className="index-left-list-excerpt">
                 {ele.excerpt}
@@ -53,7 +62,7 @@ const IndexPage = () => {
               <div className="index-left-list-read">
                 <Link to={`/blog/${ele.frontmatter.slug}`}>
                   阅读全文
-                  <DoubleRightOutlined style={{fontSize: '10px'}}/>
+                  <DoubleRightOutlined style={{ fontSize: '10px' }}/>
                 </Link>
               </div>
             </div>

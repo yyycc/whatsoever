@@ -7,13 +7,7 @@ module.exports = function gatsbyRemarkCodeButtons(
     buttonClass: customButtonClass,
     buttonContainerClass: customButtonContainerClass,
     buttonText: customButtonText,
-    svgIconClass: customSvgIconClass,
-    svgIcon: customSvgIcon,
     tooltipText: customTooltipText,
-    toasterClass: customToasterClass,
-    toasterTextClass: customToasterTextClass,
-    toasterText: customToasterText,
-    toasterDuration: customToasterDuration
   }
 ) {
   visit(markdownAST, 'code', (node, index, parent) => {

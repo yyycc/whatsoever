@@ -2,6 +2,7 @@
 
 :root {
   --maxWidth-none: none;
+  --maxWidth-xxs: 18rem;
   --maxWidth-xs: 20rem;
   --maxWidth-sm: 24rem;
   --maxWidth-md: 28rem;
@@ -9,7 +10,11 @@
   --maxWidth-xl: 36rem;
   --maxWidth-2xl: 42rem;
   --maxWidth-3xl: 48rem;
-  --maxWidth-4xl: 56rem;
+  --maxWidth-4xl: 52rem;
+  --maxWidth-5xl: 56rem;
+  --maxWidth-6xl: 60rem;
+  --maxWidth-7xl: 64rem;
+  --maxWidth-8xl: 72rem;
   --maxWidth-9xl: 90rem;
   --maxWidth-full: 100%;
   --maxWidth-wrapper: var(--maxWidth-2xl);
@@ -63,7 +68,7 @@
   --color-primary-3: #00b96b;
   --color-primary-bg: #663399;
   --color-text: #2e353f;
-  --color-text-light: #4f5969;
+  --color-text-light: #635e68;
   --color-text-secondary-light: #78757a;
   --color-heading: #1a202c;
   --color-heading-black: black;
