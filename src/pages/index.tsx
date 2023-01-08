@@ -24,6 +24,7 @@ const IndexPage = () => {
               nodes {
                   excerpt
                   frontmatter {
+                      title
                       tag
                       slug
                       date(formatString: "YYYY-MM-DD")
@@ -43,7 +44,7 @@ const IndexPage = () => {
             return <div key={ele.frontmatter.slug} className="index-left-list">
               <div className="index-left-list-title">
                 <Link to={`/blog/${ele.frontmatter.slug}`}>
-                  {ele.frontmatter.slug}
+                  {ele.frontmatter.title}
                 </Link>
               </div>
               <Space size="middle" className="index-left-list-infos">

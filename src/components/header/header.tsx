@@ -16,9 +16,9 @@ const Header = ({ data }) => {
           <Link to="/" className='header-content-nav-text'>
             Home
           </Link>
-          <Link to="/about" className='header-content-nav-text'>
-            About
-          </Link>
+          {/*<Link to="/about" className='header-content-nav-text'>*/}
+          {/*  About*/}
+          {/*</Link>*/}
         </div>
       </div>
     </div>

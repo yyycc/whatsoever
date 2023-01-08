@@ -4,7 +4,7 @@ import './layout.scss'
 import Header from "./header/header"
 import Footer from "./footer/footer"
 
-const Layout = ({ pageTitle, children }) => {
+const Layout = ({ children }) => {
   const data = useStaticQuery(graphql`
         query {
             site {
@@ -19,7 +19,6 @@ const Layout = ({ pageTitle, children }) => {
     <div className='layout'>
       <Header data={data}/>
       <main>
-        {pageTitle && <h1 className='heading'>{pageTitle}</h1>}
         {children}
         <Footer/>
       </main>

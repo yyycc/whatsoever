@@ -10,6 +10,7 @@ const Info = ({ data }) => {
     <div className="info">
       <div className="info-profile">
         <StaticImage
+          class="info-profile-img"
           alt="Kitty with glasses"
           src="../../images/favicon.jpeg"
         />
