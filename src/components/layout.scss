@@ -4,12 +4,13 @@
     color: var(--color-primary);
   }
   main {
+    padding: 0 var(--spacing-8);
     max-width: var(--maxWidth-9xl);
     margin: 0 auto;
     .mdx-content {
       display: flex;
       justify-content: center;
-      padding-bottom: var(--spacing-16);
+      padding: 0 0 var(--spacing-16);
       &-nav {
         padding: 0 0 0 var(--spacing-16);
         position: sticky;
