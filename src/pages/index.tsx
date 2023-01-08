@@ -39,7 +39,7 @@ const IndexPage = () => {
       <div className="index">
         <div className="index-left">
           {displayNodes.map(ele => {
-            return <div className="index-left-list">
+            return <div key={ele.frontmatter.slug} className="index-left-list">
               <div className="index-left-list-title">
                 {ele.frontmatter.slug}
               </div>
