@@ -1,20 +1,11 @@
 import * as React from 'react'
-import { graphql, useStaticQuery } from 'gatsby'
 import './layout.scss'
 import Header from "./header/header"
 import Footer from "./footer/footer"
+import UseSiteMetadata from "../hooks/use-site-metadata"
 
 const Layout = ({ children }) => {
-  const data = useStaticQuery(graphql`
-        query {
-            site {
-                siteMetadata {
-                    title
-                    siteUrl
-                }
-            }
-        }
-    `)
+  const data = UseSiteMetadata()
   return (
     <div className='layout'>
       <Header data={data}/>

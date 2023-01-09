@@ -3,8 +3,8 @@ import type { GatsbyConfig } from "gatsby"
 const config: GatsbyConfig = {
   siteMetadata: {
     title: `whatsoever`,
-    siteUrl: `https://whatsoever.gatsbyjs.io/`,
-    description: 'It is my blog called whatsoever',
+    siteUrl: `https://www.whyyy.net/`,
+    description: 'A blog recording my daily learning',
     author: 'yy chen',
     motto: 'Righty Tighty, Lefty Loosey',
     github: 'https://github.com/yyycc',

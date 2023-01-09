@@ -8,31 +8,11 @@ import Category from "../components/category/category"
 import { useState } from "react"
 import { Space } from "antd"
 import './index.scss'
+import UseSiteMetadata from "../hooks/use-site-metadata"
 
 const IndexPage = () => {
   const [tag, setTag] = useState('')
-  const data = useStaticQuery(graphql`
-      query {
-          site {
-              siteMetadata {
-                  motto
-                  github
-                  email
-              }
-          }
-          allMdx {
-              nodes {
-                  excerpt
-                  frontmatter {
-                      title
-                      tag
-                      slug
-                      date(formatString: "YYYY-MM-DD")
-                  }
-              }
-          }
-      }
-  `)
+  const data = UseSiteMetadata()
   const { nodes } = data.allMdx
   const displayNodes = nodes.filter(node => !tag || node.frontmatter.tag === tag)
   return (
