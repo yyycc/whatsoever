@@ -19,6 +19,7 @@
         max-height: calc(((100vh - 17rem) - 3rem) - 3rem);
         flex-shrink: 0;
         .ant-anchor-link-title {
+          color: #78757a;
           &-active,
           &:hover {
             color: var(--color-primary);
