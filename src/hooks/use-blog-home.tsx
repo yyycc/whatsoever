@@ -5,7 +5,7 @@ import { graphql, useStaticQuery } from "gatsby"
 const UseBlogHome = () => {
   return useStaticQuery(graphql`
       query {
-          allMdx(filter: {frontmatter: {tag: {ne: "example"}}}) {
+          allMdx(filter: {frontmatter: {tag: {ne: "example"}}}, sort: { frontmatter: { date: DESC }}) {
               nodes {
                   excerpt
                   frontmatter {
