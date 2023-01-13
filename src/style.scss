@@ -91,6 +91,7 @@ html {
   font-size: var(--fontSize-root);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  scroll-padding: 80px 0 0 0; // 同Anchor组件配置一致
 }
 
 body {

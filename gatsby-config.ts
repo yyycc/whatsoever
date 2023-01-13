@@ -68,12 +68,13 @@ const config: GatsbyConfig = {
               buttonText: `Copy`,
             }
           },
-          {
-            resolve: `gatsby-remark-figure-caption`,
-            options: {
-              figureClassName: 'whatsoever-figure'
-            },
-          },
+          // `gatsby-remark-grid-tables`,
+          // {
+          //   resolve: `gatsby-remark-figure-caption`,
+          //   options: {
+          //     figureClassName: 'whatsoever-figure'
+          //   },
+          // },
           {
             resolve: `gatsby-remark-images`,
             options: {

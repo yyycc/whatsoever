@@ -1,0 +1,145 @@
+.test-input {
+  display: none;
+  position: absolute;
+  top: -90px;
+  margin: 0;
+  width: 60px;
+  height: 450px;
+  cursor: pointer;
+  opacity: 0;
+}
+
+.test-input:indeterminate {
+  display: initial;
+}
+
+.test-board {
+  position: relative;
+  width: 90px;
+  height: 450px;
+  margin: -15px auto 20px auto;
+}
+
+.test-field {
+  position: absolute;
+  top: 0;
+  left: 15px;
+  padding: 75px 0 0 0;
+  box-sizing: border-box;
+  width: 60px;
+  height: 435px;
+  overflow: hidden;
+  cursor: not-allowed;
+}
+
+/* Disc */
+.test-disc {
+  position: relative;
+  top: 0;
+  width: 60px;
+  height: 60px;
+  color: #fff;
+  background: radial-gradient(
+                  circle,
+                  currentcolor 12px,
+                  #666 13px,
+                  currentcolor 14px,
+                  currentcolor 21px,
+                  #666 22px,
+                  transparent 23px,
+                  transparent
+  ) center/60px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, top 0s 0.2s, color 0s 0.2s;
+}
+
+.test-grid {
+  border: 1px solid;
+}
+
+.test-input:hover + .test-disc {
+  color: #ff010b;
+  opacity: 1;
+  transition: opacity 0.2s, top 0s;
+}
+
+.test-input:hover + .test-disc:nth-of-type(1) {
+  top: -75px;
+}
+
+.test-input:hover + .test-disc:nth-of-type(6) {
+  top: -375px;
+}
+
+.test-input:checked + .test-disc {
+  color: #ff010b;
+  opacity: 1;
+}
+
+.test-input:checked + .disc:nth-of-type(1),
+.test-input:checked + input + .disc:nth-of-type(1) {
+  transition: top 0.14s cubic-bezier(0.56, 0, 1, 1);
+}
+
+.test-input:checked + .test-disc:nth-of-type(6) {
+  transition: top 0.32s cubic-bezier(0.56, 0, 1, 1);
+}
+
+.test-button {
+  width: 120px;
+  position: absolute;
+  left: 100px;
+  top: 405px;
+  padding: 6px 9px;
+  border: none;
+  border-radius: 2px;
+  font-size: 16px;
+  text-transform: uppercase;
+  cursor: pointer;
+  color: #fff;
+  background: #2196f3 center;
+  box-shadow: 0 0 4px #999;
+  outline: none;
+  transition: background 0.5s;
+}
+
+
+.whyyy-disc {
+  width: 60px;
+  height: 60px;
+  background-color: #49b1f5;
+  text-align: center;
+  /*line-height: 60px;*/
+}
+
+.whyyy-first,
+.whyyy-second,
+.whyyy-third,
+.whyyy-fourth {
+  width: 200px;
+  height: 200px;
+  display: flex;
+}
+
+.whyyy-first {
+  flex-flow: column wrap;
+}
+
+.whyyy-second {
+  flex-flow: row wrap;
+  margin-bottom: 10px;
+}
+
+.whyyy-third {
+  flex-flow: column nowrap;
+  margin-bottom: 10px;
+}
+
+.whyyy-fourth {
+  flex-flow: row nowrap;
+  margin-bottom: 10px;
+}
+.whyyy-last {
+  margin-top: 40px;
+}
