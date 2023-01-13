@@ -14,17 +14,6 @@ const UseSiteMetadata = () => {
                   email
               }
           }
-          allMdx {
-              nodes {
-                  excerpt
-                  frontmatter {
-                      title
-                      tag
-                      slug
-                      date(formatString: "YYYY-MM-DD")
-                  }
-              }
-          }
       }
   `)
 }

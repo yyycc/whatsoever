@@ -8,11 +8,13 @@ import Category from "../components/category/category"
 import { useState } from "react"
 import { Space } from "antd"
 import './index.scss'
+import UseBlogHome from "../hooks/use-blog-home"
 import UseSiteMetadata from "../hooks/use-site-metadata"
 
 const IndexPage = () => {
   const [tag, setTag] = useState('')
-  const data = UseSiteMetadata()
+  const data = UseBlogHome()
+  const siteMetadata = UseSiteMetadata()
   const { nodes } = data.allMdx
   const displayNodes = nodes.filter(node => !tag || node.frontmatter.tag === tag)
   return (
@@ -50,7 +52,7 @@ const IndexPage = () => {
           })}
         </div>
         <div className="index-right">
-          <Info data={data}/>
+          <Info data={siteMetadata}/>
           <Category tag={tag} setTag={setTag} data={nodes}/>
         </div>
       </div>
