@@ -13,10 +13,12 @@ const BlogPost = ({ data, children }) => {
   return (
     <Layout>
       <div className="mdx-content">
-        <div className="mdx-content-data">
-          <h1 className='heading'>{title}</h1>
+        <div className="mdx-content-left">
+          <h1 className='mdx-content-left-heading'>{title}</h1>
           <p>{date}</p>
-          {children}
+          <article className="mdx-content-left-data">
+            {children}
+          </article>
         </div>
         {Boolean(items?.length) && <div className="mdx-content-nav">
           <ConfigProvider

@@ -1,8 +1,5 @@
 .layout {
   margin: auto;
-  .heading {
-    color: var(--color-primary);
-  }
   main {
     padding: 0 var(--spacing-8);
     max-width: var(--maxWidth-9xl);
@@ -11,6 +8,16 @@
       display: flex;
       justify-content: center;
       padding: 0 0 var(--spacing-16);
+      &-left {
+        &-heading {
+          margin-top: var(--spacing-8);
+          margin-bottom: var(--spacing-4);
+        }
+        &-data {
+          margin-top: var(--spacing-16);
+          max-width: var(--maxWidth-4xl);
+        }
+      }
       &-nav {
         padding: 0 0 0 var(--spacing-16);
         position: sticky;
@@ -26,9 +33,6 @@
             text-decoration: underline;
           }
         }
-      }
-      &-data {
-        max-width: var(--maxWidth-4xl);
       }
     }
   }

@@ -15,6 +15,13 @@ const AboutPage = () => {
         <p>A2: One Piece</p>
         <p>Q3: Favorite Activity</p>
         <p>A3: Awake by the alarm in the morning, take a look at the clock and then go back to sleep.</p>
+        <p>Q4: Why this blog</p>
+        <p>
+          A4: It's for learning and that's the only reason. I don't write it for other people to read, although somebody reading it would be very nice,
+          but that's not the reason and not the motivation. It's a method for me to learn sth better and deeper.
+          I will not write sth I already know well like how to ,um...oh my god I know nothing well...
+          I write things I didn't quite get yet, and during which I learn deeper.
+        </p>
       </div>
     </Layout>
   )
