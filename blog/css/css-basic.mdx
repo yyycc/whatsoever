@@ -23,12 +23,20 @@ html的标签有很多，像常见的\<div>、\<span>、\<li>等等，通常分�
 
 ### 1.1. 块级元素
 常见的有\<div>、\<li>和\<table> 等。
-特征：每个元素占一行，可以设置宽高
+特征：
+- 每个元素独占一行 
+- 元素的高度、宽度、行高以及边距都可以设置
+- 元素不设置宽度情况下，占父容器100%宽度
+
 值得注意的是，块级元素和display: block不是一个概念，比如上面提到的li它的display值就是list-item，table的display值是table，但是他们都是块级元素。
 
 ### 1.2. 内联元素
 常见的有\<span>、\<button>、\<input>、\<img>  
-特征：可以和文字在一行显示。  
+特征：
+- 和其他元素在同一行
+- 元素高度、宽度以及顶部和底部边距不可设置(margin-top、margin-bottom不生效，padding-top和padding-bottom不会影响元素位置，但会在背景色上体现)
+- 元素的宽度就是元素所包含内容的宽度，不可设置
+
 浮动元素是内联元素吗？不是的，浮动元素在文档流之外，并不是和文字在一行显示。
 ### 1.3. 替换元素
 顾名思义，内容可以被替换的元素，都是内联元素。
@@ -97,7 +105,8 @@ html的标签有很多，像常见的\<div>、\<span>、\<li>等等，通常分�
 用于插入内容，不受文档约束，也不影响文档本身，只影响最终的样式。
 
 ## Z. 参考
-张鑫旭．CSS的世界[J]．  
-[My Custom CSS Reset](https://www.joshwcomeau.com/css/custom-css-reset/)  
-[* \{ Box-sizing: Border-box } FTW](https://www.paulirish.com/2012/box-sizing-border-box-ftw/)  
-[怎样理解 CSS :after 伪元素的作用？](https://www.zhihu.com/question/20436746)  
+[1. 张鑫旭．CSS的世界[J]．](https://www.zhangxinxu.com/)  
+[2. My Custom CSS Reset](https://www.joshwcomeau.com/css/custom-css-reset/)  
+[3. * \{ Box-sizing: Border-box } FTW](https://www.paulirish.com/2012/box-sizing-border-box-ftw/)  
+[4. 怎样理解 CSS :after 伪元素的作用？](https://www.zhihu.com/question/20436746)  
+[5. 内联元素和块状元素的区别](https://www.cnblogs.com/sunnyas/p/10885982.html)
