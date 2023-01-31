@@ -2,7 +2,6 @@ import { StaticImage } from "gatsby-plugin-image"
 import * as React from "react"
 import { GithubOutlined, MailOutlined } from '@ant-design/icons'
 import './info.scss'
-import { Link, } from "gatsby"
 
 const Info = ({ data }) => {
   const { motto, github, email } = data.site.siteMetadata
@@ -17,12 +16,12 @@ const Info = ({ data }) => {
       </div>
       <div className="info-motto">{motto}</div>
       <div className="info-media">
-        <Link target="_blank" to={github} className="info-media-icon">
+        <a target="_blank" href={github} className="info-media-icon">
           <GithubOutlined style={{ color: 'black' }}/>
-        </Link>
-        <Link to={`mailto:${email}`} className="info-media-icon">
+        </a>
+        <a href={`mailto:${email}`} className="info-media-icon">
           <MailOutlined style={{ color: 'black' }}/>
-        </Link>
+        </a>
       </div>
     </div>
   )

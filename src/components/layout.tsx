@@ -3,12 +3,14 @@ import './layout.scss'
 import Header from "./header/header"
 import Footer from "./footer/footer"
 import UseSiteMetadata from "../hooks/use-site-metadata"
+import UseBlogHome from "../hooks/use-blog-home"
 
 const Layout = ({ children }) => {
-  const data = UseSiteMetadata()
+  const { title } = UseSiteMetadata().site.siteMetadata
+  const { nodes } = UseBlogHome().allMdx
   return (
     <div className='layout'>
-      <Header data={data}/>
+      <Header title={title} blogData={nodes}/>
       <main>
         {children}
         <Footer/>

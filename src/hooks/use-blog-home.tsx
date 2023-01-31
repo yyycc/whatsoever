@@ -13,6 +13,7 @@ const UseBlogHome = () => {
                       tag
                       slug
                       date(formatString: "YYYY-MM-DD")
+                      folder
                   }
               }
           }

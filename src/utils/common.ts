@@ -14,3 +14,7 @@ export function getArrayWithCount(data: Array<any>, withTotalCount = false) {
   })
   return res
 }
+
+export function spaceToHyphen(str: String) {
+  return str.replaceAll(' ', '-').toLowerCase()
+}

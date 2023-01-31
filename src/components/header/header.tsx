@@ -1,9 +1,20 @@
 import * as React from "react"
 import './header.scss'
-import { Link } from "gatsby";
+import { Link } from "gatsby"
+import { Dropdown, Space } from "antd"
+import { DownOutlined } from '@ant-design/icons'
+import { spaceToHyphen } from "../../utils/common"
 
-const Header = ({ data }) => {
-  const { title } = data.site.siteMetadata
+const Header = ({ title, blogData }) => {
+  const allFolders = blogData.map(ele => ({
+    folder: ele.frontmatter.folder,
+    tag: ele.frontmatter.tag,
+    slug: ele.frontmatter.slug
+  }))
+  let showFolders = {}
+  allFolders.forEach(ele => {
+    (showFolders[ele.folder] || (showFolders[ele.folder] = [])).push(ele)
+  })
   return (
     <div className="header">
       <div className="header-content">
@@ -13,12 +24,21 @@ const Header = ({ data }) => {
           </Link>
         </div>
         <div className="header-content-nav">
-          <Link to="/" className='header-content-nav-text'>
-            Home
-          </Link>
-          {/*<Link to="/about" className='header-content-nav-text'>*/}
-          {/*  About*/}
-          {/*</Link>*/}
+          {Object.keys(showFolders).map(folder => {
+            const data = showFolders[folder]
+            const tags = [...new Set(data.map(ele => ele.tag))]
+            const items = tags.map((ele, index) => ({ key: ele, label: (
+              <Link to={`/blog/${spaceToHyphen(folder)}/${ele}`}>{ele}</Link>
+              ) }))
+            return (
+              <Dropdown key={folder} menu={{ items }}>
+                <Space>
+                  {folder}
+                  <DownOutlined/>
+                </Space>
+              </Dropdown>
+            )
+          })}
         </div>
       </div>
     </div>

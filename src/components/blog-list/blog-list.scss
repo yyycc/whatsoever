@@ -1,0 +1,36 @@
+.blog-list {
+  &-list {
+    margin-bottom: var(--spacing-8);
+    &-title {
+      font-size: var(--fontSize-4);
+    }
+    &-infos {
+      color: var(--color-text-light);
+      margin-top: var(--spacing-1);
+      display: flex;
+      align-items: center;
+    }
+    &-excerpt {
+      margin-top: var(--spacing-4);
+    }
+    &-read {
+      display: flex;
+      justify-content: flex-end;
+      a {
+        display: flex;
+        align-items: center;
+        font-size: var(--fontSize-0);
+        padding: var(--spacing-s) var(--spacing-1);
+        border: 1px solid var(--color-border);
+        border-radius: var(--spacing-1);
+        color: var(--color-text);
+        &:hover {
+          //background-color: var(--color-primary-bg);
+          color: var(--color-primary);
+          border-color: var(--color-primary);
+          text-decoration: none;
+        }
+      }
+    }
+  }
+}
