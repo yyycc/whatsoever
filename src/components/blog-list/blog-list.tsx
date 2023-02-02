@@ -6,7 +6,6 @@ import { CalendarOutlined, DoubleRightOutlined, TagOutlined } from "@ant-design/
 import './blog-list.scss'
 
 const BlogList = ({ tag, folder }) => {
-  debugger
   const data = UseBlogHome()
   const { nodes } = data.allMdx
   const displayList = nodes.filter(

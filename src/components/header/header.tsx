@@ -42,7 +42,7 @@ const Header = ({ title, blogData }) => {
             }))
             if (folder.indexOf('$') > -1) {
               const singleFolder =  folder.replace('$', '')
-              return <div className="header-content-nav__div">
+              return <div key={folder} className="header-content-nav__div">
                 <Link to={`/blog/${spaceToHyphen(singleFolder)}`}> {singleFolder}</Link>
 
               </div>

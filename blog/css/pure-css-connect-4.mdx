@@ -108,7 +108,7 @@ input:indeterminate {
 
 ## 3. counter
 
-content可以实现计数器效果，这部分内容在《CSS的世界》一书中也有详细的叙述，至于我为什么没有在我的<a target="_blank" href="https://www.whyyy.net/blog/css">css读后感系列</a>中写，也是有种种原因。
+content可以实现计数器效果，这部分内容在《CSS的世界》一书中也有详细的叙述，至于我为什么没有在我的<a target="_blank" href="/blog/css">css读后感系列</a>中写，也是有种种原因。
 
 ![content计数器](./pure-css-connect-4/counter.png)
 
@@ -275,7 +275,7 @@ input:hover + input + .disc:nth-of-type(6n) {
 }
 ```
 ### 4.2 棋子下落的动画
-应该都看得出来是通过transition来实现的，这边我做了一个简易版的，可以围观一下 ----> <a target="_blank" href="https://www.whyyy.net/blog/css-example/#1-%E4%B8%8B%E8%90%BD%E7%9A%84%E5%8A%A8%E7%94%BB">动画示例</a>  
+应该都看得出来是通过transition来实现的，这边我做了一个简易版的，可以围观一下 ----> <a target="_blank" href="/blog/css-example/#1-%E4%B8%8B%E8%90%BD%E7%9A%84%E5%8A%A8%E7%94%BB">动画示例</a>  
 hover时棋子在棋盘上方，那么点击之后，状态变为checked，hover时的负top也就不复存在了，从负top到初始位置top的变化，通过transition来实现动画效果。  
 cubic-bezier: 贝塞尔曲线，是控制变化的速度曲线，cubic-bezier(0.56, 0, 1, 1)近似于二次函数在第一象限的曲线，近似于ease-in。  
 ``` css
@@ -382,7 +382,7 @@ form:valid .column > .column > .column > .column > .column > .column > .column >
 最后再来讲讲棋盘是如何画出来的吧，先说说这个flex-flow: column nowrap，即  
 flex-direction:  column;  
 flex-wrap: nowrap;  
-表示主轴垂直，换行。所以所有的disc是从上往下排列，高度排满之后向右换行继续从上往下排列，可以戳这里看看各种属性值下的排列<a target="_blank" href="https://www.whyyy.net/blog/css-example/#2-flex-flow">flex-flow</a>
+表示主轴垂直，换行。所以所有的disc是从上往下排列，高度排满之后向右换行继续从上往下排列，可以戳这里看看各种属性值下的排列<a target="_blank" href="/blog/css-example/#2-flex-flow">flex-flow</a>
 ``` css
 .column {
   display: inline-flex;

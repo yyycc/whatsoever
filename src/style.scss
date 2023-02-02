@@ -57,9 +57,9 @@
   --fontSize-5: 2.074rem;
   --fontSize-6: 2.488rem;
   --fontSize-7: 2.986rem;
-  --color-primary-border: #8a4baf80;
+  --color-primary-border: rgba(138, 75, 175, 0.5);
   --color-primary: #8a4baf; /* 同时修改ConfigProvider以及theme_color中设置的颜色 */
-  --color-primary-bg-light: #fcfaff;; /* 同时修改ConfigProvider以及theme_color中设置的颜色 */
+  --color-primary-bg-light: #fcfaff; /* 同时修改ConfigProvider以及theme_color中设置的颜色 */
   --color-primary-1: #dc7c08;
   --color-primary-2: #1976d2;
   --color-primary-3: #00b96b;
@@ -176,10 +176,11 @@ article {
     color: var(--color-primary);
   }
 
-  #before,#reference {
+  #before, #reference {
     font-size: var(--fontSize-4);
     padding-bottom: var(--spacing-3);
     border-bottom: 4px solid var(--color-primary);
+
     &:after {
       content: '';
       display: block;
