@@ -5,7 +5,7 @@ import Layout from "../../../../components/layout"
 const Css = () => {
   return (
     <Layout className="front-end">
-      <FrontEnd type="css" title="css"/>
+      <FrontEnd tag="css" title="css"/>
     </Layout>
   )
 }

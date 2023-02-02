@@ -5,10 +5,13 @@ import { Space } from "antd"
 import { CalendarOutlined, DoubleRightOutlined, TagOutlined } from "@ant-design/icons"
 import './blog-list.scss'
 
-const BlogList = ({ tag }) => {
+const BlogList = ({ tag, folder }) => {
+  debugger
   const data = UseBlogHome()
   const { nodes } = data.allMdx
-  const displayList = nodes.filter(node => !tag || node.frontmatter.tag === tag)
+  const displayList = nodes.filter(
+    node => (!tag || node.frontmatter.tag === tag) && (!folder || node.frontmatter.folder.indexOf(folder) > -1)
+  )
   return (
     <div className="blog-list">
       {displayList.map(ele => {

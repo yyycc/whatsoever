@@ -5,7 +5,7 @@ import Layout from "../../../../components/layout"
 const Webpack = () => {
   return (
     <Layout className="front-end">
-      <FrontEnd type="webpack" title="webpack"/>
+      <FrontEnd tag="webpack" title="webpack"/>
     </Layout>
   )
 }

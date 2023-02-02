@@ -12,8 +12,11 @@ const Header = ({ title, blogData }) => {
     slug: ele.frontmatter.slug
   }))
   let showFolders = {}
+
   allFolders.forEach(ele => {
-    (showFolders[ele.folder] || (showFolders[ele.folder] = [])).push(ele)
+    const { folder } = ele
+    const folders = folder.split(',') // folder内容支持,分隔，含有$符号的folder不使用tag作为二级目录
+    folders.forEach(fol => (showFolders[fol] || (showFolders[fol] = [])).push(ele))
   })
   return (
     <div className="header">
@@ -24,14 +27,28 @@ const Header = ({ title, blogData }) => {
           </Link>
         </div>
         <div className="header-content-nav">
-          {Object.keys(showFolders).map(folder => {
+          {Object.keys(showFolders).sort((a: string, b: string) => {
+            if (a.indexOf('$') > -1) {
+              return -1
+            }
+            return 1
+          }).map(folder => {
             const data = showFolders[folder]
             const tags = [...new Set(data.map(ele => ele.tag))]
-            const items = tags.map((ele, index) => ({ key: ele, label: (
-              <Link to={`/blog/${spaceToHyphen(folder)}/${ele}`}>{ele}</Link>
-              ) }))
+            const items = tags.map((ele, index) => ({
+              key: ele, label: (
+                <Link to={`/blog/${spaceToHyphen(folder)}/${ele}`}>{ele}</Link>
+              )
+            }))
+            if (folder.indexOf('$') > -1) {
+              const singleFolder =  folder.replace('$', '')
+              return <div className="header-content-nav__div">
+                <Link to={`/blog/${spaceToHyphen(singleFolder)}`}> {singleFolder}</Link>
+
+              </div>
+            }
             return (
-              <Dropdown key={folder} menu={{ items }}>
+              <Dropdown className="header-content-nav__dropdown" key={folder} menu={{ items }}>
                 <Space>
                   {folder}
                   <DownOutlined/>
@@ -39,10 +56,10 @@ const Header = ({ title, blogData }) => {
               </Dropdown>
             )
           })}
-        </div>
-      </div>
-    </div>
-  )
-}
+            </div>
+            </div>
+            </div>
+            )
+          }
 
-export default Header
+          export default Header
