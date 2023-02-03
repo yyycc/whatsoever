@@ -9,6 +9,9 @@
       margin-top: var(--spacing-1);
       display: flex;
       align-items: center;
+      &__space {
+        display: flex;
+      }
     }
     &-excerpt {
       margin-top: var(--spacing-4);

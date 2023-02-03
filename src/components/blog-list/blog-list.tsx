@@ -21,11 +21,11 @@ const BlogList = ({ tag, folder }) => {
             </Link>
           </div>
           <Space size="middle" className="blog-list-list-infos">
-            <Space>
+            <Space className="blog-list-list-infos__space">
               <CalendarOutlined/>
               {ele.frontmatter.date}
             </Space>
-            <Space>
+            <Space className="blog-list-list-infos__space">
               <TagOutlined/>
               {ele.frontmatter.tag}
             </Space>
