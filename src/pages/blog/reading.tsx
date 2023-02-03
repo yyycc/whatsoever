@@ -1,13 +1,13 @@
 import * as React from 'react'
-import Reading from "../../components/reading/reading"
 import Layout from "../../components/layout"
+import CommonReading from "../../components/common-reading/common-reading"
 
-const Css = () => {
+const Reading = () => {
   return (
     <Layout className="reading">
-      <Reading folder="Reading" title="Reading"/>
+      <CommonReading folder="Reading" title="Reading"/>
     </Layout>
   )
 }
 
-export default Css
+export default Reading
