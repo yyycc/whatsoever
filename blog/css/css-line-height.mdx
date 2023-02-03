@@ -8,7 +8,7 @@ folder: "Front End"
 
 ## Before
 开篇提到css最开始的设计就是服务于图文信息的，文本处理和展示能力的强大。
-不知道大家有没有用过[tailwind](https://www.tailwindcss.cn/)，它用来控制字体大小的功能类是下图这样的，设置font-size的同时还设置了line-height，第一次用的时候很迷茫，为啥这俩要一块儿写，我就单纯的想设置一下字号呀，但了解之后发现，这俩彼此的关系不一般，
+不知道大家有没有用过<a target="_blank" href="https://www.tailwindcss.cn/">Tailwind</a> ，它用来控制字体大小的功能类是下图这样的，设置font-size的同时还设置了line-height，第一次用的时候很迷茫，为啥这俩要一块儿写，我就单纯的想设置一下字号呀，但了解之后发现，这俩彼此的关系不一般，
 
 ![tailwind](./css-line-height/tailwind.png)
 
@@ -90,11 +90,11 @@ vertical-align的属性值可以分成四类
 }
 ```
 多行文字用一个标签包裹，然后设置display: inline-block，这么做有几点原因：  
-1. 如果设置为inline，那么最终生效的高度是由更大的line-height决定的
+1. 如果设置为inline，那么最终生效的高度是由更大的line-height(也就是.box设置的150px)决定的
 2. 我们需要一个内联元素，vertical-align才能生效
 3. 我们还需要内联元素组成的行框盒子前的**幽灵空白节点**，这样box的line-height就有了作用对象，就相当于在content元素前面撑起一个高度为120px，宽度为0的内联元素。
 
 老实说一开始我没能理解第一点，直到我看了[《CSS世界》读书笔记（十六）](https://blog.csdn.net/weixin_33851177/article/details/94294965)。。。哎，写读书笔记不止要读书，还要读读书笔记，让他来告诉你答案在P125。shame on U。。。
 
-## Z. Reference 
+## Reference 
 [1. 《CSS世界》读书笔记（十六）](https://blog.csdn.net/weixin_33851177/article/details/94294965)  
