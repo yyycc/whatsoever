@@ -16,10 +16,9 @@ const IndexPage = () => {
   const { nodes } = data.allMdx
   return (
     <Layout>
-      {/*<p>This blog is still under construction~</p>*/}
       <div className="index">
         <div className="index-left">
-          <BlogList />
+          <BlogList tag={tag}/>
         </div>
         <div className="index-right">
           <Info data={siteMetadata}/>
