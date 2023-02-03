@@ -1,13 +1,14 @@
 import * as React from 'react'
-import { ConfigProvider, Anchor } from 'antd'
+import { ConfigProvider, Anchor, Space } from 'antd'
 import Valine from 'gatsby-plugin-valine'
 import Layout from '../../components/layout'
 import Seo from '../../components/seo'
 import { graphql } from "gatsby"
+import { CalendarOutlined, TagOutlined } from "@ant-design/icons"
 
 const BlogPost = ({ data, children }) => {
   const { tableOfContents, frontmatter } = data.mdx
-  const { title, date } = frontmatter
+  const { title, date, tag } = frontmatter
   const items = handleAnchorItem(tableOfContents.items)
 
   return (
@@ -15,7 +16,16 @@ const BlogPost = ({ data, children }) => {
       <div className="mdx-content">
         <div className="mdx-content-left">
           <h1 className='mdx-content-left-heading'>{title}</h1>
-          <p>{date}</p>
+          <Space size="middle" className="mdx-content-left-infos">
+            <Space>
+              <CalendarOutlined/>
+              {date}
+            </Space>
+            <Space>
+              <TagOutlined/>
+              {tag}
+            </Space>
+          </Space>
           <article className="mdx-content-left-data">
             {children}
           </article>
@@ -61,7 +71,8 @@ export const query = graphql`
       frontmatter {
         title
         slug
-        date(formatString: "MMMM D, YYYY")
+        date(formatString: "YYYY-MM-DD")
+        tag
       }
       tableOfContents
       id
