@@ -1,6 +1,6 @@
 import * as React from 'react'
-import Reading from "../../../components/reading/reading"
-import Layout from "../../../components/layout"
+import Reading from "../../components/reading/reading"
+import Layout from "../../components/layout"
 
 const Css = () => {
   return (

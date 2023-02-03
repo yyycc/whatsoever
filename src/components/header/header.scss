@@ -34,13 +34,11 @@
         color: var(--color-primary);
       }
       &__dropdown {
-        height: 43px;
+        cursor: pointer;
         padding: var(--spacing-2) var(--spacing-4);
         border-radius: var(--spacing-1);
       }
       &__div {
-        height: 43px;
-        padding: var(--spacing-2) var(--spacing-4);
         border-radius: var(--spacing-1);
         &:hover {
           background-color: var(--color-primary-bg-light);
@@ -50,6 +48,8 @@
           }
         }
         a {
+          display: block;
+          padding: var(--spacing-2) var(--spacing-4);
           color: var(--color-text);
           font-size: 14px;
         }
