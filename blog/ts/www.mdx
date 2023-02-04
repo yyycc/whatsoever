@@ -1,0 +1,83 @@
+---
+title: "Typescript -- what why and how"
+date: "2022-04-11"
+slug: "ts-www"
+tag: "TypeScript"
+folder: "Front End"
+---
+
+## Before
+
+我在使用TypeScript的很长一段时间里，都没有认真地思考过它到底是一个什么东西，I mean我知道它给JavaScript增加了类型约束，
+但是是以一种什么样的方式，又会在何种程度上影响我的JavaScript代码呢？
+
+## 1. What is
+
+Ts是Js的超集，所有的Js代码都是Ts代码，但反过来不是，Ts增加了一些额外的语法用来声明类型
+
+初学Ts的时候，我一直把它看作是Js+Type，但它其实是一门独立的语言，只是语法上是Js + Type再加上一些它独有的东西  
+TypeScript被编译成JavaScript才能在浏览器上跑，你可以在<a target="_blank" href="https://www.typescriptlang.org/play">playground</a>上直接看你的ts编译后的Js代码，可以猜猜下面这段代码编译后的Js是什么
+``` ts
+interface Square {
+  width: number;
+}
+```
+嗯，编译后是空的，ts编译器的其中一项工作就是去掉所有的interface、type以及类型注解。所以，运行时是无法获取类型的，只能获取值。  
+所以，你写的类型注解是通通不会影响编译后的Js的，而且，即便有类型错误，可能代码还是可以正常运行，它在某种程度上(取决于你的配置)可以看做是一种警告，它抛出问题，但不影响构建。  
+
+下面这段代码就误解了Ts，as number并不能真正地把val转化成number，只有Number(val)才可以
+``` ts
+function asNumber(val: number | string): number {
+  return val as number
+}
+```
+再看下面这段代码，理论上永远不会输出**I'm afraid I can't do that.**，但是别忘了，Ts的类型注解在运行时是不存在的，入参有可能是其他类型，比如这个入参值是来自于某个请求。
+``` ts
+function setLightSwitch(value: boolean) {
+  switch (value) {
+    case true:
+      turnLightOn();
+      break;
+    case false:
+      turnLightOff();
+      break;
+    default:
+      console.log(`I'm afraid I can't do that.`);
+  }
+}
+```
+总结一下：  
+- 类型操作是不会改变运行时的值的
+- 每个值都有可能是你声明的类型之外的类型，做好相应处理
+
+## 2. why it
+上面讲到Ts的类型注解，操作符在编译后都是不存在的，所以不会增大编译后代码的体积。  
+ts的目标：  
+- 在运行代码之前抛出运行时异常
+- 捕捉一些不会抛出异常，但是并非你想要的情况(比如一些拼写错误)
+
+Ts的类型系统模拟了Js的运行时行为，但很多情况下，一些使用Js不会报错的行为，Ts会认为是错误而不是开发者的真实意图。比如
+``` ts
+const a = null + 7; // 报错
+
+const b = [] + 12; // 报错
+
+const states = [
+  {name: 'Alabama', capital: 'Montgomery'},
+  {name: 'Alaska',  capital: 'Juneau'},
+  {name: 'Arizona', capital: 'Phoenix'},
+];
+
+for (const state of states) {
+  console.log(state.capitol); // 报错
+}
+```
+Ts能揣测你的意图，很多时候它都是对的，还提供了补全功能，如果用了补全，state.capitol这种情况就绝不会出现啦。
+
+## 3. how to
+
+如何学习Ts呢，首先肯定是开发手册，毕竟是一门新语言，语法还是需要掌握的。  
+如今很多前段项目都是Ts开发的，也有很多Js项目在向Ts迁移，使用的机会很多，像我最开始使用就是在一个Js转Ts的项目中。  
+作为初学初用，又是Js转Ts的项目中，遇到一些很难解决的类型报错时，不要对使用any抱有很大的抵触或者愧疚心理，毕竟all any === Js，写了这么多年Js了，再写点也无妨。  
+coding总是要兼顾效率和质量的。  
+但是一定要把那些没有解决的问题记录下来，不然问题就永远是问题，而不是知识。  

@@ -1,0 +1,131 @@
+---
+title: "webpack5 源码学习 - 初始化"
+date: "2023-01-09"
+slug: "webpack"
+tag: "example"
+folder: "Front End"
+---
+## 前言
+最近花了一些(A Lot！)时间来阅读webpack5的源码，它终于不再是一个黑匣子一般的存在了。  
+虽然阅读的过程真的是十分艰难，鉴于它使用了发布订阅模式、各种异步和回调，前n(n>=10)次看的时候就像在走迷宫，不知道从何处来，也不知该往何处去。
+
+
+<details>
+<summary>环境</summary>
+- 版本：v5.75.0
+- 目录: /webpack-prj
+- 初始化：
+```shell
+npm init
+yarn add webpack
+./node_modules/.bin/webpack
+```
+执行webpack指令时，它会喊你安装webpack-cli，输入yes安装后，再次执行webpack。
+会有报错，因为它无法找到入口文件。创建src/index.js后再次执行就打包成功了。
+在当前目录下会生成/dist/main.js
+</details>
+
+## > webpack
+```json:title=webpack/package.json
+{
+  ...,
+  "main": "lib/index.js",
+  "bin": {
+    "webpack": "bin/webpack.js"
+  },
+  ...
+}
+```
+先来看webpack的package.json文件，在这里面可以看到webpack的入口文件是lib/index.js，webpack指令对应的执行文件是bin/webpack.js。   
+所以执行webpack指令，也就是执行了bin/webpack.js文件。
+```js:title=webpack/bin/webpack.js
+const runCli = cli => {
+  const path = require("path");
+  const pkgPath = require.resolve(`${cli.package}/package.json`);
+  // eslint-disable-next-line node/no-missing-require
+  const pkg = require(pkgPath);
+  // eslint-disable-next-line node/no-missing-require
+  require(path.resolve(path.dirname(pkgPath), pkg.bin[cli.binName]));
+};
+
+const cli = {
+  name: "webpack-cli",
+  package: "webpack-cli",
+  binName: "webpack-cli",
+  installed: isInstalled("webpack-cli"),
+  url: "https://github.com/webpack/webpack-cli"
+};
+
+if (!cli.installed) {...} else {
+  runCli(cli);
+}
+```
+先判断是否安装了webpack-cli(如果没安装，它会提示你让它帮你装)，如果装了就执行runCli。  
+runCli方法传入了cli对象，先获取了webpack-cli/package.json对象(放入pkg)，然后执行webpack-cli指令配置的可执行文件./bin/cli.js。  
+webpack-cli的主要作用就是处理配置参数。webpack的配置来源主要有三
+- 命令行配置
+- 配置文件
+- 默认配置
+
+webpack-cli会帮你处理命令行参数以及配置文件，整理成一个options对象，传给webpack
+
+```js:title=webpack-cli/lib/webpack-cli.js
+this.webpack = await this.loadWebpack();
+...
+compiler = this.webpack(config.options, callback...
+```
+接执行./bin/cli.js，最终会进入.lib/webpack-cli.js的run方法，加载webpack并执行。  
+到此正式进入webpack包。  
+我们在实践中通常会用到webpack-dev-server，或者vue的vue-cli-server等等，无论是哪种指令，都是处理完配置参数后执行webpack(config)。
+
+## require('webpack')
+上面提到webpack的入口文件是lib/index.js，也就是require('webpack')时执行的文件。
+```js
+const mergeExports = (obj, exports) => {
+	const descriptors = Object.getOwnPropertyDescriptors(exports);
+	for (const name of Object.keys(descriptors)) {
+		const descriptor = descriptors[name];
+		if (descriptor.get) {
+			const fn = descriptor.get;
+			Object.defineProperty(obj, name, {
+				configurable: false,
+				enumerable: true,
+				get: memoize(fn)
+			});
+		} else if (typeof descriptor.value === "object") {
+			Object.defineProperty(obj, name, {
+				configurable: false,
+				enumerable: true,
+				writable: false,
+				value: mergeExports({}, descriptor.value)
+			});
+		} else {
+			throw new Error(
+				"Exposed values must be either a getter or an nested object"
+			);
+		}
+	}
+	return /** @type {A & B} */ (Object.freeze(obj));
+};
+
+const fn = lazyFunction(() => require("./webpack"));
+module.exports = mergeExports(fn, {...})
+```
+执行mergeExports方法，传入fn和一个对象exports。返回fn和exports对象merge后的对象(属性只读，不能删，不可修改)。(getOwnPropertyDescriptors，返回属性的描述对象。)  
+所以module.exports出去的其实就是fn，只不过增加了一堆属性。  
+再看fn，它执行了lazyFunction
+```js
+const lazyFunction = factory => {
+	const fac = memoize(factory);
+	const f = /** @type {any} */ (
+		(...args) => {
+			return fac()(...args);
+		}
+	);
+	return /** @type {T} */ (f);
+};
+```
+
+
+
+## webpack(config)

@@ -1,0 +1,89 @@
+---
+title: "Effective TypeScript翻译"
+date: "2022-04-12"
+slug: "ts-translation"
+tag: "TypeScript"
+folder: "Front End"
+---
+
+本文是对《Effective TypeScript》中归纳总结(Things to Remember)的翻译
+## 1. 理解TypeScript与JavaScript的关系
+
+Item 1:Understand the Relationship Between TypeScript and JavaScript
+
+> TypeScript is a superset of JavaScript. In other words, all JavaScript programs are already TypeScript programs. TypeScript has some syntax of its own, so TypeScript programs are not, in general, valid JavaScript programs.
+
+1. TypeScript是JavaScript的超集。换言之，所有的JavaScript程序都是TypeScript程序。TypeScript有自己独特的语法，所以通常情况下TypeScript程序不是有效的JavaScript程序
+
+> TypeScript adds a type system that models JavaScript’s runtime behavior and tries to spot code which will throw exceptions at runtime. But you shouldn’t expect it to flag every exception. It is possible for code to pass the type checker but still throw at runtime.
+
+2. TypeScript增加了类型系统用来模拟JavaScript的运行时行为，它可以将一些JavaScript运行时才会抛出的异常，在编码阶段抛出。但是你不要指望它能够抛出所有异常，有些运行时异常的代码仍可能通TypeScript的类型检查
+
+> While TypeScript’s type system largely models JavaScript behavior, there are some constructs that JavaScript allows but TypeScript chooses to bar, such as calling functions with the wrong number of arguments. This is largely a matter of taste.
+
+3. TypeScript很大程度上模拟了JavaScript的行为，但仍有一些JavaScript允许的结构，TypeScript不允许，比如调用函数时，传入与定义时数量不同的参数。这些很大程度上取决于开发者的喜好。
+
+## 2. 了解你使用的Ts配置
+Item 2: Know Which TypeScript Options You’re Using
+>The TypeScript compiler includes several settings which affect core aspects of the language.
+
+Ts编译器有一些配置会直接影响到这门语言的核心部分。
+
+>Configure TypeScript using tsconfig.json rather than command-line options.
+
+配置Ts规则时优先使用tsconfig.json配置文件而不是通过命令行设置。
+
+>Turn on noImplicitAny unless you are transitioning a JavaScript project to TypeScript.
+
+除非你是在Js转Ts的过程中，否则请务必启用noImplicitAny。
+
+>Use strictNullChecks to prevent “undefined is not an object”-style runtime errors.
+
+避免运行时出现“undefined is not an object”类似的报错，请启用strictNullChecks。
+
+>Aim to enable strict to get the most thorough checking that TypeScript can offer.
+
+为了获得Ts能够提供的最彻底的检查，请启用严格模式
+
+
+## 3. 生成的代码不包含类型
+
+Item 3: Understand That Code Generation Is Independent of Types
+>Code generation is independent of the type system. This means that TypeScript types cannot affect the runtime behavior or performance of your code.
+
+代码的生成是独立于类型系统的，也就是说Ts的类型是不影响你代码运行时的行为的
+
+>It is possible for a program with type errors to produce code (“compile”).
+
+有Ts报错的代码也是可以正常编译生成Js代码的。
+
+>TypeScript types are not available at runtime. To query a type at runtime, you need some way to reconstruct it. Tagged unions and property checking are common ways to do this. Some constructs, such as class, introduce both a TypeScript type and a value that is available at runtime.
+
+Ts的类型在运行时是无法获取的。如果你想在运行时判断类型，你需要重构它们。通常我们使用有标记的联合类型(Tagged unions)或者通过检查属性来判断。有些结构，比如说class，既能够表示Ts类型，也能够在运行时作为值存在。
+
+
+## 4. 适应Structural Typing
+<a target="_blank" href="https://www.ituring.com.cn/article/37554">Structural Typing</a>
+>Understand that JavaScript is duck typed and TypeScript uses structural typing to model this: values assignable to your interfaces might have properties beyond those explicitly listed in your type declarations. Types are not “sealed.”
+
+JavaScript是鸭子类型的，TypeScript使用structural typing进行了模拟：一些兼容于你的接口的值可能含有你接口显示定义好的属性之外的属性。TypeScript的类型并非密封的。
+
+>Be aware that classes also follow structural typing rules. You may not have an instance of the class you expect!
+
+TypeScript的类也是遵循structural typing规则的，所以你获取到的实例可能并非来自于你期望的类
+
+>Use structural typing to facilitate unit testing.
+
+structural typing有助于写单元测试
+
+## 5. 尽量少用any
+
+Item 3: Limit Use of the any Type
+>The any type effectively silences the type checker and TypeScript language services. It can mask real problems, harm developer experience, and undermine confidence in the type system. Avoid using it when you can!
+
+any类型能有效地让类型检查以及Ts的所有服务闭嘴。它会掩盖真实存在的问题，导致开发者的体验感不好，降低对类型系统的信心。所以，请尽可能避免使用any
+
+
+
+
+
