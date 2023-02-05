@@ -1,0 +1,61 @@
+---
+title: "Structure Typing"
+date: "2022-04-13"
+slug: "ts-structure-typing"
+tag: "TypeScript"
+folder: "Front End"
+---
+
+## Before
+
+鸭子类型想必大家都耳熟能详，只要你走起来像鸭子，叫起来像鸭子，那么你就是只鸭子。
+
+## Structural Typing
+JavaScript天生就是鸭子类型，而TypeScript也使用Structural Typing模拟了这个行为，即
+> 不用显示声明类型T实现了接口I，只要类型T的公开方法完全满足接口I的要求，就可以把类型T的对象用在需要接口I的地方。
+
+看下面的代码，ts发现你传入的参数有string类型的name和number类型的age，它就允许你调用getName方法，即使你并没有声明dog与接口Dog的关系，即使dog还有另外的属性。因为dog的结构(structure)是兼容于接口Dog，这就是Structural Typing。
+``` ts
+interface Dog {
+    name: string,
+    age: number,
+}
+
+function getName(obj: Dog) { 
+    return obj.name
+}
+
+const dog = { name: 'scoop', age: 4, gender: 'F' }
+
+getName(dog)
+```
+再看下面这段代码，不知道宝子们是不是也经常碰到这个报错，这个报错的原因就是上面说的Structural Typing。Ts认为key的类型是string，因为你传入的参数可能远不止x,y,z三个属性。  
+解决报错的方法也很简单，其中之一就在报错中，也就是在类型中加上string类型的索引签名。  
+第二种方法就是显示声明key的类型为keyof Vector。
+``` ts
+interface Vector {
+  x: string;
+  y: string;
+  z: string;
+  // [str: string]: any; // 方案一
+}
+const vector = { x: '1', y: '2', z: '3' };
+
+function outPutValues(value: Vector) {
+  const keys = Object.keys(value);
+  keys.forEach((key) => {
+    console.log(vector[key]);
+    // 元素隐式具有 "any" 类型，因为类型为 "string" 的表达式不能用于索引类型 "{ x: number; y: number; z: number; }"。
+   // 在类型 "{ x: number; y: number; z: number; }" 上找不到具有类型为 "string" 的参数的索引签名。
+   
+    // console.log(vector[key as keyof Vector]); // 方案二
+  });
+}
+outPutValues(vector)
+```
+Structural Typing会造成许多意外地结果，当然如果真正了解了TypeScript，这些意外就不再是意外啦。
+
+
+## Reference
+
+[1. 为什么我不喜欢Go语言式的接口（即Structural Typing）](https://www.ituring.com.cn/article/37554)
