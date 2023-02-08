@@ -17,6 +17,10 @@
         &-data {
           margin-top: var(--spacing-10);
           max-width: var(--maxWidth-4xl);
+          > img {
+            display: block;
+            margin: 0 auto;
+          }
         }
         &-infos {
           display: flex;

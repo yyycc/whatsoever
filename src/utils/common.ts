@@ -1,7 +1,7 @@
 export const ALL_TAGS = '全部'
 
 export function getArrayWithCount(data: Array<any>, withTotalCount = false) {
-  const res = {}
+  const res: { [key: string]: any } = {}
   if (withTotalCount) {
     res[ALL_TAGS] = data.length
   }
