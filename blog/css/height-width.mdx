@@ -30,7 +30,7 @@ width的默认值是auto，在不同场景下，他会有不同的表现。
 
 下面是每种情况的一个demo
 
-![width: auto](blog/css/height-width/width-auto.png)
+![width: auto](./height-width/width-auto.png)
 
 ### 1.2 width: 数值
 开头说，从业多年的经验让我不愿意写死宽度，了解了css世界的文档流会发现，一旦给设定了width具体数值，该元素就会丧失流动性，我们的布局就变成了搭积木，是僵硬的，限制的。
@@ -40,7 +40,7 @@ width的默认值是auto，在不同场景下，他会有不同的表现。
 当 left/top 或 top/bottom **对立方位**的属性值同时存在的时候，元素的宽度表现为**格式化宽度**，其宽度大小相对于最近的具有定位特性(position的属性值不是static)的祖先元素计算(position属性的默认值是static)。
 这种格式化宽度具有流动性，会自动填充满水平空间。
 
-![格式化宽度](blog/css/height-width/format-height.png)
+![格式化宽度](./height-width/format-height.png)
 
 ## 2. height
 css世界的定位和布局机制是文档流，将一个块级元素放进去，会把父级容器的宽度填充满，但高度默认是0，需要显示地指定高度。
@@ -54,7 +54,7 @@ height: auto比起width: auto简单了不少，基本上就是有几个元素盒
 - 使用绝对定位  
   绝对定位的宽高百分比计算是相对于 padding box 的，也就是说会把 padding 大小值计算在内；非绝对定位元素则是相对于 content box 计算的，不会将 padding 计算在内
   
-![height: 100%](blog/css/height-width/height.png)
+![height: 100%](./height-width/height.png)
 
 第二张图是绝对定位，下面是代码
 ``` html

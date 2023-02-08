@@ -7,7 +7,7 @@ folder: "Front End"
 ---
 
 import { Table } from 'antd'
-export const dataSource = [{key:1,name1:'text-indent',name2:'内联元素缩进'},{key:2,name1:'letter-spacing',name2:'字符间距'},{key:3,name1:'word-spacing',name2:'单词间距'},{key:4,name1:'text-transform',name2:'字符大小写'},{key:5,name1:':first-letter',name2:'选择第一个字符'},{key:5,name1:':first-line',name2:'选择第一行'}]
+export const dataSource = [{key:1,name1:'text-indent',name2:'内联元素缩进'},{key:2,name1:'letter-spacing',name2:'字符间距'},{key:3,name1:'word-spacing',name2:'单词间距'},{key:4,name1:'text-transform',name2:'字符大小写'},{key:5,name1:':first-letter',name2:'选择第一个字符'},{key:6,name1:':first-line',name2:'选择第一行'}]
 export const columns = [{title:'属性',dataIndex:'name1'},{title:'作用',dataIndex:'name2'}]
 export const pagination = false
 
@@ -16,7 +16,7 @@ font-size字号，设置字体大小，很简单的一个属性。它的单位�
 - ex  一个相对单位，指小写字母x的高度  
   内联元素默认是基线对齐的，而基线就是 x 的底部，而 1ex 就是一个 x 的高度。图标高度就是 1ex，同时背景图片居中，图标和文字就能垂直居中，且不受字体字号影响。    
   
-![ex实现垂直居中](blog/css/text/ex-align.gif)
+![ex实现垂直居中](./text/ex-align.gif)
   
 ``` css
 display: inline-block;
@@ -30,7 +30,7 @@ background: url("arrow.svg") no-repeat center/20px 20px;
 - rem  即 root em，顾名思义，就是根元素 em 大小。em 相对于当前元素，rem 相对于根元素(即html元素，默认font-size为16px)。
 - ch 和 em、rem、ex 一样，是 CSS 中和字符相关的相对单位。和 ch 相关的字符是阿拉伯数字 0。1ch 表示一个 0 字符的宽度，它适合于等宽字体(Consolas、Monaco、monospace)一起使用。
 
-![《CSS的世界》中的效果图](blog/css/text/font.png)
+![《CSS的世界》中的效果图](./text/font.png)
 
 
 ## 2. 文字换行
@@ -40,7 +40,7 @@ with: auto的情况下
 - word-break:break-all    该换行就换行，中断单词什么的统统不考虑
 - word-wrap:break-word  如果这一行文字有可以换行的点，如空格或 CJK(中文/日文/韩文)之类的，就不打英文单词或字符的主意了，在这些换行点换行，至于对不对齐、好不好看则不关心
 
-![《CSS的世界》书中的效果图](blog/css/text/word-break.png)
+![《CSS的世界》书中的效果图](./text/word-break.png)
 
 
 ## 3. font-weight
@@ -55,7 +55,7 @@ font-weight的属性值支持100~900 的整百数，其中400等他于normal，7
 我最近使用@font-face是在做[动态字体](https://www.jianshu.com/p/8ea227266b91)的时候，用来自定义字体，但是@font-face的作用不仅于此，它还可以实现字体重命名，默认字体样式设置等等。
 我们就用@font-face来实现上面提到的font-weight的问题。
 
-![font-weight](blog/css/text/font-weight.png)
+![font-weight](./text/font-weight.png)
 
 ``` html
 const fontWeights = [100, 200, 300, 400, 500, 600, 700, 800, 900];

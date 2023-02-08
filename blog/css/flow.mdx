@@ -24,13 +24,13 @@ css世界的定位和布局机制叫做**文档流**
 - float会让父元素的高度塌陷
 - 行框盒子和浮动元素的不可重叠性
 
-![float实现文字环绕](blog/css/flow/float-around.png)
+![float实现文字环绕](./flow/float-around.png)
 
 图片这个浮动元素塌陷，文字所在的这个块状盒子与图片是完全重叠的，又受到浮动元素的限制，没有任何重叠。
 
 然而想象力和创造力俱佳的程序员们把float的作用在布局上发挥得淋漓尽致，但是布局是不需要父元素塌陷的，这就出现了上面那段清除浮动的代码。
 
-![float布局](blog/css/flow/float.png)
+![float布局](./flow/float.png)
 
 确实，给每个元素定好宽高，给个float: left，一个个元素像搭积木一样堆起来，确实容易好用，又好理解，至少比流要直观简单多了，但是问题也很多。比如在我用这种布局的时候，经常遇到改个宽度高度，整个结构就崩溃的情况，因为它是没有弹性的。
 好在有了flex这种弹性盒子布局之后，基本上就再也没用过float了。
@@ -58,7 +58,7 @@ BFC的触发条件：
 元素设置了 overflow:hidden 声明，里面内容高度溢出的时候，滚动依然存在，仅仅滚动条不存在。
 利用这个特性加上锚点定位可是实现图片切换效果
 
-![overflow: hidden实现tab切换显示](blog/css/flow/overflow-hidden.gif)
+![overflow: hidden实现tab切换显示](./flow/overflow-hidden.gif)
 
 
 ##### 1.3. position: absolute
@@ -71,7 +71,7 @@ position: absolute跟float其实很像，都能破坏正常的文档流，都能
 虽然说元素 position:absolute 后的 display 计算值都是块状的，但是其定位的位置和没有设置 position:absolute 时候的位置相关。
 虽然设置了position: absolute后无论是内联的\<span>还是块状的\<div>，计算值都是 block，但是它们的位置还和没有应用 position:absolute 的时候一样，一个在后面，一个在下面如下图：
 
-![position: absolute](blog/css/flow/position-absolute.png)
+![position: absolute](./flow/position-absolute.png)
 
 当对立方向同时发生定位的时候，position: absolute的元素也会具有流体特性，普通元素流体特性只有一个方向，默认是水平方向，但是绝对定位元素可以让垂直方向和水平方向同时保持流动性。通过下面这段可以实现水平垂直居中
 ``` css
@@ -98,7 +98,7 @@ fixed更加强势，可以限制absolute的relative也对他毫无办法，唯�
 
 可以利用这个特性实现下图这种...显示在前面的效果
 
-![direction](blog/css/flow/direction.png)
+![direction](./flow/direction.png)
 
 它还有一个黄金搭档unicode-bidi，能够让所有字符按照设置的方向排列。
 
