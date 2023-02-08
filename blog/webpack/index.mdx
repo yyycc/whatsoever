@@ -1,5 +1,5 @@
 ---
-title: "webpack源码之旅"
+title: "webpack5源码之旅"
 date: "2023-02-03"
 slug: "webpack-index"
 tag: "webpack"
@@ -12,7 +12,9 @@ folder: "Front End,$Source Code"
 它一直以来does such a good job以至于我对它一无所知。  
 去年底的时候我接触了一个概念叫做模块联邦，它是webpack5的新特性。很有意思的一个东西，我也写了demo去尝试看看它是如何工作的。  
 这也直接导致后来安排前端分享任务的时候，被提供了webpack编译原理这个主题。从此走上了阅读webpack源码的不归路。  
-非常艰辛的一段旅程，but total worth it.
+非常艰辛的一段旅程，but totally worth it. 它终于不再是一个黑匣子一般的存在了。  
+虽然阅读的过程万分艰难，鉴于它使用了发布订阅模式、各种异步和回调，前n(n>=10)次看的时候就像在走迷宫，不知道从何处来，也不知该往何处去。  
+但只要你坚持走下去，总能拨开云雾见青天的。
 
 ## webpack
 
@@ -85,7 +87,8 @@ yarn add webpack webpack-cli -D
 
 ## summary
 
-webpack简介就写到这边，后面就正式开始源码阅读了。 webpack版本是5.75.0。
+webpack简介就写到这边，后面就正式开始源码阅读了。 webpack版本是5.75.0。  
+[1. webpack5源码之旅 - webpack-cli](/blog/webpack-cli)  
 
 ## Reference
 

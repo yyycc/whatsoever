@@ -1,0 +1,144 @@
+---
+title: "webpack5源码之旅 - webpack-cli"
+date: "2023-02-07"
+slug: "webpack-cli"
+tag: "webpack"
+folder: "Front End"
+---
+## Before
+
+在上一篇<a target="_blank" href="/blog/webpack">webpack5源码之旅</a>中介绍了webpack的使用方法，我们后续的demo也是基于此创建的。
+源码版本如下:
+```json
+{
+  "webpack": "^5.75.0",
+  "webpack-cli": "^5.0.1"
+}
+```
+
+## webpack指令
+
+```json:title=webpack/package.json
+{
+  ...,
+  "main": "lib/index.js",
+  "bin": {
+    "webpack": "bin/webpack.js"
+  },
+  ...
+}
+```
+先来看webpack的package.json文件，在这里面可以看到webpack的入口文件是lib/index.js，webpack指令对应的执行文件是bin/webpack.js。   
+所以执行webpack指令，也就是执行了bin/webpack.js文件。
+
+```js:title=webpack/bin/webpack.js
+const runCli = cli => {
+  const path = require("path");
+  const pkgPath = require.resolve(`${cli.package}/package.json`);
+  // eslint-disable-next-line node/no-missing-require
+  const pkg = require(pkgPath);
+  // eslint-disable-next-line node/no-missing-require
+  require(path.resolve(path.dirname(pkgPath), pkg.bin[cli.binName]));
+};
+
+const cli = {
+  name: "webpack-cli",
+  package: "webpack-cli",
+  binName: "webpack-cli",
+  installed: isInstalled("webpack-cli"),
+  url: "https://github.com/webpack/webpack-cli"
+};
+
+if (!cli.installed) {...} else {
+  runCli(cli);
+}
+```
+先判断是否安装了webpack-cli(如果没安装，它会提示你让它帮你装)，如果装了就执行runCli。  
+
+## webpack-cli指令
+runCli方法传入了cli对象，先获取了webpack-cli/package.json对象(放入pkg)，然后执行webpack-cli指令配置的可执行文件./bin/cli.js。  
+webpack-cli的主要作用就是处理配置参数。webpack的配置来源主要有三
+- 命令行配置
+- 配置文件
+- 默认配置
+
+webpack-cli会帮你处理命令行参数以及配置文件，整理成一个options对象，传给webpack。
+
+```js:title=webpack-cli/lib/webpack-cli.js
+this.webpack = await this.loadWebpack();
+...
+compiler = this.webpack(config.options, callback...
+```
+接着执行./bin/cli.js，最终会进入.lib/webpack-cli.js的run方法，加载webpack并执行。  
+到此正式进入webpack包。  
+
+## webpack-cli
+webpack-cli对于webpack打包来说，并不是必须的，它的主要作用就是处理命令行参数，然后调用webpack进行打包，像react、vue框架都有自己处理命令行参数的方法，并未使用webpack-cli。
+但无论是何种cli，最后都是调用webpack，执行webpack(config)。
+
+## commander
+webpack-cli实现命令行参数处理只要依赖了commander，这边简单介绍一下。  
+首先安装好commander，然后在文件中引入。commander提供了一个全局的对象program。
+```bash
+const { program } = require('commander');
+```
+接着就可以使用program对象的方法来定义命令行参数了。  
+
+### option
+
+> Commander 使用.option()方法来定义选项,同时可以附加选项的简介.
+类型一: boolean 型选项，选项无需配置参数，如下面code中的-d
+类型二: 可以配置参数，如下面code中的-p，如果不设置，则被认定为undefined
+选项可以设置默认值，如下面code中的setup-mode，如果不设置，则被认定为normal
+
+```js:title=./src/index.js
+program
+  .option('-p, --port <port>', 'set port')
+  .option('-d, --debug', 'enable debug mode')
+  .option('-s, --setup-mode [mode]', 'Which setup mode to use', 'normal')
+  .option('-c, --config <path>', 'set config path. defaults to ./webpack.config.js')
+  .option('-m, --merge', 'merge two or more configs')
+  .option('-o, --output <path>', 'set output path')
+  .option('-t, --target <target>', 'set target environment')
+  .option('-w, --watch', 'watch for file changes')
+  .option('-j, --json <value>', 'Print result as JSON or store into a file', JSON.stringify)
+  .option('-v, --version', 'output the version number')
+  .option('-h, --help', 'output usage information')
+  
+program.parse();
+
+const options = program.opts();
+```
+
+输入的参数可以通过program.opts()来获取。  
+比如
+```shell
+node index.js -p 8080 -j '{"name":"cyy"}'
+```
+program.opts()的结果就是
+```json
+{
+  "setupMode": "normal",
+  "port": "8080",
+  "json": "\"'{name:cyy}'\""
+}
+```
+
+### command
+> 通过command方法可以定义子命令，比如webpack-cli中的webpack serve，webpack build等, 有两种实现方式：为命令绑定处理函数，或者将命令单独写成一个可执行文件。
+```js:title=command.js
+// 通过绑定处理函数实现命令（这里的指令描述为放在`.command`中）
+// 返回新生成的命令（即该子命令）以供继续配置
+program
+  .command('serve')
+  .description('run the webpack dev server')
+  .action(() => {
+    console.log('serve');
+  });
+```
+执行node command.js serve，结果就是打印出serve。
+
+以上是一些commander的基本用法，更多的用法可以参考<a target="_blank" href="https://github.com/tj/commander.js/blob/master/Readme_zh-CN.md">commander</a>。
+
+## Reference
+[1. Commander.js](https://github.com/tj/commander.js/blob/master/Readme_zh-CN.md)   
