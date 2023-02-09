@@ -2,12 +2,13 @@ import * as React from 'react'
 import { Link, graphql } from 'gatsby'
 import Layout from '../../components/layout'
 import Seo from '../../components/seo'
+import { IAllMDX, INode } from "../../components/data"
 
-const BlogPage = ({ data }) => {
+const BlogPage = ({ data }: {data: IAllMDX}) => {
   return (
     <Layout pageTitle="My Blog Posts">
       {
-        data.allMdx.nodes.map((node) => (
+        data.allMdx.nodes.map((node: INode) => (
           <article key={node.id}>
             <h2>
               <Link to={`/blog/${node.frontmatter.slug}`}>
@@ -15,7 +16,6 @@ const BlogPage = ({ data }) => {
               </Link>
             </h2>
             <p>Posted: {node.frontmatter.date}</p>
-            {/*<p>{node.excerpt}</p>*/}
           </article>
         ))
       }

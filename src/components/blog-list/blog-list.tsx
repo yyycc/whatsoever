@@ -4,16 +4,17 @@ import { Link } from "gatsby"
 import { Space } from "antd"
 import { CalendarOutlined, DoubleRightOutlined, TagOutlined } from "@ant-design/icons"
 import './blog-list.scss'
+import { IFrontmatter, INode } from "../data"
 
-const BlogList = ({ tag, folder }) => {
+const BlogList = ({ tag, folder }: Partial<IFrontmatter>) => {
   const data = UseBlogHome()
   const { nodes } = data.allMdx
   const displayList = nodes.filter(
-    node => (!tag || node.frontmatter.tag === tag) && (!folder || node.frontmatter.folder.indexOf(folder) > -1)
+    (node: INode) => (!tag || node.frontmatter.tag === tag) && (!folder || node.frontmatter.folder.indexOf(folder) > -1)
   )
   return (
     <div className="blog-list">
-      {displayList.map(ele => {
+      {displayList.map((ele: INode) => {
         return <div key={ele.frontmatter.slug} className="blog-list-list">
           <div className="blog-list-list-title">
             <Link to={`/blog/${ele.frontmatter.slug}`}>

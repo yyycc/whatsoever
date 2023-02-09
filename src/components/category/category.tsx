@@ -2,8 +2,9 @@ import * as React from 'react'
 import { FolderOpenOutlined } from '@ant-design/icons'
 import './category.scss'
 import { ALL_TAGS, getArrayWithCount } from "../../utils/common"
+import { INode } from "../data"
 
-const Category = ({ tag, setTag, data }) => {
+const Category = ({ tag, setTag, data }: { tag: string, setTag: (tag: string) => void, data: INode[] }) => {
   const tags = data.map(ele => ele.frontmatter.tag)
   const tagsInfo = getArrayWithCount(tags, true)
   return (
@@ -15,7 +16,7 @@ const Category = ({ tag, setTag, data }) => {
       <div className="category-list">
         {Object.keys(tagsInfo).map(info => {
           return <div key={info} onClick={() => setTag(info === ALL_TAGS ? '' : info)}
-                      className={["category-list-line", info === tag ? "category-list-line-active": ''].join(' ')}>
+                      className={["category-list-line", info === tag ? "category-list-line-active" : ''].join(' ')}>
             <div className="category-list-line-tag">{info}</div>
             <div className="category-list-line-count">{`(${tagsInfo[info]})`}</div>
           </div>

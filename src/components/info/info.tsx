@@ -2,8 +2,9 @@ import { StaticImage } from "gatsby-plugin-image"
 import * as React from "react"
 import { GithubOutlined, MailOutlined } from '@ant-design/icons'
 import './info.scss'
+import { IMetadata } from "../data"
 
-const Info = ({ data }) => {
+const Info = ({ data }: { data: IMetadata }) => {
   const { motto, github, email } = data.site.siteMetadata
   return (
     <div className="info">

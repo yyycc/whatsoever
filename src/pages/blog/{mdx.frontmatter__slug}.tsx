@@ -5,8 +5,9 @@ import Layout from '../../components/layout'
 import Seo from '../../components/seo'
 import { graphql } from "gatsby"
 import { CalendarOutlined, TagOutlined } from "@ant-design/icons"
+import { IAnchor, IItem, IMDX } from "../../components/data"
 
-const BlogPost = ({ data, children }) => {
+const BlogPost = ({ data, children }: {data:IMDX, children: any}) => {
   const { tableOfContents, frontmatter } = data.mdx
   const { title, date, tag } = frontmatter
   const items = handleAnchorItem(tableOfContents.items)
@@ -42,12 +43,12 @@ const BlogPost = ({ data, children }) => {
           </ConfigProvider>
         </div>}
       </div>
-      <Valine appid="U16yUflAALySICZhsJiwmobC-gzGzoHsz" appkey="SuQzXF7zopGW41PIraZdurG3"/>
+      <Valine appId="U16yUflAALySICZhsJiwmobC-gzGzoHsz" appKey="SuQzXF7zopGW41PIraZdurG3"/>
     </Layout>
   )
 }
 
-function handleAnchorItem(data) {
+function handleAnchorItem(data: IItem[]): IAnchor[] {
   return data?.map(ele => {
     const res = {
       key: ele.url,
@@ -85,6 +86,6 @@ export const query = graphql`
   }
 `
 
-export const Head = ({ data }) => <Seo title={data.mdx.frontmatter.title} description={data.mdx.excerpt}/>
+export const Head = ({ data }: {data: IMDX}) => <Seo title={data.mdx.frontmatter.title} description={data.mdx.excerpt}/>
 
 export default BlogPost

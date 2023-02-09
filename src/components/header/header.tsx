@@ -4,14 +4,17 @@ import { Link } from "gatsby"
 import { Dropdown, Space } from "antd"
 import { DownOutlined } from '@ant-design/icons'
 import { spaceToHyphen } from "../../utils/common"
+import { IFrontmatter } from "../data"
 
-const Header = ({ title, blogData }) => {
-  const allFolders = blogData.map(ele => ({
+const Header = ({ title, blogData }: { title: string, blogData: Array<{ frontmatter: IFrontmatter }> }) => {
+  const allFolders: IFrontmatter[] = blogData.map(ele => ({
     folder: ele.frontmatter.folder,
     tag: ele.frontmatter.tag,
-    slug: ele.frontmatter.slug
+    slug: ele.frontmatter.slug,
+    title: ele.frontmatter.title,
+    date: ele.frontmatter.date,
   }))
-  let showFolders = {}
+  let showFolders: { [key: string]: IFrontmatter[] } = {}
 
   allFolders.forEach(ele => {
     const { folder } = ele
@@ -22,7 +25,7 @@ const Header = ({ title, blogData }) => {
     <div className="header">
       <div className="header-content">
         <div className="header-content-title">
-          <Link to="/" className='header-content-title-link'>
+          <Link to="/" className="header-content-title-link">
             {title}
           </Link>
         </div>
@@ -34,14 +37,14 @@ const Header = ({ title, blogData }) => {
             return 1
           }).map(folder => {
             const data = showFolders[folder]
-            const tags = [...new Set(data.map(ele => ele.tag))]
-            const items = tags.map((ele, index) => ({
+            const tags: string[] = [...new Set(data.map((ele: IFrontmatter) => ele.tag))]
+            const items = tags.map((ele: string) => ({
               key: ele, label: (
                 <Link to={`/blog/${spaceToHyphen(folder)}/${ele}`}>{ele}</Link>
               )
             }))
             if (folder.indexOf('$') > -1) {
-              const singleFolder =  folder.replace('$', '')
+              const singleFolder = folder.replace('$', '')
               return <div key={folder} className="header-content-nav__div">
                 <Link to={`/blog/${spaceToHyphen(singleFolder)}`}> {singleFolder}</Link>
 
@@ -56,10 +59,10 @@ const Header = ({ title, blogData }) => {
               </Dropdown>
             )
           })}
-            </div>
-            </div>
-            </div>
-            )
-          }
+        </div>
+      </div>
+    </div>
+  )
+}
 
-          export default Header
+export default Header

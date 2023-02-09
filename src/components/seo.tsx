@@ -1,7 +1,7 @@
 import * as React from 'react'
 import UseSiteMetadata from '../hooks/use-site-metadata'
 
-const Seo = ({ title, description }) => {
+const Seo = ({ title, description }: { title?: string, description?: string }) => {
   const data = UseSiteMetadata()
   const tabTitle = title ? `${title} | ${data.site.siteMetadata.title}` : `${data.site.siteMetadata.title}`
   const tabDesc = description || 'whatsoever'
