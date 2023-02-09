@@ -5,7 +5,7 @@ import FrontEnd from "../../../components/front-end/front-end"
 const Css = () => {
   return (
     <Layout className="front-end">
-      <FrontEnd tag="css" title="css"/>
+      <FrontEnd tag="css" title="Cascading Style Sheets"/>
     </Layout>
   )
 }

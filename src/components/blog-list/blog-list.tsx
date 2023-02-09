@@ -4,14 +4,15 @@ import { Link } from "gatsby"
 import { Space } from "antd"
 import { CalendarOutlined, DoubleRightOutlined, TagOutlined } from "@ant-design/icons"
 import './blog-list.scss'
-import { IFrontmatter, INode } from "../data"
+import { INode } from "../data"
 
-const BlogList = ({ tag, folder }: Partial<IFrontmatter>) => {
+const BlogList = ({ tag, folder, setTotal }: { tag?: string, folder?: string, setTotal?: (total: number) => void }) => {
   const data = UseBlogHome()
   const { nodes } = data.allMdx
   const displayList = nodes.filter(
     (node: INode) => (!tag || node.frontmatter.tag === tag) && (!folder || node.frontmatter.folder.indexOf(folder) > -1)
   )
+  setTotal && setTotal(displayList.length)
   return (
     <div className="blog-list">
       {displayList.map((ele: INode) => {
