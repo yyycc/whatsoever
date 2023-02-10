@@ -1,6 +1,7 @@
 import { graphql, useStaticQuery } from "gatsby"
+import { IMetadata } from "../components/data"
 
-const UseSiteMetadata = () => {
+const UseSiteMetadata = (): IMetadata => {
   return useStaticQuery(graphql`
       query {
           site {

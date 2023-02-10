@@ -18,8 +18,8 @@ const Header = ({ title, blogData }: { title: string, blogData: Array<{ frontmat
 
   allFolders.forEach(ele => {
     const { folder } = ele
-    const folders = folder.split(',') // folder内容支持,分隔，含有$符号的folder不使用tag作为二级目录
-    folders.forEach(fol => (showFolders[fol] || (showFolders[fol] = [])).push(ele))
+    const folders = folder?.split(',') // folder内容支持,分隔，含有$符号的folder不使用tag作为二级目录
+    folders?.forEach(fol => (showFolders[fol] || (showFolders[fol] = [])).push(ele))
   })
   return (
     <div className="header">
