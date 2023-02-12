@@ -37,15 +37,27 @@ export const dataSource = [{ key: 1, name1: '后代', name2: '空格' }, { key: 
   name2: '～'
 }, { key: 4, name1: '相邻兄弟', name2: '+' }]
 
-const a = '| SyncHook | 同步 | tap | call |\n' +
-  '| SyncBailHook | 同步保险  | tap | call |\n' +
-  '| SyncWaterfallHook | 同步瀑布  | tap | call |\n' +
-  '| SyncLoopHook | 同步循环  | tap | call |\n' +
-  '| AsyncParallelHook | 异步并行 | tap、tapAsync、tapPromise | call、callAsync、promise |\n' +
-  '| AsyncParallelBailHook | 异步并行保险 | tap、tapAsync、tapPromise | call、callAsync、promise |\n' +
-  '| AsyncSeriesHook | 异步串行 | tap、tapAsync、tapPromise | call、callAsync、promise |\n' +
-  '| AsyncSeriesBailHook | 异步串行保险 | tap、tapAsync、tapPromise | call、callAsync、promise |\n' +
-  '| AsyncSeriesWaterfallHook | 异步串行瀑布 | tap、tapAsync、tapPromise | call、callAsync、promise |'
+const a = '| compiler | enviroment  | webpack.js |  |  |  |\n' +
+  '| compiler| afterEnvironment  | webpack.js | WatchIgnorePlugin |  | |\n' +
+  '| compiler| entryOption  | WebpackOptionsApply.js | EntryOptionPlugin<br>~~DllPlugin~~ | SyncBailHook |  |\n' +
+  '| compiler| afterPlugins  | WebpackOptionsApply.js | ModuleFederationPlugin |  | 模块联邦 |\n' +
+  '| compiler| afterResolvers  | WebpackOptionsApply.js |  |  |  |\n' +
+  '| compiler| initialize  | webpack.js |  |  |  |\n' +
+  '| compiler| beforeRun  | Compiler.js | NodeEnvironmentPlugin | AsyncSeriesHook |  |\n' +
+  '| compiler| run  | Compiler.js |  | AsyncSeriesHook |  |\n' +
+  '| compiler| normalModuleFactory  | Compiler.js | IgnorePlugin<br>NormalModuleReplacementPlugin |  |  |\n' +
+  '| compiler| contextModuleFactory  | Compiler.js | IgnorePlugin<br>ContextReplacementPlugin<br>ContextExclusionPlugin |  |  |\n' +
+  '|||| 创建normalModuleFactory |\n' +
+  '|||| 创建contextModuleFactory |\n' +
+  '| compiler| beforeCompile  | Compiler.js | DllReferencePlugin<br>ProgressPlugin<br>LazyCompilationPlugin | AsyncSeriesHook |  |\n' +
+  '| compiler| compile  | Compiler.js | DllReferencePlugin<br>DelegatedPlugin<br>ExternalsPlugin |  |  |\n' +
+  '|||| 创建Compilation |\n' +
+  '| compiler| thisCompilation  | Compiler.js | ... |  |  |\n' +
+  '| compiler| compilation  | Compiler.js | ... EntryPlugin |  |  |\n' +
+  '| compiler| make  | Compiler.js | EntryPlugin | AsyncParallelHook |  |\n' +
+  '| compilation | addEntry  | Compilation.js |  |  |  |\n' +
+  '| compiler| finishMake  | Compiler.js |  | AsyncSeriesHook |  |\n' +
+  '| compiler| afterCompile  | Compiler.js | AutomaticPrefetchPlugin | AsyncSeriesHook |  |'
 
 function generateDataSource(data = a) {
   const lines = data.split('\n')
@@ -59,3 +71,5 @@ function generateDataSource(data = a) {
   }, '')
   return `export const dataSource = [${dataSources}]`
 }
+
+// ,{key:18,name0:'compilation',name1:'addEntry',name2:'Compilation.js',name3:'',name4:'',name5:''},{key:19,name0:'compiler',name1:'finishMake',name2:'Compiler.js',name3:'',name4:'AsyncSeriesHook',name5:''},{key:20,name0:'compiler',name1:'afterCompile',name2:'Compiler.js',name3:'AutomaticPrefetchPlugin',name4:'AsyncSeriesHook',name5:''}

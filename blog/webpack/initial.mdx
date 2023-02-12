@@ -5,6 +5,11 @@ slug: "webpack-initial"
 tag: "webpack"
 folder: "Front End"
 ---
+import { Table } from 'antd'
+export const columns = [{title:'hook挂载对象',dataIndex:'name0'},{title:'hook',dataIndex:'name1'},{title:'hook执行文件',dataIndex:'name2'},{title:'注册该hook的插件(举例)',dataIndex:'name3'},{title:'钩子类型',dataIndex:'name4'}]
+export const dataSource = [{key:0,name0:'compiler',name1:'environment',name2:'webpack.js',name3:'',name4:''},{key:1,name0:'compiler',name1:'afterEnvironment',name2:'webpack.js',name3:'WatchIgnorePlugin',name4:''},{key:2,name0:'compiler',name1:'entryOption',name2:'WebpackOptionsApply.js',name3:'EntryOptionPlugin',name4:'SyncBailHook'},{key:3,name0:'compiler',name1:'afterPlugins',name2:'WebpackOptionsApply.js',name3:'ModuleFederationPlugin',name4:''},{key:4,name0:'compiler',name1:'afterResolvers',name2:'WebpackOptionsApply.js',name3:'',name4:''},{key:5,name0:'compiler',name1:'initialize',name2:'webpack.js',name3:'',name4:''},{key:6,name0:'compiler',name1:'beforeRun',name2:'Compiler.js',name3:'NodeEnvironmentPlugin',name4:'AsyncSeriesHook'},{key:7,name0:'compiler',name1:'run',name2:'Compiler.js',name3:'',name4:'AsyncSeriesHook'},{key:8,name0:'compiler',name1:'normalModuleFactory',name2:'Compiler.js',name3:'IgnorePlugin',name4:''},{key:9,name0:'compiler',name1:'contextModuleFactory',name2:'Compiler.js',name3:'IgnorePlugin',name4:''},{key:10,name0:'创建normalModuleFactory'},{key:11,name0:'创建contextModuleFactory'},{key:12,name0:'compiler',name1:'beforeCompile',name2:'Compiler.js',name3:'DllReferencePlugin',name4:'AsyncSeriesHook'},{key:13,name0:'compiler',name1:'compile',name2:'Compiler.js',name3:'DllReferencePlugin',name4:''},{key:14,name0:'创建Compilation'},{key:15,name0:'compiler',name1:'thisCompilation',name2:'Compiler.js',name3:'...',name4:''},{key:16,name0:'compiler',name1:'compilation',name2:'Compiler.js',name3:'...EntryPlugin',name4:''},{key:17,name0:'compiler',name1:'make',name2:'Compiler.js',name3:'EntryPlugin',name4:'AsyncParallelHook'}]
+export const pagination = false
+
 ## Before
 
 <a href="/blog/webpack-before" target="_blank">上一节</a>介绍了整个打包编译过程会遇到的概念，像compiler、compilation、plugin等等，
@@ -161,6 +166,11 @@ newCompilation(params) {
 ![监听compilation钩子的插件](./initial/compilation.jpeg)
 
 创建好Compilation，一切准备工作都完成了，接下去就是执行make钩子，而make钩子也标志着编译正式进入第二阶段 -- 构建，从entry开始寻找依赖构建模块。  
+
+## 钩子
+最后总结一下初始化阶段执行的钩子
+<Table dataSource={dataSource} columns={columns} pagination={pagination} />
+
 
 
 ## Reference

@@ -1,5 +1,8 @@
 .ant-table-wrapper {
   .ant-table {
+    &-content {
+      overflow-x: auto;
+    }
     &-thead {
       tr {
         th {
