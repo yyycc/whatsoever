@@ -9,7 +9,7 @@ import { IAnchor, IItem, IMDX } from "../../components/data"
 
 const BlogPost = ({ data, children }: {data:IMDX, children: any}) => {
   const { tableOfContents, frontmatter } = data.mdx
-  const { title, date, tag } = frontmatter
+  const { title, date, tag, slug } = frontmatter
   const items = handleAnchorItem(tableOfContents.items)
 
   return (
@@ -43,7 +43,7 @@ const BlogPost = ({ data, children }: {data:IMDX, children: any}) => {
           </ConfigProvider>
         </div>}
       </div>
-      <Valine appId="U16yUflAALySICZhsJiwmobC-gzGzoHsz" appKey="SuQzXF7zopGW41PIraZdurG3"/>
+      <Valine path={slug} appId="U16yUflAALySICZhsJiwmobC-gzGzoHsz" appKey="SuQzXF7zopGW41PIraZdurG3"/>
     </Layout>
   )
 }
