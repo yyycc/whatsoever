@@ -145,7 +145,7 @@ newCompilationParams() {
 ```
 params中有两个属性normalModuleFactory和contextModuleFactory，一个用以生成normalModule，另一个则生成contextModule。  
 一般的模块都是normalModule，contextModule是针对通过require.context引入的模块。  
-执行beforeCompile钩子，接着传入params创建compilation。
+执行beforeCompile钩子，接着传入params执行createCompilation方法。
 ```js:title=lib/Compiler.js
 createCompilation(params) {
   this._cleanupLastCompilation();
@@ -161,17 +161,23 @@ newCompilation(params) {
   return compilation;
 }
 ```
-执行thisCompilation和compilation两个钩子，监听这两个钩子的插件非常之多，都是内置插件，用以实现各种功能。
+首先执行了thisCompilation和compilation两个钩子，监听这两个钩子的插件非常之多，都是内置插件，用以实现各种功能。
 
 ![监听compilation钩子的插件](./initial/compilation.jpeg)
+
+接着就是执行new Compilation，我们也先去简单看一下Compilation的构造函数，同Compiler相似，它也有this.hooks对象，里面初始化了很多钩子。  
+还有几个AsyncQueue(webpack5新增内容)，这用在后面的构建阶段，我们先简单看一下，留个印象。  
+
+### AsyncQueue
+创建了5个AsyncQueue，分别是factorizeQueue、addModuleQueue、buildQueue、processDependenciesQueue以及rebuildQueue，分别用于
+解析模块生成对应Module，添加module到ModuleGraph中，编译模块得到模块的依赖，处理模块内的依赖以及重构建。  
+其中前4个会在构建阶段递归执行，直到处理完所有的依赖。
 
 创建好Compilation，一切准备工作都完成了，接下去就是执行make钩子，而make钩子也标志着编译正式进入第二阶段 -- 构建，从entry开始寻找依赖构建模块。  
 
 ## 钩子
 最后总结一下初始化阶段执行的钩子
 <Table dataSource={dataSource} columns={columns} pagination={pagination} />
-
-
 
 ## Reference
 [1. webpack5 源码详解 - 初始化](https://github.com/Hazlank/blog/issues/16)
