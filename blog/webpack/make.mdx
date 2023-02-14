@@ -7,7 +7,7 @@ folder: "Front End"
 ---
 
 ## Before
-上一节<a href="/blog/webpack-initial" target="_blank">webpack5 源码学习 - 初始化</a>中介绍了webpack编译的第一部分，
+上一节<a href="/blog/webpack-initial" target="_blank">webpack5 源码学习 - 初始化</a>中介绍了webpack编译的第一部分初始化阶段，
 这个部分创建了compiler、compilation、NormalModuleFactory，将插件注册到了生命周期的各个节点中，为下一阶段做好了准备工作。  
 那么这一节我们就从make钩子开始看看整个构建阶段都做了什么。
 
@@ -403,9 +403,9 @@ handleModuleCreation这个名字是不是相当眼熟本文Module部分的第一
 - addModule会设置模块对应的ModuleGraph，其中包含了模块的外部依赖信息，导出信息等。
 - buildModule通过loader将非js资源转成js，通过parser将源码转为AST，遍历AST分析出依赖放入module的依赖对象中。
 - processModuleDependencies会处理所有收集的依赖，然后继续从factorize开始处理依赖。  
-最终就实现了从Entry开始递归处理所有的模块。
+最终就实现了从Entry开始递归处理所有的模块。最后附上一张构建阶段的流程图
 
-
+![构建流程](./make/make.jpg)
 
 ## Reference
 [1. webpack5 源码详解 - 编译模块](https://zhuanlan.zhihu.com/p/503926190)  

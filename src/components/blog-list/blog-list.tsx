@@ -33,7 +33,7 @@ const BlogList = ({ tag, folder, setTotal }: Partial<IFrontmatter> & { setTotal?
             </Space>
           </Space>
           <div className="blog-list-list-excerpt">
-            {ele.excerpt}
+            {ele.excerpt.replace('Before ', '')}
           </div>
           <div className="blog-list-list-read">
             <Link to={`/blog/${ele.frontmatter.slug}`}>
