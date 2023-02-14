@@ -37,9 +37,6 @@
         max-height: calc(((100vh - 17rem) - 3rem) - 3rem);
         flex-shrink: 0;
         .ant-anchor-link-title {
-          -webkit-line-clamp: 2;
-          display: -webkit-box;
-          white-space: unset;
           color: #78757a;
           &-active,
           &:hover {

@@ -1,0 +1,22 @@
+---
+title: "Async Queue"
+date: "2023-02-12"
+slug: "webpack-async-queue"
+tag: "example"
+folder: "Front End"
+---
+
+
+### AsyncQueue
+```js:title=lib/util/AsyncQueue.js
+constructor({ name, parallelism, parent, processor, getKey }) {
+  this._name = name;
+  this._parallelism = parallelism || 1;
+  this._processor = processor;
+  ...
+}
+```
+AsyncQueue有几个比较重要的参数，首先是name，用于区分不同的Queue，通常在抛出错误时用到。  
+parallelism，默认为1，用于控制并行任务的任务数量。  
+processor，处理器，在执行AsyncQueue对象的add方法时执行。
+// todo

@@ -185,12 +185,13 @@ article {
   }
 
   #before, #reference {
+    width: 95%;
     font-size: var(--fontSize-4);
     padding-bottom: var(--spacing-3);
     border-bottom: 4px solid var(--color-primary);
 
     &:after {
-      content: '';
+      //content: '';
       display: block;
       position: absolute;
       bottom: 0;
