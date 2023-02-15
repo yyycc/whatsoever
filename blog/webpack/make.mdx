@@ -55,7 +55,7 @@ addModuleTree({ context, dependency, contextInfo }, callback) {
 ```
 this.dependencyFactories中存储了各种类型的Dependency(key)对应的ModuleFactory(value)，比如EntryDependency对应的就是NormalModuleFactory，  
 而像AMDRequireContextDependency对应的就是ContextModuleFactory。  
-这些关系都是各种插件在compilation钩子执行是注入的，比如EntryPlugin:
+这些关系都是各种插件在compilation以及thisCompilation钩子执行是注入的，比如EntryPlugin:
 ```js:title=lib/EntryPlugin.js
 compiler.hooks.compilation.tap(
   "EntryPlugin",
@@ -341,7 +341,9 @@ import { a } from './sub/a'
 const name = 'cyy'
 console.log('hello', name, a())
 ```
+
 ![ast结构](./make/ast.jpg)
+
 源码对应的AST结构如图，可以看到ast.bodyzh中有各种type的节点。接下去会用preWalkStatements、blockPreWalkStatements、walkStatements去遍历处理ast.body，
 分析依赖，最终将一般的依赖放进module.dependencies，动态的依赖(import()等方式引入)放进module.block中。  
 处理完成后回到_buildModule中module.build的回调函数，然后再回buildModule的callback中执行processModuleDependencies。

@@ -43,7 +43,7 @@ const BlogPost = ({ data, children }: {data:IMDX, children: any}) => {
           </ConfigProvider>
         </div>}
       </div>
-      <Valine path={slug} appId="U16yUflAALySICZhsJiwmobC-gzGzoHsz" appKey="SuQzXF7zopGW41PIraZdurG3"/>
+      <Valine path={slug} appid="U16yUflAALySICZhsJiwmobC-gzGzoHsz" appkey="SuQzXF7zopGW41PIraZdurG3"/>
     </Layout>
   )
 }
