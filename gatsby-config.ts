@@ -132,11 +132,13 @@ const config: GatsbyConfig = {
             src: `src/images/maskable_icon_x192.png`,
             sizes: `192x192`,
             type: `image/png`,
+            purpose: `any maskable`
           },
           {
             src: `src/images/maskable_icon_x512.png`,
             sizes: `512x512`,
             type: `image/png`,
+            purpose: `any maskable`
           },
         ]
       }
