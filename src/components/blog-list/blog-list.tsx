@@ -5,6 +5,7 @@ import { Space } from "antd"
 import { CalendarOutlined, DoubleRightOutlined, TagOutlined } from "@ant-design/icons"
 import './blog-list.scss'
 import { IFrontmatter, INode } from "../data"
+import { useEffect } from "react"
 
 const BlogList = ({ tag, folder, setTotal }: Partial<IFrontmatter> & { setTotal?: (total: number) => void }) => {
   const data = UseBlogHome()
@@ -12,7 +13,10 @@ const BlogList = ({ tag, folder, setTotal }: Partial<IFrontmatter> & { setTotal?
   const displayList = nodes.filter(
     (node: INode) => (!tag || node.frontmatter.tag === tag) && (!folder || node.frontmatter.folder?.indexOf(folder) > -1)
   )
-  setTotal && setTotal(displayList.length)
+  useEffect(() => {
+    setTotal && setTotal(displayList.length)
+  }, [displayList.length])
+
   return (
     <div className="blog-list">
       {displayList.map((ele: INode) => {
