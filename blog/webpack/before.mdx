@@ -11,7 +11,8 @@ export const columns = [{title:'hook',dataIndex:'name0'},{title:'描述',dataInd
 export const pagination = false
 
 ## Before
-上文<a target="_blank" href="/blog/webpack-cli">webpack5源码之旅 - webpack-cli</a>讲到任何方式处理完参数后，都会执行webpack(config)。  
+上文<a target="_blank" href="/blog/webpack-cli">webpack5源码之旅 - webpack-cli</a>讲到通过webpack-cli或者其它任何方式处理完参数后，
+都会执行webpack(config)。  
 接下来我们就进入webpack一探究竟。
 
 ## require('webpack')
@@ -80,8 +81,8 @@ const lazyFunction = factory => {
 ```
 lazyFunction把你传入的方法用memoize包了一下，返回一个新的方法。  
 而memoize做的事情就是把你传入的方法(() => require("./webpack"))执行一次，然后把结果缓存起来，下次再调用的时候直接返回缓存的结果。  
-可以返回上去看一下mergeExports方法，它处理get的时候也会用memoize包一下，所以webpack中的所有方法都会在第一次调用后被缓存起来。  
-接着进入到lib/webpack.js文件
+上面的mergeExports方法，处理get的时候也用了memoize包一下，所以webpack中的所有方法都会在第一次调用后被缓存起来。  
+接着进入到lib/webpack.js文件。
 
 ## webpack(config)
 ```js:title=lib/webpack.js
@@ -92,7 +93,7 @@ const webpack = /** @type {WebpackFunctionSingle & WebpackFunctionMulti} */ (
 module.exports = webpack;
 ```
 这个文件导出一个函数webpack，这个函数接收options和callback作为参数，到这里就真正进入到打包环节。  
-我们通常将整个过程分为三个阶段：
+我们通常将整个编译过程分为三个阶段：
 - 初始化阶段
 - 构建阶段
 - 生成阶段
@@ -103,7 +104,7 @@ module.exports = webpack;
 编译管理器，传入options生成Compiler对象，这个对象是唯一的，会一直存活至全流程结束。  
 它控制着主流程，具体的事情会交给具体的模块处理。  
 ```js
-const compiler = new Compiler(options.context, options);
+const compiler = new Compiler(options.context, options); // 创建Compiler对象
 ```
 
 ### Compilation
@@ -113,26 +114,26 @@ const compiler = new Compiler(options.context, options);
 const params = {
   normalModuleFactory: this.createNormalModuleFactory(),
   contextModuleFactory: this.createContextModuleFactory()
-};
-const compilation = this.newCompilation(params);
+}; // params为创建Compilation对象时需要的参数
+const compilation = this.newCompilation(params); // 创建Compilation对象
 ```
 
 ### Entry
-入口，编译的起点，从入口开始寻找所有的依赖。
+入口，编译的起点，通常情况下webpack会从从入口开始寻找到所有的依赖，打成一个chunk。
 ```js:title=lib/EntryPlugin.js
 ...
 const { entry, options, context } = this;
-const dep = EntryPlugin.createDependency(entry, options);
+const dep = EntryPlugin.createDependency(entry, options); // 创建Dependency对象
 
 compiler.hooks.make.tapAsync("EntryPlugin", (compilation, callback) => {
   compilation.addEntry(context, dep, options, err => {
     callback(err);
   });
-});
+}); // 注册make钩子，执行compilation.addEntry方法
 ...
 
 static createDependency(entry, options) {
-  const dep = new EntryDependency(entry);
+  const dep = new EntryDependency(entry); // 入口文件会被实例化为EntryDependency
   // TODO webpack 6 remove string option
   dep.loc = { name: typeof options === "object" ? options.name : options };
   return dep;
@@ -146,13 +147,15 @@ static createDependency(entry, options) {
 
 ### Module
 在webpack的世界中，万事万物都是模块，js、css、图片或者视频，都会变成**Module。  
-普通的模块会生成NormalModule，往上翻到Compilation部分会看到创建Compilation对象的时候传入的params中有一个normalModuleFactory，
-这个factory就是创建NormalModule的地方。
-NormalModule中会调用parse将源码解析为AST(抽象语法树)，从而解析出所有依赖。  
+普通的模块会生成NormalModule，创建Compilation对象的时候传入的params中有一个normalModuleFactory，
+这个factory就是创建NormalModule的地方。  
+NormalModule中会调用对应的parse方法将源码解析为AST(抽象语法树)，从而解析出所有依赖。    
 构建模块时，还会生成moduleGraph来记录模块之间引用信息。
 
 ### Chunk
-输出时，webpack会将之前生成的所有module，按照一定的规则打成一个或者多个chunk。
+输出时，webpack会将之前生成的所有module，按照一定的规则打成一个或者多个chunk。webpack内置的chunk规则有：
+- 从entry开始，找到所有依赖的module，打包成一个chunk
+- 使用动态引入语句引入的模块，打包成一个chunk
 
 ### Loader
 webpack原生只支持js的处理，像是css、图片等就都需要通过loader转为js，才能被webpack处理。  
@@ -170,7 +173,7 @@ module.exports = {
 
 ### Plugin
 相信用过webpack的小伙伴都不对Plugin感到陌生，通常都会写几个Plugin到配置文件中。
-其实webpack的各种能力基本都是通过Plugin实现的，在初始化Compiler后，会去挂载你配置的plugin，
+其实webpack的各种能力基本都是通过Plugin实现的，在初始化Compiler后，会挂载你配置的所有plugin，
 然后在中WebpackOptionsApply，根据配置再去挂载各种内置Plugin(即使没有配置文件，它也会默认给你配置一些功能)。
 ```js:title=lib/webpack.js
 const createCompiler = rawOptions => {
@@ -186,8 +189,8 @@ const createCompiler = rawOptions => {
 				plugin.apply(compiler);
 			}
 		}
-	}
-	new WebpackOptionsApply().process(options, compiler);
+	} // 挂载配置的plugin
+	new WebpackOptionsApply().process(options, compiler); // 根据配置挂载内置plugin
 	compiler.hooks.initialize.call();
 	return compiler;
 };
@@ -218,7 +221,7 @@ class EntryOptionPlugin {
 ###Tapable
 这是webpack中最重要的一个库，基本上每个功能模块都可以看到它，Plugin的实现就是依赖于Tapable。它是一种发布订阅模式。
 ```js:title=lib/COmpiler.js
-entryOption: new SyncBailHook(["context", "entry"])
+entryOption: new SyncBailHook(["context", "entry"]) // 定义钩子
 ```
 实例化一个钩子，并定义回调函数的行参。
 ```js:title=lib/EntryOptionsPlugin.js
@@ -236,7 +239,7 @@ compiler.hooks.entryOption.call(options.context, options.entry);
 ```
 使用call方法触发事件，这时候就会执行注册时传入的回调函数，并传入参数。 
 
-理解Tapable是读webpack源码的基础，参考部分有相关文章，可以进行阅读学习，这边总结一下Tapable的几种钩子以及它们对应的注册和调用方法。
+理解Tapable是读webpack源码的基础，参考的部分有相关文章，可以进行阅读学习，这边总结一下Tapable的几种钩子以及它们对应的注册和调用方法。
 
 <Table dataSource={dataSource} columns={columns} pagination={pagination} />
 
