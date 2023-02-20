@@ -15,6 +15,7 @@ folder: "Front End"
 上一节最后的表格中记录了监听make的有EntryPlugin。
 ```js:title=lib/Compiler.js
 this.hooks.make.callAsync(compilation, err => {```})
+```
 
 ```js:title=lib/EntryPlugin.js
 const { entry, options, context } = this;
@@ -26,7 +27,7 @@ compiler.hooks.make.tapAsync("EntryPlugin", (compilation, callback) => {
   });
 });
 ```
-在回调函数中调用了compilation的addEntry方法处理入口模块(也就是我们配置的entry，默认是src下的index.js文件)。  
+在注册make钩子的回调函数中调用了compilation的addEntry方法处理入口模块(也就是我们配置的entry，默认是src下的index.js文件)。  
 其中一个参数dep，是全过程的第一个依赖也就是入口依赖EntryDependency，其中记录了文件地址等信息，它的type为entry，后续还会有其它类型的依赖。
 
 接下来我们就跟着addEntry方法进入到compilation中:   
@@ -71,8 +72,8 @@ compiler.hooks.compilation.tap(
 
 ## Module
 
-从handleModuleCreation方法正式开始模块处理，第一次执行这个方法是从Entry(EntryDependency)过来的，后续每个模块的每个依赖(**Dependency)都会再次进入到这个方法。  
-```js:title=lib/Compilation.js
+从handleModuleCreation方法正式开始模块处理，第一次执行这个方法是从Entry(EntryDependency)过来的，后续每个模块找到的每个依赖(**Dependency)都会再次进入到这个方法。  
+```js{15,27}:title=lib/Compilation.js
 handleModuleCreation(
   {
     factory,
@@ -131,7 +132,7 @@ processor执行完毕后会调用callback方法(factorizeModule的第二个参�
 以上是主流程的执行顺序，AsyncQueue还在其中做了很多事情，主要实现一个类似线程池的功能来调度异步任务。
 
 回到主流程，执行factorizeQueue的processor也就是_factorizeModule:
-```js:title=lib/Compilation.js
+```js{14}:title=lib/Compilation.js
 _factorizeModule(
   {
     currentProfile,
@@ -162,8 +163,8 @@ _factorizeModule(
 ```
 在_factorizeModule中执行factory.create，这个factory就是NormalModuleFactory。  
 执行create()方法 --> beforeResolve钩子 --> factorize钩子(执行该钩子的注册事件) --> resolve钩子 --> afterResolve钩子 -->
-afterResolve钩子 --> createModule钩子 --> createdModule = new NormalModule() --> 执行回调函数将createdModule返回  
-通过AsyncQueue最后会执行调用factorizeModule时传入的第二个参数callback方法，在这里执行addModule。
+afterResolve钩子 --> createModule钩子 --> createdModule = new NormalModule() --> 执行回调函数将createdModule返回。  
+通过AsyncQueue最后会执行调用factorizeModule时传入的第二个参数callback方法，在这里执行addModule。  
 总结一下factorizeModule的主要作用就是根据传入的依赖，创建对应的Module。
 
 ### addModule
@@ -197,7 +198,7 @@ _addModule(module, callback) {
 ```
 将创建好的module放进modules数组中，将module作为key，this.moduleGraph作为value，放进map(moduleGraphForModuleMap)中，执行回调函数。  
 执行_handleModuleBuildAndDependencies --> 执行buildModule
-```js:
+```js:title=lib/Compilation.js
 _handleModuleBuildAndDependencies(originModule, module, recursive, callback) {
   ...
   this.buildModule(module, err => {
@@ -214,7 +215,7 @@ _handleModuleBuildAndDependencies(originModule, module, recursive, callback) {
 总结一下addModule的主要作用就是收集module，将模块之间的依赖关系放进ModuleGraph中。
 ### buildModule
 还是同理，通过AsyncQueue的调度，执行_buildModule:
-```js:title=lib/Compilation.js
+```js{13}:title=lib/NormalModule.js
 _buildModule(module, callback) {
   ...
   module.needBuild(
@@ -240,8 +241,14 @@ _buildModule(module, callback) {
   );
 }
 ```
-这里的module就是NormalModule，执行了它的needBuild方法，接着进入回调函数执行module.build，也就是NormalModule的build方法，
-然后是NormalModule的_doBuild方法:
+这里的module就是NormalModule，执行了它的needBuild方法，接着进入回调函数执行module.build，也就是NormalModule的build方法。
+```js:title=lib/NormalModule.js
+build(options, compilation, resolver, fs, callback) {
+  ...
+  return this._doBuild(options, compilation, resolver, fs, hooks, err => {...});
+}
+```
+然后执行NormalModule的_doBuild方法:
 ```js:title=lib/NormalModule.js
 _doBuild(options, compilation, resolver, fs, hooks, callback) {
   ...
@@ -283,7 +290,7 @@ _doBuild(options, compilation, resolver, fs, hooks, callback) {
   );
 }
 ```
-runLoaders来自loader-runner，这是webpack用于运行Loaders的库。非js的文件都需要通过loader处理成js，作为result传金回调函数，执行processResult。  
+runLoaders来自loader-runner，这是webpack用于运行Loaders的库。非js的文件都需要通过loader处理成js，作为result传给回调函数，执行processResult。  
 在processResult中执行callback也就是执行_doBuild时传入的callback:
 ```js:title=lib/NormalModule.js
 build(options, compilation, resolver, fs, callback) {
@@ -305,7 +312,7 @@ build(options, compilation, resolver, fs, callback) {
   });
 }
 ```
-parser是在resolve阶段生成的，因为当前模块是js资源所以生成的是JavascriptParser，传入this._ast(?) || source，将代码转为AST。  
+parser是在resolve阶段生成的，因为当前模块是js资源所以生成的是JavascriptParser，传入源代码，转化为AST。  
 ```js:title=lib/javascript/JavascriptParser.js
 parse(source, state) {
   let ast;
@@ -375,7 +382,7 @@ _processModuleDependencies(module, callback) {
 针对每个block再遍历其中的dependencies。 
 
 这里讲一下dependencies和blocks:  
-上面的代码中可以看出dependencies和blocks都是Module的属性，Module的继承自DependenciesBlock，从它的构造函数，可以看到这两个属性。
+上面的代码中可以看出dependencies和blocks都是Module的属性，Module的继承自DependenciesBlock，在它的构造函数中可以看到这两个属性。
 ```js:lib/DependenciesBlock.js
 class DependenciesBlock {
 	constructor() {
@@ -391,10 +398,10 @@ class DependenciesBlock {
 ```
 一个是Dependency，另一个是AsyncDependenciesBlock也就是异步依赖，通过import()或是require.ensure方式引入的依赖都会被放进blocks中。
 
-回到主流程，遍历依赖后用processDependency方法处理，主要作用就是根据import前后位置进行排序，然后将相同模块的几个依赖放在一起(?)。  
+回到主流程，遍历依赖后用processDependency方法处理，主要作用就是根据import前后位置进行排序，然后将相同模块的几个依赖放在一起。  
 最后调用onDependenciesSorted，遍历排序好的dependencies，执行handleModuleCreation方法。  
-handleModuleCreation这个名字是不是相当眼熟本文Module部分的第一步就是执行这个方法，只不过当时是从EntryDependency走过去的，而现在是从模块内部依赖走到的。  
-接下去就是重复上述步骤知道解析完所有依赖后回到最初调用handleModuleCreation的地方进入它的callback，这样一步步执行各个方法的callback，
+handleModuleCreation这个名字是不是相当眼熟，本文Module部分的第一步就是执行这个方法，只不过当时是从EntryDependency走过去的，而现在是从模块内部依赖走到的。  
+接下去就是重复上述步骤直到解析完所有依赖后回到最初调用handleModuleCreation的地方进入它的callback，这样一步步往回走各个方法的callback，
 最终回到Compiler.js的make钩子。  
 
 到这里构建阶段就基本完成啦。
