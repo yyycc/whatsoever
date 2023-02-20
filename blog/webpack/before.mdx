@@ -218,7 +218,7 @@ class EntryOptionPlugin {
 上面Module部分提到了Parser，webpack中最常用到的Parser就是JavascriptParser，它使用acorn将js解析为AST，
 然后就可以分析中其中的所有依赖，还可以解析注释等等。
 
-###Tapable
+### Tapable
 这是webpack中最重要的一个库，基本上每个功能模块都可以看到它，Plugin的实现就是依赖于Tapable。它是一种发布订阅模式。
 ```js:title=lib/COmpiler.js
 entryOption: new SyncBailHook(["context", "entry"]) // 定义钩子
