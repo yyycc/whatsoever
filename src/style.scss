@@ -320,15 +320,3 @@ a {
 
 /* Custom classes */
 
-/* Media queries */
-
-@media (max-width: 42rem) {
-  blockquote {
-    padding: var(--spacing-0) var(--spacing-0) var(--spacing-0) var(--spacing-4);
-  }
-
-  ul,
-  ol {
-    list-style-position: inside;
-  }
-}
