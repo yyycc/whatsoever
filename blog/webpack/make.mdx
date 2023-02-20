@@ -249,7 +249,7 @@ build(options, compilation, resolver, fs, callback) {
 }
 ```
 然后执行NormalModule的_doBuild方法:
-```js:title=lib/NormalModule.js
+```js{25}:title=lib/NormalModule.js
 _doBuild(options, compilation, resolver, fs, hooks, callback) {
   ...
   const processResult = (err, result) => {
@@ -292,7 +292,7 @@ _doBuild(options, compilation, resolver, fs, hooks, callback) {
 ```
 runLoaders来自loader-runner，这是webpack用于运行Loaders的库。非js的文件都需要通过loader处理成js，作为result传给回调函数，执行processResult。  
 在processResult中执行callback也就是执行_doBuild时传入的callback:
-```js:title=lib/NormalModule.js
+```js{8}:title=lib/NormalModule.js
 build(options, compilation, resolver, fs, callback) {
   ...
   return this._doBuild(options, compilation, resolver, fs, hooks, err => {
@@ -313,7 +313,7 @@ build(options, compilation, resolver, fs, callback) {
 }
 ```
 parser是在resolve阶段生成的，因为当前模块是js资源所以生成的是JavascriptParser，传入源代码，转化为AST。  
-```js:title=lib/javascript/JavascriptParser.js
+```js{10}:title=lib/javascript/JavascriptParser.js
 parse(source, state) {
   let ast;
   let comments;
