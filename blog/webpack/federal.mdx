@@ -372,18 +372,22 @@ var sub_time__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(453);
 ## share
 最后来说一下share，share的作用是共享模块。也就是当本地项目和远程项目都需要用到同一个模块时，我们利用share配置实现共享，
 如果模块一致且版本一致，那么就不会加载远程的模块，而是直接使用本地的模块。  
-先来看一下效果(上面的代码是不包含share功能的，下面的代码是增加了share功能的，具体增加了md5部分的代码以及配置中的share):
+先来看一下效果(上面的代码是不包含share功能的，下面的代码是增加了share功能的，具体增加了md5部分的代码以及配置中的share):  
 当我在host以及remote项目中都使用md5，但是没有使用share功能时，host的bundle.js中多了md5的代码；remote的29.js中，多了md5的代码。  
-这就导致了md5的代码被加载了两次，因为在host项目中，我是会加载bundle.js和29.js的。  
+这就导致了md5的代码会被加载两次。
 
-接下来我加上share配置，host的bundle.js中没有md5的代码，remote的29.js中也没有md5的代码。而是各自多打包除了一个chunk，这个chunk就是md5的代码。  
-这是host项目中对于md5部分的代码，只会加载这个chunk，也就是只会加载一次。
+![没有share配置时的chunk](./federal/no-share.jpg)
 
-这就是模块共享。
+接下来我加上share配置，host的bundle.js中没有md5的代码，remote的29.js中也没有md5的代码。而是各自多打包出了一个chunk，这个chunk就是md5的代码。  
+
+![share配置打出的chunk](./federal/with-share.jpg)
+
+当host使用的远程模块也使用了md5，且版本相同，那么不会去加载远程的726.js，而是直接只用本地的726.bundle.js，这就是模块共享。  
+下面我们从代码层面来分析一下。
 
 ### SharePlugin
 share功能通过consume和provide两个部分来实现。
-```js:lib/sharing/Share.plugin.js
+```js:title=lib/sharing/Shareplugin.js
 apply(compiler) {
   new ConsumeSharedPlugin({
     shareScope: this._shareScope,
@@ -427,7 +431,7 @@ ProvideSharePlugin监听finishMake钩子，创建ProvideSharedDependency，跟En
 也就是说会多打出一个chunk，这个chunk的内容就是share的模块。在host以及remote都是这套流程。  
 也就是说本来这个模块会跟着我的入口文件一起被打包到主chunk中，但是配置了share后，它就会打出一个单独的chunk。
 
-### 代码部分
+### 生成的代码
 ```js:title=remoteEntrySub.js
 var sub1;
 (() => {
@@ -452,11 +456,11 @@ var sub1;
   sub1 = __webpack_exports__;
 })
 ```
-在全局变量sub中，除了get方法，还有一个init。
-__webpack_require__.S中会存储share模块，存储的时机就是第二次执行handleFunction(上面我们跳过的那一步)，也就是__webpack_require__.I('default', 0)。
-__webpack_require__.I('default', 0)的作用就是去加载对应的js，并且调用initExternal去执行init方法，把模块传进去。  
-init方法中也执行了__webpack_require__.I(name, initScope)，它在加载对应的js前会判断__webpack_require__.S是否已经存在了相同名称相同版本的模块，
-如果存在，就不会再去下载远程的js。这就实现了模块共享的效果。  
+在全局变量sub中，除了get方法，还有一个init方法，这个方法会把传入的shareScope存入__webpack_require__.S。  
+__webpack_require__.S用来存储share模块，存储的时机就是第二次执行handleFunction(上面我们跳过的那一步)，也就是__webpack_require__.I('default', 0)。
+__webpack_require__.I('default', 0)的作用就是去加载对应的js文件(726.bundle.js)，并且调用initExternal去执行init方法，把模块传进去。  
+init方法执行了__webpack_require__.I(name, initScope)，它在加载对应的js前会判断__webpack_require__.S是否已经存在了相同名称相同版本的模块，
+如果存在，就不会再去下载远程的js，如果不存在，再去加载远程的js(726.js)。这就实现了模块共享的效果。  
 现实场景中，本地和远程通常都会有vue或者react、axios、lodash等等相同的模块，使用share就能大大降低加载的js文件的大小。
 
 ## Reference
