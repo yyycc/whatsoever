@@ -4,6 +4,7 @@
       &-bar {
         display: block;
       }
+
       &-nav {
         display: none;
       }
@@ -24,16 +25,24 @@
     }
   }
 }
+
 @media (max-width: 65rem) {
   .mdx-content-nav {
     display: none;
   }
-  .index-right {
-    display: none;
+  .layout main {
+    .index-right {
+      display: none;
+    }
+
+    .index-left {
+      padding-right: 0;
+    }
   }
   .layout main .mdx-content {
     .mdx-content-left {
       width: calc(100vw - 4rem);
+
       .mdx-content-left-data {
         margin: var(--spacing-10) auto 0;
       }
