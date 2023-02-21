@@ -351,7 +351,7 @@ const name = 'cyy'
 console.log('hello', name, a())
 ```
 
-![ast结构](./make/ast.jpg)
+![AST结构](./make/ast.jpg)
 
 源码对应的AST结构如图，可以看到ast.bodyzh中有各种type的节点。接下去会用preWalkStatements、blockPreWalkStatements、walkStatements去遍历处理ast.body，
 分析依赖，最终将一般的依赖放进module.dependencies，动态的依赖(import()等方式引入)放进module.block中。  
