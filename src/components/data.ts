@@ -10,6 +10,8 @@ export interface IFrontmatter {
   slug: string
   date: string
   title: string
+  prev?: string
+  next?: string
 }
 
 export interface INode {

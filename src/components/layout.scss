@@ -23,6 +23,27 @@
             display: block;
             margin: 0 auto;
           }
+          &-pagination {
+            margin-top: var(--spacing-10);
+            border-top: 1px dashed #ddd;
+            border-bottom: 1px dashed #ddd;
+            padding: var(--spacing-6) 0;
+            &-prev{
+              text-align: left;
+              &-title {
+                margin-right: var(--spacing-2);
+                font-size: var(--fontSize-0);
+              }
+            }
+            &-next {
+              margin-top: var(--spacing-2);
+              text-align: right;
+              &-title {
+                margin-left: var(--spacing-2);
+                font-size: var(--fontSize-0);
+              }
+            }
+          }
         }
         &-infos {
           display: flex;

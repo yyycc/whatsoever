@@ -4,12 +4,14 @@ date: "2023-02-20"
 slug: "webpack-federal"
 tag: "webpack"
 folder: "Front End"
+prev: "webpack-make"
 ---
 
 ## Before
 webpack系列的开篇<a href="/blog/webpack" target="_blank">webpack5源码之旅</a>中提到学习webpack源码的契机是模块联邦，这是webpack5的一个新特性， 
 它可以让多个独立的构建组成一个整体应用，这些构建之间没有依赖相互独立，可以各自开发部署。  
 我们就来看看模块联邦到底是如何实现的，同时复习一下之前学习的编译流程。  
+示例代码存放在<a target="_blank" href="https://github.com/whatsoeverYY/turborepo">github仓库中</a>。
 
 ## 概念
 模块联邦有两个新的概念：remote和host。  
