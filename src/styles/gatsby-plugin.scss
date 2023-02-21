@@ -43,7 +43,7 @@
 
 /* image */
 .gatsby-resp-image-wrapper {
-  margin: var(--spacing-6) 0;
+  margin: var(--spacing-4) 0;
 }
 
 /* highlight */
@@ -98,6 +98,17 @@
   padding: 0.5rem;
   margin: 0 auto;
   border-bottom: 1px solid #eee;
+  font-size: var(--fontSize-0);
+  color: var(--color-text-secondary-light);
+}
+
+.gatsby-resp-image-figure {
+  margin-top: var(--spacing-6);
+  margin-bottom: var(--spacing-6);
+}
+
+.gatsby-resp-image-figcaption {
+  text-align: center;
   font-size: var(--fontSize-0);
   color: var(--color-text-secondary-light);
 }
