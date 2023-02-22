@@ -1,3 +1,9 @@
+@media (max-width: 42rem) {
+  blockquote {
+    padding: var(--spacing-0) var(--spacing-0) var(--spacing-0) var(--spacing-4);
+  }
+}
+
 @media (max-width: 50rem) {
   .header {
     .header-content {
@@ -9,12 +15,6 @@
         display: none;
       }
     }
-  }
-}
-
-@media (max-width: 42rem) {
-  blockquote {
-    padding: var(--spacing-0) var(--spacing-0) var(--spacing-0) var(--spacing-4);
   }
 }
 

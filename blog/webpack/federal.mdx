@@ -82,7 +82,7 @@ apply(compiler) {
   });
 }
 ```
-它监听了afterPlugins钩子，这个钩子在WebpackOptionsApply的process方法中触发(可以看<a href="/blog/webpack-initial/#创建compiler" target="_black">webpack5 源码学习 - 初始化#创建Compiler</a>部分)。  
+它监听了afterPlugins钩子，这个钩子在WebpackOptionsApply的process方法中触发(可以看<a href="/blog/webpack-initial/#创建compiler" target="_black">webpack5 源码之旅 - 初始化#创建Compiler</a>部分)。  
 来看回调函数，其中有几个关键词，首先是exposes，如果配置了exposes，就注册ContainerPlugin插件，
 如果配置了remotes，就注册ContainerReferencePlugin，如果配置了shared就注册SharePlugin。  
 配置exposes就表示暴露自身模块，也就是remote，配置remotes就表示要消费远程模块，也就是host，至于share，它用来实现模块共享。
