@@ -9,7 +9,7 @@ prev: "webpack-initial"
 ---
 
 ## Before
-上一节<a href="/blog/webpack-initial" target="_blank">webpack5 源码之旅 - 初始化</a>中介绍了webpack编译的第一部分初始化阶段，
+上一节<a href="/blog/webpack-initial/" target="_blank">webpack5 源码之旅 - 初始化</a>中介绍了webpack编译的第一部分初始化阶段，
 这个部分创建了compiler、compilation、NormalModuleFactory，将插件注册到了生命周期的各个节点中，为下一阶段做好了准备工作。  
 那么这一节我们就从make钩子开始看看整个构建阶段都做了什么。
 
@@ -125,7 +125,7 @@ Compilation.prototype.factorizeModule = (
 );
 ```
 其实就是执行this.factorizeQueue.add，factorizeQueue是一个AsyncQueue，
-在<a href="/blog/webpack-initial/#asyncqueue" target="_blank">初始化 - 创建compilation - asyncqueue</a>部分简单介绍过，
+在<a href="/blog/webpack-initial/#asyncqueue/" target="_blank">初始化 - 创建compilation - asyncqueue</a>部分简单介绍过，
 构建阶段会用到factorizeQueue、addModuleQueue、buildQueue、processDependenciesQueue4个AsyncQueue，
 它们的作用分别是解析生成对应Module，添加module到ModuleGraph中，编译模块得到模块的依赖，处理模块内的依赖。  
 执行AsyncQueue的add方法(this.factorizeQueue.add)后会执行传入的processor方法(this._factorizeModule.bind(this))，
