@@ -12,7 +12,7 @@ const Info = ({ data }: { data: IMetadata }) => {
         <StaticImage
           class="info-profile-img"
           alt="Kitty with glasses"
-          src="../../images/favicon.jpeg"
+          src="../../images/favicon.webp"
         />
       </div>
       <div className="info-motto">{motto}</div>
