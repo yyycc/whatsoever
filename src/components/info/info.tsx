@@ -18,10 +18,10 @@ const Info = ({ data }: { data: IMetadata }) => {
       <div className="info-motto">{motto}</div>
       <div className="info-media">
         <a target="_blank" href={github} className="info-media-icon">
-          <GithubOutlined style={{ color: 'black' }}/>
+          <GithubOutlined />
         </a>
         <a href={`mailto:${email}`} className="info-media-icon">
-          <MailOutlined style={{ color: 'black' }}/>
+          <MailOutlined />
         </a>
       </div>
     </div>

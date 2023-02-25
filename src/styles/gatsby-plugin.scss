@@ -49,14 +49,14 @@
 /* highlight */
 .gatsby-highlight {
   font-size: var(--fontSize-0);
-  background-color: var(--color-bg);
+  background-color: var(--color-code-bg);
   border-radius: 0.3em;
   margin: var(--spacing-2) 0;
   overflow: auto;
 }
 
 .gatsby-highlight pre[class*="language-"] {
-  background-color: var(--color-bg);
+  background-color: var(--color-code-bg);
   margin: 0;
   overflow: initial;
   float: left; /* 1 */
@@ -67,10 +67,10 @@
 /* code title */
 .gatsby-code-title {
   font-size: var(--fontSize-0);
-  border-bottom: 1px solid #faede5;
+  border-bottom: 1px solid var(--color-code-border);
   margin-bottom: 0.35rem;
   padding: var(--spacing-3) var(--spacing-6);
-  background-color: var(--color-bg);
+  background-color: var(--color-code-bg);
   color: #866c5b;
   z-index: 0;
   border-radius: var(--spacing-2) var(--spacing-2) 0 0;
@@ -78,12 +78,12 @@
 
 /* highlight code line */
 .gatsby-highlight-code-line {
-  background: #fbf0ea;
+  background: var(--color-code-highlight);
   margin-left: calc(0px - var(--spacing-6));
   margin-right: calc(0px - var(--spacing-6));
   padding-left: var(--spacing-5);
   padding-right: var(--spacing-6);
-  border-left: var(--spacing-1) solid #f1beb6;
+  border-left: var(--spacing-1) solid var(--color-code-border-highlight);
   display: block;
 }
 

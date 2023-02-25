@@ -24,5 +24,10 @@
     &-icon:not(:first-of-type) {
       margin-left: var(--spacing-2);
     }
+    &-icon {
+      span {
+        color: var(--color-text)
+      }
+    }
   }
 }

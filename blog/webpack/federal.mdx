@@ -8,7 +8,7 @@ prev: "webpack-make"
 ---
 
 ## Before
-webpack系列的开篇<a href="/blog/webpack" target="_blank">webpack5源码之旅</a>中提到学习webpack源码的契机是模块联邦，这是webpack5的一个新特性， 
+webpack系列的开篇<a href="/blog/webpack/" target="_blank">webpack5源码之旅</a>中提到学习webpack源码的契机是模块联邦，这是webpack5的一个新特性， 
 它可以让多个独立的构建组成一个整体应用，这些构建之间没有依赖相互独立，可以各自开发部署。  
 我们就来看看模块联邦到底是如何实现的，同时复习一下之前学习的编译流程。  
 示例代码存放在<a target="_blank" href="https://github.com/whatsoeverYY/turborepo">github仓库中</a>。
@@ -82,7 +82,7 @@ apply(compiler) {
   });
 }
 ```
-它监听了afterPlugins钩子，这个钩子在WebpackOptionsApply的process方法中触发(可以看<a href="/blog/webpack-initial/#创建compiler" target="_black">webpack5 源码之旅 - 初始化#创建Compiler</a>部分)。  
+它监听了afterPlugins钩子，这个钩子在WebpackOptionsApply的process方法中触发(可以看<a href="/blog/webpack-initial/#创建compiler/" target="_black">webpack5 源码之旅 - 初始化#创建Compiler</a>部分)。  
 来看回调函数，其中有几个关键词，首先是exposes，如果配置了exposes，就注册ContainerPlugin插件，
 如果配置了remotes，就注册ContainerReferencePlugin，如果配置了shared就注册SharePlugin。  
 配置exposes就表示暴露自身模块，也就是remote，配置remotes就表示要消费远程模块，也就是host，至于share，它用来实现模块共享。
@@ -110,7 +110,7 @@ compiler.hooks.make.tapAsync(PLUGIN_NAME, (compilation, callback) => {
 });
 ```
 ContainerPlugin监听了make钩子，做个简单的回忆，make钩子是webpack整个编译流程第二阶段也就是构建阶段的入口，
-我们在介绍<a href="/blog/webpack-make/#entry" target="_blank">构建</a>阶段时讲到其中一个监听了make钩子的插件是EntryPlugin，
+我们在介绍<a href="/blog/webpack-make/#entry/" target="_blank">构建</a>阶段时讲到其中一个监听了make钩子的插件是EntryPlugin，
 然后从EntryDependency开始递归处理所有依赖，构建模块。  
 回到ContainerPlugin，看这里的代码应该会有似曾相识的感觉，创建ContainerEntryDependency，然后同样进入compilation的addEntry方法，后续的流程也是基本一致的。  
 最后生成chunk的规则是每个expose生成一个chunk，所以像示例中的exposes，输出文件中就会多两个js文件，[time].js以及[date].js。
@@ -131,7 +131,7 @@ compiler.hooks.thisCompilation.tap(
 );
 
 ```
-ContainerPlugin还监听了thisCompilation，在这里将\*\*Dependencies 和对应的\*\*ModuleFactory放进dependencyFactories中(同样在<a href="/blog/webpack-make/#entry" target="_blank">构建</a>部分讲到过的哈),
+ContainerPlugin还监听了thisCompilation，在这里将\*\*Dependencies 和对应的\*\*ModuleFactory放进dependencyFactories中(同样在<a href="/blog/webpack-make/#entry/" target="_blank">构建</a>部分讲到过的哈),
 从而可以在后续factorizeModule阶段用获取到的\*\*moduleFactory，然后去创建相应的\*\*Module。
 
 ### ContainerReferencePlugin
