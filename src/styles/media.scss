@@ -49,3 +49,9 @@
     }
   }
 }
+
+@media (display-mode: minimal-ui) {
+  .header-content-title-link {
+    color: var(--color-heading)!important;
+  }
+}
