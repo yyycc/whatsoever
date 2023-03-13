@@ -17,4 +17,11 @@ export const onClientEntry = function () {
       }, 3000)
     })
   }
+
+  window.clickToFull = function (copyButtonContainerDom) {
+    const containerEle = copyButtonContainerDom.parentElement.parentElement
+    const curIndex = [...containerEle.childNodes].indexOf(copyButtonContainerDom.parentElement)
+    const codeEle = containerEle.childNodes[curIndex - 2].children?.[0]
+    codeEle.requestFullscreen()
+  }
 }

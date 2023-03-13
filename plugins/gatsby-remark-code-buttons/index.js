@@ -47,7 +47,18 @@ module.exports = function gatsbyRemarkCodeButtons(
             `.trim()
       };
 
+      const fullScreenBtn = {
+        type: 'html',
+        value: `
+            <div class="gatsby-code-full-btn"
+                 onclick="clickToFull(this)">
+                全屏
+            </div>
+            `.trim()
+      }
+
       parent.children.splice(index, 0, buttonNode);
+      parent.children.splice(index + 2, 0, fullScreenBtn);
       actions['clipboard'] = 'false';
     }
 
