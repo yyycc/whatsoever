@@ -19,3 +19,12 @@
     }
   }
 }
+.ant-popover {
+  position: fixed;
+  left: var(--spacing-6)!important;
+  top: var(--spacing-24)!important;
+  .ant-popover-inner {
+    height: calc(100vh - 20rem);
+    overflow-y: auto;
+  }
+}

@@ -11,6 +11,12 @@
       &-left {
         width: var(--maxWidth-4xl);
         min-height: calc(100vh - 8rem);
+        &-nav {
+          display: none;
+          position: fixed;
+          left: var(--spacing-2);
+          margin-top: var(--spacing-10);
+        }
         &-heading {
           text-align: center;
           margin-top: var(--spacing-8);
@@ -54,11 +60,12 @@
         }
       }
       &-nav {
+        overflow: auto;
         padding: 0 0 0 var(--spacing-16);
         position: sticky;
         width: 18rem;
-        top: 15rem;
-        max-height: calc(((100vh - 17rem) - 3rem) - 3rem);
+        top: 12rem;
+        max-height: calc(((100vh - 14rem) - 3rem) - 3rem);
         flex-shrink: 0;
         .ant-anchor-link-title {
           color: #78757a;

@@ -1,10 +1,10 @@
 import * as React from 'react'
-import { ConfigProvider, Anchor, Space } from 'antd'
+import { Anchor, ConfigProvider, Popover, Space } from 'antd'
 import Valine from 'gatsby-plugin-valine'
 import Layout from '../../components/layout'
 import Seo from '../../components/seo'
 import { graphql, Link } from "gatsby"
-import { CalendarOutlined, TagOutlined, DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons"
+import { CalendarOutlined, MenuOutlined, TagOutlined } from "@ant-design/icons"
 import { IAllMDX, IAnchor, IItem, IMDX } from "../../components/data"
 
 const BlogPost = ({ data, children }: { data: IMDX & IAllMDX, children: any }) => {
@@ -14,10 +14,23 @@ const BlogPost = ({ data, children }: { data: IMDX & IAllMDX, children: any }) =
   const prevNode = nodes.filter(node => node.frontmatter.slug === prev)
   const nextNode = nodes.filter(node => node.frontmatter.slug === next)
   const items = handleAnchorItem(tableOfContents.items)
-
+  const anchor = <ConfigProvider
+    theme={{
+      token: {
+        colorPrimary: '#8a4baf', // 同时修改style.css中的--color-primary
+      },
+    }}
+  >
+    <Anchor affix={false} targetOffset={80} items={items}/>
+  </ConfigProvider>
   return (
     <Layout>
       <div className="mdx-content">
+        <div className="mdx-content-left-nav">
+          <Popover autoAdjustOverflow={true} content={anchor} title="Title" trigger="click" placement="rightTop">
+            <MenuOutlined/>
+          </Popover>
+        </div>
         <div className="mdx-content-left">
           <h1 className="mdx-content-left-heading">{title}</h1>
           <Space size="middle" className="mdx-content-left-infos">
@@ -50,15 +63,7 @@ const BlogPost = ({ data, children }: { data: IMDX & IAllMDX, children: any }) =
           </article>
         </div>
         {Boolean(items?.length) && <div className="mdx-content-nav">
-          <ConfigProvider
-            theme={{
-              token: {
-                colorPrimary: '#8a4baf', // 同时修改style.css中的--color-primary
-              },
-            }}
-          >
-            <Anchor affix={false} targetOffset={80} items={items}/>
-          </ConfigProvider>
+          {anchor}
         </div>}
       </div>
       <Valine path={slug} appid="U16yUflAALySICZhsJiwmobC-gzGzoHsz" appkey="SuQzXF7zopGW41PIraZdurG3"/>
