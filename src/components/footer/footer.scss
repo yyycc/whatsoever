@@ -1,8 +1,8 @@
 .footer {
   margin: var(--spacing-20) auto 0;
-  max-width: var(--maxWidth-9xl);
+  max-inline-size: var(--maxWidth-9xl);
   &-copy {
-    border-top: 1px solid var(--color-border);
+    border-block-start: 1px solid var(--color-border);
     text-align: center;
     padding: var(--spacing-12) 0;
   }

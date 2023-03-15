@@ -17,12 +17,12 @@
     }
   }
   &-motto {
-    padding-top: var(--spacing-4);
+    padding-block-start: var(--spacing-4);
   }
   &-media {
-    padding-top: var(--spacing-4);
+    padding-block-start: var(--spacing-4);
     &-icon:not(:first-of-type) {
-      margin-left: var(--spacing-2);
+      margin-inline-start: var(--spacing-2);
     }
     &-icon {
       span {

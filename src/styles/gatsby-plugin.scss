@@ -6,9 +6,9 @@
   position: relative;
   pointer-events: none;
   line-height: 1;
-  top: var(--spacing-10);
-  margin-top: calc(-1px - var(--spacing-10));
-  right: var(--spacing-2);
+  inset-block-start: var(--spacing-10);
+  margin-block-start: calc(-1px - var(--spacing-10));
+  inset-inline-end: var(--spacing-2);
   z-index: unset;
 }
 
@@ -60,15 +60,15 @@
   margin: 0;
   overflow: initial;
   float: left; /* 1 */
-  min-width: var(--maxWidth-full);
+  min-inline-size: var(--maxWidth-full);
   padding: var(--spacing-6) var(--spacing-6) var(--spacing-5) var(--spacing-6);
 }
 
 /* code title */
 .gatsby-code-title {
   font-size: var(--fontSize-0);
-  border-bottom: 1px solid var(--color-code-border);
-  margin-bottom: 0.35rem;
+  border-block-end: 1px solid var(--color-code-border);
+  margin-block-end: 0.35rem;
   padding: var(--spacing-3) var(--spacing-6);
   background-color: var(--color-code-bg);
   color: #866c5b;
@@ -79,11 +79,11 @@
 /* highlight code line */
 .gatsby-highlight-code-line {
   background: var(--color-code-highlight);
-  margin-left: calc(0px - var(--spacing-6));
-  margin-right: calc(0px - var(--spacing-6));
-  padding-left: var(--spacing-5);
-  padding-right: var(--spacing-6);
-  border-left: var(--spacing-1) solid var(--color-code-border-highlight);
+  margin-inline-start: calc(0px - var(--spacing-6));
+  margin-inline-end: calc(0px - var(--spacing-6));
+  padding-inline-start: var(--spacing-5);
+  padding-inline-end: var(--spacing-6);
+  border-inline-start: var(--spacing-1) solid var(--color-code-border-highlight);
   display: block;
 }
 
@@ -93,11 +93,11 @@
   text-align: center;
 }
 .whatsoever-figure figcaption {
-  min-width: 20%;
+  min-inline-size: 20%;
   display: inline-block;
   padding: 0.5rem;
   margin: 0 auto;
-  border-bottom: 1px solid #eee;
+  border-block-end: 1px solid #eee;
   font-size: var(--fontSize-0);
   color: var(--color-text-secondary-light);
 }
@@ -113,16 +113,16 @@
   display: inline;
   font-size: var(--fontSize-0);
   color: var(--color-text-secondary-light);
-  border-bottom: 1px solid var(--color-border);
+  border-block-end: 1px solid var(--color-border);
   padding: var(--spacing-2) var(--spacing-6);
 }
 
 .gatsby-code-full-btn {
   display: none;
   justify-content: flex-end;
-  margin-top: calc(-1px - var(--spacing-8));
-  margin-bottom: var(--spacing-4);
+  margin-block-start: calc(-1px - var(--spacing-8));
+  margin-block-end: var(--spacing-4);
   color: #635e69;
   font-size: 0.75rem;
-  margin-right: var(--spacing-4);
+  margin-inline-end: var(--spacing-4);
 }

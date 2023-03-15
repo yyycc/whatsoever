@@ -7,6 +7,9 @@
 }
 
 @media (max-width: 42rem) and (orientation: portrait) {
+  html {
+    font-size: 12px;
+  }
   #___gatsby {
     .gatsby-code-full-btn {
       display: flex;
@@ -54,7 +57,7 @@
       }
 
       .index-left {
-        padding-right: 0;
+        padding-inline-end: 0;
       }
 
       .mdx-content {

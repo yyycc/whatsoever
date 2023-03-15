@@ -1,15 +1,15 @@
 .header {
   position: sticky;
-  top: 0;
+  inset-block-start: 0;
   background-color: var(--color-bg);
-  border-bottom: 1px solid var(--color-border);
+  border-block-end: 1px solid var(--color-border);
   z-index: 1;
 
   &-content {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    max-width: var(--maxWidth-9xl);
+    max-inline-size: var(--maxWidth-9xl);
     margin: 0 auto;
     padding: 0 2rem;
 

@@ -2,7 +2,7 @@
   margin: auto;
   main {
     padding: 0 var(--spacing-8);
-    max-width: var(--maxWidth-9xl);
+    max-inline-size: var(--maxWidth-9xl);
     margin: 0 auto;
     .mdx-content {
       display: flex;
@@ -10,42 +10,42 @@
       padding: 0 0 var(--spacing-16);
       &-left {
         width: var(--maxWidth-4xl);
-        min-height: calc(100vh - 8rem);
+        min-block-size: calc(100vh - 8rem);
         &-nav {
           display: none;
           position: fixed;
-          left: var(--spacing-2);
-          margin-top: var(--spacing-10);
+          inset-inline-start: var(--spacing-2);
+          margin-block-start: var(--spacing-10);
         }
         &-heading {
           text-align: center;
-          margin-top: var(--spacing-8);
-          margin-bottom: var(--spacing-4);
+          margin-block-start: var(--spacing-8);
+          margin-block-end: var(--spacing-4);
         }
         &-data {
-          margin-top: var(--spacing-10);
-          max-width: var(--maxWidth-4xl);
+          margin-block-start: var(--spacing-10);
+          max-inline-size: var(--maxWidth-4xl);
           > img {
             display: block;
             margin: 0 auto;
           }
           &-pagination {
-            margin-top: var(--spacing-10);
-            border-top: 1px dashed #ddd;
-            border-bottom: 1px dashed #ddd;
+            margin-block-start: var(--spacing-10);
+            border-block-start: 1px dashed #ddd;
+            border-block-end: 1px dashed #ddd;
             padding: var(--spacing-6) 0;
             &-prev{
-              text-align: left;
+              text-align: start;
               &-title {
-                margin-right: var(--spacing-2);
+                margin-inline-end: var(--spacing-2);
                 font-size: var(--fontSize-0);
               }
             }
             &-next {
-              margin-top: var(--spacing-2);
-              text-align: right;
+              margin-block-start: var(--spacing-2);
+              text-align: end;
               &-title {
-                margin-left: var(--spacing-2);
+                margin-inline-start: var(--spacing-2);
                 font-size: var(--fontSize-0);
               }
             }
@@ -64,8 +64,8 @@
         padding: 0 0 0 var(--spacing-16);
         position: sticky;
         width: 18rem;
-        top: 12rem;
-        max-height: calc(((100vh - 14rem) - 3rem) - 3rem);
+        inset-block-start: 12rem;
+        max-block-size: calc(((100vh - 14rem) - 3rem) - 3rem);
         flex-shrink: 0;
         .ant-anchor-link-title {
           color: #78757a;

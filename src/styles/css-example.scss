@@ -1,7 +1,7 @@
 .test-input {
   display: none;
   position: absolute;
-  top: -90px;
+  inset-block-start: -90px;
   margin: 0;
   width: 60px;
   height: 450px;
@@ -22,8 +22,8 @@
 
 .test-field {
   position: absolute;
-  top: 0;
-  left: 15px;
+  inset-block-start: 0;
+  inset-inline-start: 15px;
   padding: 75px 0 0 0;
   box-sizing: border-box;
   width: 60px;
@@ -35,7 +35,7 @@
 /* Disc */
 .test-disc {
   position: relative;
-  top: 0;
+  inset-block-start: 0;
   width: 60px;
   height: 60px;
   color: #fff;
@@ -51,7 +51,7 @@
   ) center/60px;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s, top 0s 0.2s, color 0s 0.2s;
+  transition: opacity 0.2s, inset-block-start 0s 0.2s, color 0s 0.2s;
 }
 
 .test-grid {
@@ -61,15 +61,15 @@
 .test-input:hover + .test-disc {
   color: #ff010b;
   opacity: 1;
-  transition: opacity 0.2s, top 0s;
+  transition: opacity 0.2s, inset-block-start 0s;
 }
 
 .test-input:hover + .test-disc:nth-of-type(1) {
-  top: -75px;
+  inset-block-start: -75px;
 }
 
 .test-input:hover + .test-disc:nth-of-type(6) {
-  top: -375px;
+  inset-block-start: -375px;
 }
 
 .test-input:checked + .test-disc {
@@ -79,18 +79,18 @@
 
 .test-input:checked + .disc:nth-of-type(1),
 .test-input:checked + input + .disc:nth-of-type(1) {
-  transition: top 0.14s cubic-bezier(0.56, 0, 1, 1);
+  transition: inset-block-start 0.14s cubic-bezier(0.56, 0, 1, 1);
 }
 
 .test-input:checked + .test-disc:nth-of-type(6) {
-  transition: top 0.32s cubic-bezier(0.56, 0, 1, 1);
+  transition: inset-block-start 0.32s cubic-bezier(0.56, 0, 1, 1);
 }
 
 .test-button {
   width: 120px;
   position: absolute;
-  left: 100px;
-  top: 405px;
+  inset-inline-start: 100px;
+  inset-block-start: 405px;
   padding: 6px 9px;
   border: none;
   border-radius: 2px;
@@ -128,18 +128,28 @@
 
 .whyyy-second {
   flex-flow: row wrap;
-  margin-bottom: 10px;
+  margin-block-end: 10px;
 }
 
 .whyyy-third {
   flex-flow: column nowrap;
-  margin-bottom: 10px;
+  margin-block-end: 10px;
 }
 
 .whyyy-fourth {
   flex-flow: row nowrap;
-  margin-bottom: 10px;
+  margin-block-end: 10px;
 }
 .whyyy-last {
-  margin-top: 40px;
+  margin-block-start: 40px;
+}
+
+.macro-layout {
+  display: flex;
+  flex-wrap: wrap;
+  &-1 {
+    width: 400px;
+    height: 200px;
+    border: 1px solid var(--color-border);
+  }
 }

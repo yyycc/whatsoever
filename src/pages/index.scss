@@ -3,17 +3,17 @@
   justify-content: center;
   padding: var(--spacing-16) 0;
   &-left {
-    max-width: var(--maxWidth-4xl);
+    max-inline-size: var(--maxWidth-4xl);
     width: var(--maxWidth-full);
-    padding-right: var(--spacing-8);
+    padding-inline-end: var(--spacing-8);
   }
   &-right {
     height: 100%;
     position: sticky;
-    top: var(--spacing-32);
+    inset-block-start: var(--spacing-32);
     width: var(--maxWidth-xxs);
-    min-width: var(--maxWidth-xxs);
+    min-inline-size: var(--maxWidth-xxs);
     padding: 0 var(--spacing-8);
-    border-left: 1px solid var(--color-border);
+    border-inline-start: 1px solid var(--color-border);
   }
 }
