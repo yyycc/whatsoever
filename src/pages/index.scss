@@ -1,7 +1,8 @@
 .index {
   display: flex;
   justify-content: center;
-  padding: var(--spacing-16) 0;
+  padding: calc(1rem + 1.5vw) 0;
+
   &-left {
     max-inline-size: var(--maxWidth-4xl);
     width: var(--maxWidth-full);
