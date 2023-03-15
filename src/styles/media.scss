@@ -3,6 +3,11 @@
     blockquote {
       padding: var(--spacing-0) var(--spacing-0) var(--spacing-0) var(--spacing-4);
     }
+  }
+}
+
+@media (max-width: 42rem) and (orientation: portrait) {
+  #___gatsby {
     .gatsby-code-full-btn {
       display: flex;
     }
@@ -68,20 +73,18 @@
 @media (display-mode: minimal-ui) {
   #___gatsby {
     .header-content-title-link {
-      color: var(--color-heading) !important;
+      color: var(--color-heading);
+      &:hover {
+        color: var(--color-primary);
+      }
     }
   }
 }
 
-@media (orientation: portrait) {
+@media (max-height: 30rem) {
   #___gatsby {
-    .gatsby-code-full {
-      transform-origin: top left;
-      transform: rotate(90deg) translateY(-100%);
-      width: 100vh !important;
-      position: absolute;
-      height: 100vw !important;
-      z-index: 4;
+    .header {
+      position: relative;
     }
   }
 }
