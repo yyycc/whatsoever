@@ -1,0 +1,28 @@
+.responsive-h {
+  text-align: center;
+}
+.logical-properties {
+  &-content {
+    &-detail {
+      margin-block-start: var(--spacing-6);
+      display: flex;
+      &-span {
+        margin-inline-start: var(--spacing-20);
+      }
+    }
+  }
+}
+
+.responsive-inputs {
+  display: flex;
+  justify-content: center;
+  margin-block-start: var(--spacing-6);
+  flex-wrap: wrap;
+  &-div {
+    margin-block-start: var(--spacing-6);
+    margin-inline-end: var(--spacing-6);
+    label {
+      margin-inline-end: var(--spacing-6);
+    }
+  }
+}
