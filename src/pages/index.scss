@@ -1,7 +1,7 @@
 .index {
   display: flex;
   justify-content: center;
-  padding: calc(1rem + 1.5vw) 0;
+  padding: clamp(1rem, 1rem + 1.5vw, 2rem) 0;
 
   &-left {
     max-inline-size: var(--maxWidth-4xl);

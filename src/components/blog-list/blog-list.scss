@@ -1,6 +1,6 @@
 .blog-list {
   &-list {
-    margin-block-end: calc(0.75rem + 1vw);
+    margin-block-end: clamp(1rem, 0.75rem + 1vw, 2rem);
     &-title {
       font-size: var(--fontSize-4);
     }
