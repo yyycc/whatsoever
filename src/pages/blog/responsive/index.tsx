@@ -7,20 +7,33 @@ import { useState } from "react"
 
 const Responsive = () => {
   const [direction, setDirection] = useState('ltr')
+  const [writingMode, setWritingMode] = useState('horizontal-tb')
+
   function handleChange(e: string) {
     setDirection(e)
   }
+
+  function handleChangeWritingMode(e: string) {
+    setWritingMode(e)
+  }
+
   return (
     <Layout>
       <h1 className="responsive-h">Responsive Design</h1>
       <div className="logical-properties">
         <div className="logical-properties-select">
-          <Select defaultValue={direction} style={{ width: 120 }}
+          <Select defaultValue={direction} className="logical-properties-select-direction"
                   options={[{ value: 'ltr', label: 'ltr' }, { value: 'rtl', label: 'rtl' }]} onChange={handleChange}/>
+          <Select defaultValue={writingMode}  className="logical-properties-select-writing"
+                  options={[{ value: 'horizontal-tb', label: 'horizontal-tb' }, {
+                    value: 'vertical-rl',
+                    label: 'vertical-rl'
+                  }, { value: 'vertical-lr', label: 'vertical-lr' }]} onChange={handleChangeWritingMode}/>
         </div>
-        <div className="logical-properties-content">
-          <div className="logical-properties-content-title"></div>
-          <div className="logical-properties-content-detail" style={{direction: direction === 'ltr' ? 'ltr': 'rtl'}}>
+        <div className="logical-properties-content"
+             style={{ writingMode: writingMode === 'horizontal-tb' ? 'horizontal-tb' : writingMode === 'vertical-rl' ? 'vertical-rl' : 'vertical-lr' }}>
+          <h2 className="logical-properties-content-title">direction and writing-mode</h2>
+          <div className="logical-properties-content-detail" style={{ direction: direction === 'ltr' ? 'ltr' : 'rtl' }}>
             <StaticImage
               alt="example image"
               src="../../../images/example.jpg"
@@ -32,33 +45,36 @@ const Responsive = () => {
       </div>
 
       <div className="responsive-inputs">
-        <div className="responsive-inputs-div">
-          <label htmlFor="email">Email</label>
-          <input type="email" id="email"/>
-        </div>
-        <div className="responsive-inputs-div">
-          <label htmlFor="number">Number</label>
-          <input type="number" id="number"/>
-        </div>
-        <div className="responsive-inputs-div">
-          <label htmlFor="tel">Tel</label>
-          <input type="tel" id="tel"/>
-        </div>
-        <div className="responsive-inputs-div">
-          <label htmlFor="url">URL</label>
-          <input type="url" id="url"/>
-        </div>
-        <div className="responsive-inputs-div">
-          <label htmlFor="name">Name</label>
-          <input type="text" id="name" autoComplete="name"/>
-        </div>
-        <div className="responsive-inputs-div">
-          <label htmlFor="country">Country</label>
-          <input type="text" id="country" autoComplete="country"/>
-        </div>
-        <div className="responsive-inputs-div">
-          <label htmlFor="email">Email</label>
-          <input type="email" id="email" autoComplete="email"/>
+        <h2 className="responsive-inputs-title">响应式输入框</h2>
+        <div className="responsive-inputs-content">
+          <div className="responsive-inputs-div">
+            <label htmlFor="email">Email</label>
+            <input type="email" id="email"/>
+          </div>
+          <div className="responsive-inputs-div">
+            <label htmlFor="number">Number</label>
+            <input type="number" id="number"/>
+          </div>
+          <div className="responsive-inputs-div">
+            <label htmlFor="tel">Tel</label>
+            <input type="tel" id="tel"/>
+          </div>
+          <div className="responsive-inputs-div">
+            <label htmlFor="url">URL</label>
+            <input type="url" id="url"/>
+          </div>
+          <div className="responsive-inputs-div">
+            <label htmlFor="name">Name</label>
+            <input type="text" id="name" autoComplete="name"/>
+          </div>
+          <div className="responsive-inputs-div">
+            <label htmlFor="country">Country</label>
+            <input type="text" id="country" autoComplete="country"/>
+          </div>
+          <div className="responsive-inputs-div">
+            <label htmlFor="email">Email</label>
+            <input type="email" id="email" autoComplete="email"/>
+          </div>
         </div>
       </div>
     </Layout>

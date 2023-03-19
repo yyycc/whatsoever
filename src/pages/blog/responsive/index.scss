@@ -2,7 +2,20 @@
   text-align: center;
 }
 .logical-properties {
+  &-select {
+    &-direction {
+      inline-size: var(--spacing-32);
+    }
+    &-writing {
+      inline-size: var(--spacing-32);
+      margin-inline-start: var(--spacing-6);
+    }
+  }
   &-content {
+    &-title {
+      border-block-end: 1px solid var(--color-border);
+      padding: var(--spacing-4);
+    }
     &-detail {
       margin-block-start: var(--spacing-6);
       display: flex;
@@ -14,10 +27,16 @@
 }
 
 .responsive-inputs {
-  display: flex;
-  justify-content: center;
-  margin-block-start: var(--spacing-6);
-  flex-wrap: wrap;
+  &-title {
+    border-block-end: 1px solid var(--color-border);
+    padding: var(--spacing-4);
+  }
+  &-content {
+    display: flex;
+    justify-content: center;
+    margin-block-start: var(--spacing-6);
+    flex-wrap: wrap;
+  }
   &-div {
     margin-block-start: var(--spacing-6);
     margin-inline-end: var(--spacing-6);
