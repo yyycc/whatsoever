@@ -13,9 +13,9 @@ css世界的定位和布局机制叫做**文档流**，
 这种效果可能认识css的头两天就发现了，用多了就变成自然而然顺理成章的事情，从未深思过它的内在思想。
 为什么用文档流，为什么能用，能否破坏，它的方向是什么样的，能否改变。
 
-#### 1. 流的破坏
+## 1. 流的破坏
 
-##### 1.1. float
+### 1.1. float
 >浮动的本质就是为了实现文字环绕效果
 
 刚入职那两年，float真的用的很多，我印象中经常复制的一段话就是
@@ -37,7 +37,7 @@ css世界的定位和布局机制叫做**文档流**，
 确实，给每个元素定好宽高，给个float: left，一个个元素像搭积木一样堆起来，确实容易好用，又好理解，至少比流要直观简单多了，但是问题也很多。比如在我用这种布局的时候，经常遇到改个宽度高度，整个结构就崩溃的情况，因为它是没有弹性的。
 好在有了flex这种弹性盒子布局之后，基本上就再也没用过float了。
 
-##### 1.2. BFC
+### 1.2. BFC
 BFC(block formatting context)，块级格式化上下文。在《CSS的世界》中，它被称为**CSS世界的结界**  🔥，
 能实现更健壮更智能的自适应布局。
 >如果一个元素具有 BFC，内部子元素再怎么翻江倒海、翻云覆雨，都不会影响外部的元素。
@@ -64,7 +64,7 @@ BFC的触发条件：
 ![overflow: hidden实现tab切换显示](./flow/overflow-hidden.gif)
 
 
-##### 1.3. position: absolute
+### 1.3. position: absolute
 position: absolute跟float其实很像，都能破坏正常的文档流，都能BFC，都有包裹性(可以看<a href="/blog/css-basic/" target="_blank">css(二) 一些基本概念</a>)，一个div设置了position: absolute后，宽度会缩到刚好包裹住内部所有元素为止。通常我们的header都会用这个属性。
 关于position: absolute有一个问题
 >一个绝对定位元素，没有任何 left/top/right/bottom 属性设置，并且其祖先元素全部都是非定位元素，其位置在哪里?
@@ -88,15 +88,15 @@ height: 300px;
 background-color: #b9f2d8;
 margin: auto;
 ```
-##### 1.4. position: relative & fixed
+### 1.4. position: relative & fixed
 设置了position: relative的元素，可将其移至相对于其原来位置的地方，原来的位置遗留空白区域。他是相对于当前位置定位，不脱离文档流(所以好像不应该放在流的破坏下面说嗷)，不会影响文档中的其他元素。
 >relative 的定位还有另外两点值得一提:相对定位元素的 left/top/right/bottom 的百分比值是相对于包含块计算的，而不是自身。注意，虽然定位位移是相对自身，但是百分比值的计算值不是
 
 fixed更加强势，可以限制absolute的relative也对他毫无办法，唯一可以限制固定定位元素的就是\<html>根元素。
 
-#### 2. 改变流向
+## 2. 改变流向
 
-##### 2.1. direction
+### 2.1. direction
 >direction 属性默认有这么一个特性，即可以改变替换元素或者 inline-block/inline-table 元素的水平呈现顺序。
 
 可以利用这个特性实现下图这种...显示在前面的效果
@@ -105,10 +105,10 @@ fixed更加强势，可以限制absolute的relative也对他毫无办法，唯�
 
 它还有一个黄金搭档unicode-bidi，能够让所有字符按照设置的方向排列。
 
-##### 2.2. writing-mode
+### 2.2. writing-mode
 direction改变的是内联元素的顺序，那么writing-mode则可以对块状元素产生影响，改变整个CSS世界的纵横规则，其设计之初是为了图文排版，而creative的程序员们则利用它的特性创造了许多意想不到的效果，
 ``` css
 writing-mode: tb-rl // 从上到下，从右到左
 ```
 这样就可以将页面默认的水平文档流，变成垂直流，很多只有水平方向适用的规则会变成只在垂直方向上适用。比如：
-margin: auto实现垂直方向上的居中, text-align: center实现图片垂直居中 ,icon旋转效果,在垂直方向自适应布局等等。
+margin: auto实现垂直方向上的居中，text-align: center实现图片垂直居中，icon旋转效果，在垂直方向自适应布局等等。
