@@ -146,6 +146,7 @@ sup {
  */
 
 img {
+  max-inline-size: var(--maxWidth-full);
   border-style: none;
 }
 

@@ -8,7 +8,7 @@ next: 'css-basic'
 prev: 'css'
 ---
 
-css世界的定位和布局机制叫做**文档流**
+css世界的定位和布局机制叫做**文档流**，
 它跟现实世界的水流很相似，将一个块级元素(div)放入容器中，它会像水流一样，自动铺满容器，将内联元素(span)放入，它会依次排列下去，一行放不下了就换下一行。如果整体高度超过容器，就会溢出(overflow)。
 这种效果可能认识css的头两天就发现了，用多了就变成自然而然顺理成章的事情，从未深思过它的内在思想。
 为什么用文档流，为什么能用，能否破坏，它的方向是什么样的，能否改变。
@@ -52,19 +52,20 @@ BFC的触发条件：
 使用这些属性都可以触发BFC，但是他们自身都有一些古怪的特性，能担当布局大任的，总结下来也就所剩不多了：
 - overflow:auto/hidden，适用于 IE7 及以上版本浏览器;
 - display:inline-block，适用于 IE6 和 IE7;
-- display:table-cell，适用于 IE8 及以上版本浏览器。
+- display:table-cell，适用于 IE8 及以上版本浏览器。  
+
 其中overflow表现最佳。
 
 说实在的我对overflow的印象一直都是，内容太多了，我需要滚动条，oh，来个overflow: auto，从来不知道它的结界特性。
 这边还有一个overflow: hidden的小知识:
 元素设置了 overflow:hidden 声明，里面内容高度溢出的时候，滚动依然存在，仅仅滚动条不存在。
-利用这个特性加上锚点定位可是实现图片切换效果
+利用这个特性加上锚点定位可是实现图片切换效果：
 
 ![overflow: hidden实现tab切换显示](./flow/overflow-hidden.gif)
 
 
 ##### 1.3. position: absolute
-position: absolute跟float其实很像，都能破坏正常的文档流，都能BFC，都有包裹性(可以看css(二))，一个div设置了position: absolute后，宽度会缩到刚好包裹住内部所有元素为止。通常我们的header都会用这个属性。
+position: absolute跟float其实很像，都能破坏正常的文档流，都能BFC，都有包裹性(可以看<a href="/blog/css-basic/" target="_blank">css(二) 一些基本概念</a>)，一个div设置了position: absolute后，宽度会缩到刚好包裹住内部所有元素为止。通常我们的header都会用这个属性。
 关于position: absolute有一个问题
 >一个绝对定位元素，没有任何 left/top/right/bottom 属性设置，并且其祖先元素全部都是非定位元素，其位置在哪里?
 
@@ -110,7 +111,4 @@ direction改变的是内联元素的顺序，那么writing-mode则可以对块�
 writing-mode: tb-rl // 从上到下，从右到左
 ```
 这样就可以将页面默认的水平文档流，变成垂直流，很多只有水平方向适用的规则会变成只在垂直方向上适用。比如：
-margin: auto实现垂直方向上的居中
-text-align: center实现图片垂直居中
-icon旋转效果
-在垂直方向自适应布局等等
+margin: auto实现垂直方向上的居中, text-align: center实现图片垂直居中 ,icon旋转效果,在垂直方向自适应布局等等。
