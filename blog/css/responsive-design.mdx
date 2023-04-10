@@ -132,7 +132,7 @@ aspect-ratio，根据你页面的宽高比来设置不同样式，和width/heigh
 ### 逻辑属性
 
 通常情况下我们的页面布局是从左至右，从上至下的，因为这是我们的一般阅读顺序，但还是是有很多国家地区的阅读顺序并不是这样，有从上至下，从右至左的。  
-在<a href="https://www.whyyy.net/blog/css-flow/#22-writing-mode" target="_blank">css（一）文档流</a>的改变流向部分介绍过:  
+在<a href="/blog/css-flow/#22-writing-mode" target="_blank">css（一）文档流</a>的改变流向部分介绍过:  
 direction可以改变替换元素或者 inline-block/inline-table 元素的水平呈现顺序，默认是ltr(从左到右)。  
 writing-mode可以改变css世界的纵横规则。它的默认值是horizontal-tb，也就是文本流(inline)是水平方向(horizontal)的，元素(block)是从上往下(tb:top-bottom)堆叠的。
 如果改成vertical-rl，就变成垂直方向的文本流，从右至左堆叠。写了个<a target="_blank" href="/blog/responsive">demo</a>，可以选择不同属性值看看效果。
@@ -252,7 +252,7 @@ article {
 
 ### line height
 
-line-height这个属性，我在<a href="https://www.whyyy.net/blog/css-line-height/#1-line-height%E4%B8%8Efont-size" target="_blank">
+line-height这个属性，我在<a href="/blog/css-line-height/#1-line-height%E4%B8%8Efont-size" target="_blank">
 css（七）font-size与line-height与vertical-align</a>中介绍过，
 它用来设置行高，也就是每一行的文本+行间距的高度，它跟文本大小应该是密切相关的。所以虽然它可以使用px作为单位，但是要做好响应式，请一定使用数字，避免行之间太过密集或者稀疏。
 
@@ -409,7 +409,7 @@ source中也支持srcset属性，当这个source满足条件是，浏览器会�
 ```
 
 你还可以把fill值设置为currentColor，这样就可以通过color属性来控制颜色。  
-之前写过一个目前项目中使用icon的方案，可以参考一下: <a href="https://www.jianshu.com/p/d1766a71c9fe" target="_blank">如何展示一个icon</a>。
+之前写过一个目前项目中使用icon的方案，可以参考一下: <a href="/blog/css-icon" target="_blank">如何展示一个icon</a>。
 
 当界面足够大，icon+文字来描述一个功能是最佳选择，但是当界面比较小，不足以承载详细的文字描述时，就需要使用icon来代替文字了。
 这种情况你必须考虑到icon的可读性，因为用户可能无法通过icon来理解功能。  
