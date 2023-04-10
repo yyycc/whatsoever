@@ -66,10 +66,10 @@ html的标签有很多，像常见的\<div>、\<span>、\<li>等等，通常分�
 - border box
 - margin box
   
-很多时候我们给元素设置宽高，但最终发现真是高度跟设置的可能不一样，就是因为宽高作用在不同盒子上导致的。  
+很多时候我们给元素设置宽高，但最终发现真实高度跟设置的可能不一样，就是因为宽高作用在不同盒子上导致的。  
 按照一般的思维，设置了30px的宽度，应该是连同border、padding、content一起30px，但如果box-sizing设置为content-box(浏览器默认就是content-box)，那么width就只作用在content上，如果外面还有border、padding，那么实际尺寸肯定会比设定要大。  
 我们可以通过宽度分离的方式来解决，也就是把width跟border、padding分开来，给width多一层标签。  
-另外就是可以给box-sizing设置border-box，书中评价了\{box-sizing:border-box}这种做法，认为：
+另外就是可以给box-sizing设置border-box，书中评价了* \{box-sizing:border-box}这种做法，认为：
 1. 这种做法易产生没必要的消耗
 2. 这种做法并不能解决所有问题
 
