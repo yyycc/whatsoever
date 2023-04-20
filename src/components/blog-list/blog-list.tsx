@@ -7,14 +7,18 @@ import './blog-list.scss'
 import { IFrontmatter, INode } from "../data"
 import { useEffect } from "react"
 
-const BlogList = ({ tag, folder, setTotal }: Partial<IFrontmatter> & { setTotal?: (total: number) => void }) => {
+const BlogList = ({ tag, date, folder, setTotal }: Partial<IFrontmatter> & { setTotal?: (total: number) => void }) => {
   const data = UseBlogHome()
   const { nodes } = data.allMdx
   const displayList = nodes.filter(
-    (node: INode) => (!tag || node.frontmatter.tag === tag) && (!folder || node.frontmatter.folder?.indexOf(folder) > -1)
+    (node: INode) =>
+      (!tag || node.frontmatter.tag === tag)
+      && (!date || node.frontmatter.date.indexOf(date) > -1)
+      && (!folder || node.frontmatter.folder?.indexOf(folder) > -1)
   )
   useEffect(() => {
     setTotal && setTotal(displayList.length)
+    window.scroll(0, 0)
   }, [displayList.length])
 
   return (

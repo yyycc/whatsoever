@@ -15,6 +15,22 @@ export function getArrayWithCount(data: string[], withTotalCount = false) {
   return res
 }
 
+export function getMonthArrayWithCount(data: string[], withTotalCount = false) {
+  const res: { [key: string]: any } = {}
+  if (withTotalCount) {
+    res[ALL_TAGS] = data.length
+  }
+  data.forEach(ele => {
+    const month = ele.slice(0, 7)
+    if (res[month]) {
+      res[month]++
+    } else {
+      res[month] = 1
+    }
+  })
+  return res
+}
+
 export function spaceToHyphen(str: String) {
   return str.replaceAll(' ', '-').toLowerCase()
 }

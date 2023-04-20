@@ -15,7 +15,7 @@ const Category = ({ tag, setTag, data }: Partial<IFrontmatter> & { setTag: (tag:
       </div>
       <div className="category-list">
         {Object.keys(tagsInfo).map(info => {
-          return <div key={info} onClick={() => setTag(info === ALL_TAGS ? '' : info)}
+          return <div key={info} onClick={() => setTag( info === tag || info === ALL_TAGS ? '' : info)}
                       className={["category-list-line", info === tag ? "category-list-line-active" : ''].join(' ')}>
             <div className="category-list-line-tag">{info}</div>
             <div className="category-list-line-count">{`(${tagsInfo[info]})`}</div>

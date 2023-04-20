@@ -8,9 +8,11 @@ import './index.scss'
 import UseBlogHome from "../hooks/use-blog-home"
 import UseSiteMetadata from "../hooks/use-site-metadata"
 import BlogList from "../components/blog-list/blog-list"
+import Timeline from "../components/timeline/timeline"
 
 const IndexPage = () => {
   const [tag, setTag] = useState('')
+  const [date, setDate] = useState('')
   const data = UseBlogHome()
   const siteMetadata = UseSiteMetadata()
   const { nodes } = data.allMdx
@@ -18,11 +20,12 @@ const IndexPage = () => {
     <Layout>
       <div className="index">
         <div className="index-left">
-          <BlogList tag={tag}/>
+          <BlogList tag={tag} date={date}/>
         </div>
         <div className="index-right">
           <Info data={siteMetadata}/>
           <Category tag={tag} setTag={setTag} data={nodes}/>
+          <Timeline date={date} setDate={setDate} data={nodes}/>
         </div>
       </div>
     </Layout>

@@ -1,17 +1,21 @@
 ---
-title: "Array.sort"
-date: "2022-04-19"
+title: "你不了解的Array.sort"
+date: "2023-04-19"
 slug: "js-sort"
 tag: "JavaScript"
 folder: "Front End"
 next: 'css-responsive'
 ---
 
+## Before
+在js中，一切排序都可以通过Array.sort方法来实现，你可能不曾注意到，在不同浏览器中，它的表现可能不一致。
+
 ## 问题
 今天遇到了一个在Firefox浏览器上出现的bug，有一个对象数组，需要按照其id是否存在与另一个数组中进行排序，在chrome上是正常的，
 但在FireFox上就颠倒了。
 
 ```js
+// topics是待排序的对象数组
 const sortedTopics = topcis
 ?.sort((a) => {
   if (currentTopics?.some?.((ele) => id === a.id)) {
