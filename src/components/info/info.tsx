@@ -1,6 +1,6 @@
 import { StaticImage } from "gatsby-plugin-image"
 import * as React from "react"
-import { GithubOutlined, MailOutlined } from '@ant-design/icons'
+import { GithubOutlined, MailOutlined, FileUnknownOutlined } from '@ant-design/icons'
 import './info.scss'
 import { IMetadata } from "../data"
 
@@ -22,6 +22,9 @@ const Info = ({ data }: { data: IMetadata }) => {
         </a>
         <a href={`mailto:${email}`} className="info-media-icon">
           <MailOutlined />
+        </a>
+        <a href='./about' className="info-media-icon">
+          <FileUnknownOutlined />
         </a>
       </div>
     </div>
