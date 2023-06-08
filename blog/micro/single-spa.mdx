@@ -4,6 +4,7 @@ date: "2022-08-31"
 slug: "micro-single-spa"
 tag: "micro"
 folder: "Front End"
+prev: "micro-wujie"
 ---
 
 ## Before
@@ -163,7 +164,15 @@ if (isInBrowser) {
   window.addEventListener("hashchange", urlReroute);
   window.addEventListener("popstate", urlReroute);
 ```
-至此，url改变的整条路就都找到啦。  
+至此，url改变的整条路就都找到啦，来总结一下整条路径：
+1. removeUrlQuery方法中执行了window.history.pushState
+2. single-spa代理了pushState方法，执行了patchUpdateState方法
+3. patchUpdateState方法中通过window.dispatchEvent执行了一个自定义事件popstate
+4. single-spa中通过window.addEventListener监听了popstate事件，回调函数是urlReroute
+5. 最后执行到callCapturedEventListeners中，执行了所有监听popstate事件的方法
+6. vue-router中监听了popstate方法执行handleRoutingEvent，最终执行了pushState，将url又改回了urlA
+
+### 2.4. 解决方案
 结合项目具体的问题，只需要在router.beforeEach中判断增加判断，如果前后path相同则直接return即可。
 ```js
 router.beforeEach(async (to, from, next) => {
@@ -183,8 +192,15 @@ router.beforeEach(async (to, from, next) => {
 - 常用api熟悉(dispatchEvent、PopStateEvent、addEventListener)
 - this指向
 
-如果这些都能够熟练掌握，相信下次debugger一定不会再束手无策啦～～
+如果这些都能够熟练掌握，相信下次debugger一定不会再束手无策啦～～  
+
+## 4. 后记  
+2023-06学习无界(微前端框架)的时候，又一次遇到了这个问题，项目中引入了single-spa，当使用无界的路由同步(sync)时，
+浏览器前进后退无效，切换到其他路由时，路由上的query内容始终存在。
+再一次debugger发现是同样的原因，single-spa中出发了所有监听popstate事件的方法，而无界中监听了popstate方法去实现路由同步(syncUrlToWindow)，
+这就导致在正常切换路由并不需要执行路由同步时，无界仍执行了syncUrlToWindow，所以路由上的query无法改变。
 
 ## Reference
 [1. package.json 中 你还不清楚的 browser，module，main 字段优先级](https://github.com/SunshowerC/blog/issues/8)  
-[2. 微前端 | 5. single-spa 的生命周期和事件管理](https://zhuanlan.zhihu.com/p/144537631)
+[2. 微前端 | 5. single-spa 的生命周期和事件管理](https://zhuanlan.zhihu.com/p/144537631)  
+[3. 无界 - 路由同步](https://wujie-micro.github.io/doc/guide/sync.html)
