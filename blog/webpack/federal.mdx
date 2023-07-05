@@ -25,7 +25,7 @@ module.exports = {
     new ModuleFederationPlugin({
       name: 'main',
       remotes: {
-          'sub': 'sub1@http://localhost:8081/remoteEntrySub.js'
+          'sub': 'sub@http://localhost:8080/remoteEntrySub.js'
       },
       shared: ['lodash', 'md5']
     }),
@@ -139,8 +139,8 @@ ContainerPlugin还监听了thisCompilation，在这里将\*\*Dependencies 和对
 在介绍这个插件之前须得先介绍一下作为host如何使用remote。  
 远程模块不属于当前的构建，它的加载是作为一个异步操作被放置在远程模块和入口之间的下一个chunk的加载操作中，所以有chunk加载才能实现使用远程模块的功能。  
 那么如何能有加载chunk的过程呢，就是通过import()引入模块。
-所以你需要在入口文件中调用import('./bootstrap.js')，在js文件中去调用远程模块，比如要调用示例中的远程模块:
-```js
+所以你需要在入口文件中调用import("./sub/fed.js")，在js文件中去调用远程模块，比如要调用示例中的远程模块:
+```js:title=src/sub/fed.js
 import { getTheDaysOfTheYear } from 'sub/time'
 ```
 来看ContainerReferencePlugin的apply方法:
