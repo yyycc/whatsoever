@@ -1,0 +1,116 @@
+---
+title: "TypeScript基本概念之 -- 范型"
+date: "2022-03-10"
+slug: "ts-generics"
+tag: "TypeScript"
+folder: "Front End"
+next: 'ts'
+prev: 'ts-www'
+---
+
+## Before
+当你希望你的函数或类支持多种数据类型，那么就可以用到泛型，对于函数重载，如果想要一个函数支持所有数据类型，使用函数重载如下：
+``` ts
+function log(value: any) {
+  console.log(value)
+  return value
+}
+```
+但是这个过程丢失了一些信息，就是类型之间的约束关系，比如输入参数和返回值类型必须一致就无法通过这种写法进行约束。
+
+> 泛型(Generics)：不预先确定的数据类型，具体的类型在使用的时候才能确定。
+
+## 1. 泛型函数
+``` ts
+function log<T>(value: T): T {
+  console.log(value);
+  return value;
+}
+```
+调用方式，可以直接指明T的类型，也可以利用ts的类型推断，省略类型参数，推荐后者。
+``` ts
+log<String[]>(["a"]);
+log("a"); // 推荐
+```
+### 1.1. 泛型函数类型
+``` ts
+type Log = <T>(value: T) => T
+function log<T>(value: T): T {
+  return value;
+}
+const myLog: Log = log // 泛型函数实现
+```
+
+## 2. 泛型接口
+``` ts
+// 泛型接口，与上面的type Log是完全等价的
+interface Log1 {
+  <T>(value: T): T
+}
+function log1<T>(value: T): T {
+  return value;
+}
+const myLog1: Log1 = log1
+```
+还可以用泛型来约束接口的其它成员
+``` ts
+interface Log2<T> {
+  (value: T): T
+}
+```
+约束整个接口时，实现起来就必须指定类型或者在接口定义中给默认类型
+``` ts
+interface Log2<T> {
+  (value: T): T
+}
+function log2<T>(value: T): T {
+  return value;
+}
+const myLog2: Log2<number> = log2;
+// OR
+interface Log3<T = string> {
+  (value: T): T,
+}
+function log3<T>(value: T): T {
+  return value;
+}
+const myLog3: Log3 = log3
+```
+## 3. 泛型类
+- 泛型约束类的成员
+- 不能应用于类的静态成员
+``` ts
+class Log4<T> {
+  run(value: T) {
+    console.log(value)
+    return value
+  }
+}
+const log4 = new Log4<number>() // 显示传入类型
+log4.run(4)
+const log5 = new Log4() // 不显示指定类型
+log5.run('4') // value可以为任意类型
+```
+
+## 4. 泛型约束
+当我们希望传入的类型是有某些特定属性时，我们就需要用到类型约束
+预定义Length接口，让类型T继承这个接口，那么输入的参数可以是任意类型，但必须具有length属性
+``` ts
+interface Length {
+  length: number
+}
+function log6<T extends Length>(value: T): T {
+  console.log(value, value.length);
+  return value;
+}
+
+log6('2')
+log6([1, 3])
+log6({length: 2})
+log6({ name: 'log6' }) // Argument of type '{ name: string; }' is not assignable to parameter of type 'Length'
+```
+
+## 4. 总结
+- 使用泛型可以使函数和类支持多种数据类型，增强程序的扩展性
+- 不必写多条函数重载，冗长的联合类型生命，增强代码可读性
+- 灵活控制类型之间的约束
