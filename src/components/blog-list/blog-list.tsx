@@ -14,7 +14,7 @@ const BlogList = ({ tag, date, folder, setTotal }: Partial<IFrontmatter> & { set
     (node: INode) =>
       (!tag || node.frontmatter.tag === tag)
       && (!date || node.frontmatter.date.indexOf(date) > -1)
-      && (!folder || node.frontmatter.folder?.indexOf(folder) > -1)
+      && (!folder || node.frontmatter.folder?.indexOf(folder) > -1),
   )
   useEffect(() => {
     setTotal && setTotal(displayList.length)
@@ -22,24 +22,22 @@ const BlogList = ({ tag, date, folder, setTotal }: Partial<IFrontmatter> & { set
   }, [displayList.length])
 
   return (
-    <div className="blog-list">
+    <>
       {displayList.map((ele: INode) => {
         return <div key={ele.frontmatter.slug} className="blog-list-list">
-          <div className="blog-list-list-title">
-            <Link to={`/blog/${ele.frontmatter.slug}`}>
-              {ele.frontmatter.title}
-            </Link>
-          </div>
-          <Space size="middle" className="blog-list-list-infos">
-            <Space className="blog-list-list-infos__space">
+          <Link to={`/blog/${ele.frontmatter.slug}`}>
+            {ele.frontmatter.title}
+          </Link>
+          <div className="blog-list-list-infos">
+            <div className="blog-list-list-infos__space">
               <CalendarOutlined/>
               {ele.frontmatter.date}
-            </Space>
-            <Space className="blog-list-list-infos__space">
+            </div>
+            <div className="blog-list-list-infos__space">
               <TagOutlined/>
               {ele.frontmatter.tag}
-            </Space>
-          </Space>
+            </div>
+          </div>
           <div className="blog-list-list-excerpt">
             {ele.excerpt.replace('Before ', '')}
           </div>
@@ -51,7 +49,7 @@ const BlogList = ({ tag, date, folder, setTotal }: Partial<IFrontmatter> & { set
           </div>
         </div>
       })}
-    </div>
+    </>
   )
 }
 

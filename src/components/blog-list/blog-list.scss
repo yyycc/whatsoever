@@ -1,7 +1,7 @@
 .blog-list {
   &-list {
     margin-block-end: clamp(1rem, 0.75rem + 1vw, 2rem);
-    &-title {
+    > a {
       font-size: var(--fontSize-4);
     }
     &-infos {
@@ -9,8 +9,12 @@
       margin-block-start: var(--spacing-1);
       display: flex;
       align-items: center;
+      gap: 16px;
       &__space {
+        font-size: 14px;
         display: flex;
+        align-items: center;
+        gap: 8px;
       }
     }
     &-excerpt {
