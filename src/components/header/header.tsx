@@ -5,7 +5,7 @@ import { Dropdown, Space } from "antd"
 import { DownOutlined, MenuOutlined } from '@ant-design/icons'
 import { spaceToHyphen } from "../../utils/common"
 import { IFrontmatter } from "../data"
-import type { MenuProps } from 'antd';
+import type { MenuProps } from 'antd'
 
 const Header = ({ title, blogData }: { title: string, blogData: Array<{ frontmatter: IFrontmatter }> }) => {
   const allFolders: IFrontmatter[] = blogData.map(ele => ({
@@ -45,13 +45,13 @@ const Header = ({ title, blogData }: { title: string, blogData: Array<{ frontmat
           key: tag,
           label: (
             <Link to={`/blog/${spaceToHyphen(order)}/${tag}`}>{tag}</Link>
-          )
+          ),
         })
       })
       multiItems.push({
         key: order,
         label: order,
-        children
+        children,
       })
     }
   })
@@ -65,12 +65,12 @@ const Header = ({ title, blogData }: { title: string, blogData: Array<{ frontmat
         </div>
         <div className="header-content-nav">
           {orderedShow.map(folder => {
-            const data = showFolders[folder]
+            const data = showFolders[folder].filter(ele => !ele.folder?.includes('$'))
             const tags: string[] = [...new Set(data.map((ele: IFrontmatter) => ele.tag))]
             const items = tags.map((ele: string) => ({
               key: ele, label: (
                 <Link to={`/blog/${spaceToHyphen(folder)}/${ele}`}>{ele}</Link>
-              )
+              ),
             }))
             if (folder.indexOf('$') > -1) {
               const singleFolder = folder.replace('$', '')
