@@ -3,10 +3,12 @@ import { CalendarOutlined } from '@ant-design/icons'
 import './timeline.scss'
 import { getMonthArrayWithCount } from "../../utils/common"
 import { IFrontmatter, INode } from "../data"
+import { useState } from 'react'
 
-const Timeline = ({ date, setDate, data }: Partial<IFrontmatter> & { setDate: (date: string) => void, data: INode[] }) => {
-  const dates = data.map(ele => ele.frontmatter.date)
+const Timeline = ({ date, setDate, data }: Partial<IFrontmatter> & { setDate: (date: string) => void }) => {
+  const dates = (data || []).map(ele => ele.frontmatter.date)
   const datesInfo = getMonthArrayWithCount(dates, false)
+  const [clickTimes, changeClickTimes] = useState(0)
   return (
     <div className="timeline">
       <div className="timeline-title">
@@ -21,6 +23,10 @@ const Timeline = ({ date, setDate, data }: Partial<IFrontmatter> & { setDate: (d
             <div className="timeline-list-line-count">{`(${datesInfo[info]})`}</div>
           </div>
         })}
+        <div className="timeline-list-line" onClick={() => changeClickTimes(clickTimes+1)}>
+          <div className="timeline-list-line-tag">1994-12</div>
+          {clickTimes === 4 && <a href="/blog/stories">-15</a>}
+        </div>
       </div>
     </div>
   )

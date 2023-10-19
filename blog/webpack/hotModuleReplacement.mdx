@@ -1,5 +1,5 @@
 ---
-title: "热更新"
+title: "热更新原理解析"
 date: "2023-09-20"
 slug: "webpack-hot-module-replacement"
 tag: "webpack"
@@ -349,7 +349,21 @@ if (module.hot) {
   });
 }
 ```
-./hello.js作为key，回调函数作为value存放在hot._acceptedDependencies中。
+./hello.js作为key，回调函数作为value存放在hot._acceptedDependencies中。  
+当然开发时不可能每个文件里面都去写module.hot.accept，一般框架都会帮你把这部分代码一起打包到js中。
+
+## 总结
+对整个热更新流程做一个简单的总结：  
+
+通过fs.watch监听文件修改，在回调函数中进行再次编译，将新的模块js代码写入内存中，同时生成一个新的hash。  
+启动阶段，webpack-dev-server会建立一个ws服务。客户端连接ws服务的代码被一起打包在输出js中，在访问界面后执行(可以在network中查看到)。  
+服务端通过ws将新的hash值发送给客户端（浏览器），最后发送一个ok消息，客户端收到ok消息，执行reloadApp方法。  
+reloadApp中通过webpack/hot/emitter将新的hash告知webpack，webpack中执行module.hot.check方法，这些也都打包在输出js中。  
+执行check方法，fetch到\[hash\].json文件得到一个key，在通过jsonp方式请求\[key\].\[hash\].js并执行。这样modules中的模块就是更新后的代码。  
+后续会通过被修改module的key，在module.hot._acceptedDependencies找到回调函数并执行，从而完成对界面的更新。  
+而这对key、value是通过module.hot.accept方法进行存储的，一般框架都会把这段代码打包进输出js中，如果没有使用框架，
+那么就需要手动在需要热更新的模块中添加这段调用module.hot.accept方法的代码。
+
 
 
 ## Reference
@@ -359,3 +373,5 @@ if (module.hot) {
 [4. 搞懂webpack热更新原理](https://github.com/careteenL/webpack-hmr)  
 [5. 4-5 使用自动刷新](https://webpack.wuhaolin.cn/4%E4%BC%98%E5%8C%96/4-5%E4%BD%BF%E7%94%A8%E8%87%AA%E5%8A%A8%E5%88%B7%E6%96%B0.html)  
 [6. 基于Node.js实现WebSocket 服务器](https://www.cnblogs.com/peterYong/p/14954937.html)  
+[7. 10-Vite 中的 HMR 热更新](https://www.bilibili.com/video/BV1bg411x7Ln/?spm_id_from=333.337.search-card.all.click&vd_source=a0d4c30f37c92adbf6483ef06ed749ba)
+[8. Webpack 原理系列十：HMR 原理全解析](https://juejin.cn/post/7021729340945596424)

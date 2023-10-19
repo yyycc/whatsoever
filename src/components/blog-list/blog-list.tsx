@@ -1,16 +1,14 @@
 import * as React from "react"
+import { useEffect } from "react"
 import UseBlogHome from "../../hooks/use-blog-home"
 import { Link } from "gatsby"
-import { Space } from "antd"
 import { CalendarOutlined, DoubleRightOutlined, TagOutlined } from "@ant-design/icons"
 import './blog-list.scss'
 import { IFrontmatter, INode } from "../data"
-import { useEffect } from "react"
 
-const BlogList = ({ tag, date, folder, setTotal }: Partial<IFrontmatter> & { setTotal?: (total: number) => void }) => {
-  const data = UseBlogHome()
-  const { nodes } = data.allMdx
-  const displayList = nodes.filter(
+const BlogList = ({ tag, date, folder, setTotal, data }: Partial<IFrontmatter> & { setTotal?: (total: number) => void }) => {
+  const allData = data || UseBlogHome().allMdx.nodes
+  const displayList = allData.filter(
     (node: INode) =>
       (!tag || node.frontmatter.tag === tag)
       && (!date || node.frontmatter.date.indexOf(date) > -1)
@@ -39,7 +37,7 @@ const BlogList = ({ tag, date, folder, setTotal }: Partial<IFrontmatter> & { set
             </div>
           </div>
           <div className="blog-list-list-excerpt">
-            {ele.excerpt.replace('Before ', '')}
+            {ele.excerpt?.replace('Before ', '')}
           </div>
           <div className="blog-list-list-read">
             <Link to={`/blog/${ele.frontmatter.slug}`}>

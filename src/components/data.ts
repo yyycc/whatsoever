@@ -10,6 +10,7 @@ export interface IFrontmatter {
   slug: string
   date: string
   title: string
+  data: INode[]
   prev?: string
   next?: string
 }

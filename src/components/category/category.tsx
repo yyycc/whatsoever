@@ -2,10 +2,10 @@ import * as React from 'react'
 import { FolderOpenOutlined } from '@ant-design/icons'
 import './category.scss'
 import { ALL_TAGS, getArrayWithCount } from "../../utils/common"
-import { IFrontmatter, INode } from "../data"
+import { IFrontmatter } from "../data"
 
-const Category = ({ tag, setTag, data }: Partial<IFrontmatter> & { setTag: (tag: string) => void, data: INode[] }) => {
-  const tags = data.map(ele => ele.frontmatter.tag)
+const Category = ({ tag, setTag, data }: Partial<IFrontmatter> & { setTag: (tag: string) => void }) => {
+  const tags = (data || []).map(ele => ele.frontmatter.tag)
   const tagsInfo = getArrayWithCount(tags, true)
   return (
     <div className="category">

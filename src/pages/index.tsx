@@ -15,12 +15,12 @@ const IndexPage = () => {
   const [date, setDate] = useState('')
   const data = UseBlogHome()
   const siteMetadata = UseSiteMetadata()
-  const { nodes } = data.allMdx
+  const nodes = data.allMdx.nodes.filter(ele => ele.frontmatter.tag !== 'stories')
   return (
     <Layout>
       <div className="index">
         <div className="index-left">
-          <BlogList tag={tag} date={date}/>
+          <BlogList tag={tag} date={date} data={nodes}/>
         </div>
         <div className="index-right">
           <Info data={siteMetadata}/>
