@@ -95,9 +95,14 @@ const newChildren = [
 如果新头与旧尾相同，那么就复用这个节点，并且移动节点，再移动指针，旧头与新尾同理。  
 每次循环比较4个节点，减少需要移动的次数，弥补了简单diff的不足。
 
+## 总结
+虚拟DOM有很多的优点，但是你很难说哪个优点是这些框架选择使用虚拟DOM的的根本原因，现在也有一些框架不使用虚拟DOM，比如svelte。
+直接将数据与真实DOM进行映射，在编译阶段将需要做的更新计算出来，来获得更高的性能。
+
 
 ## Reference
 [1. Virtual DOM is pure overhead](https://www.svelte.cn/blog/virtual-dom-is-pure-overhead)  
 [2. 虚拟 DOM 到底是什么？](https://juejin.cn/post/6844903870229905422)  
 [3. 网上都说操作真实 DOM 慢，但测试结果却比 React 更快，为什么？](https://www.zhihu.com/question/31809713/answer/53544875)  
 [4. 面试官：你了解vue的diff算法吗？说说看](https://vue3js.cn/interview/vue/diff.html)
+[5. 新兴前端框架 Svelte 从入门到原理](https://zhuanlan.zhihu.com/p/350507037)
