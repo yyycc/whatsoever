@@ -95,27 +95,27 @@ const newChildren = [
 如果新头与旧尾相同，那么就复用这个节点，并且移动节点，再移动指针，旧头与新尾同理。  
 每次循环比较4个节点，减少需要移动的次数，弥补了简单diff的不足。
 
-## 区分动静节点
+## 编译优化
 diff算法会遍历节点进行对比，但其实很多节点是不会改变的，像下面这段template，会有更新的就只有第二个p子节点，其他的节点都是静态节点。
 所以遍历所有节点会有很多不必要的消耗。  
 ```html
 <template>
-    <div>
-        <p>hello world</p>
-        <p>{{ name }}</p>
-    </div>
+  <div>
+    <p>hello world</p>
+    <p>{{ name }}</p>
+  </div>
 </template>
 ```
-vue3在编译阶段做了很多事情，它会充分分析模板，提取关键信息负加在对应的虚拟节点上，从而在运行阶段，渲染器能够通过这些附加的信息提升性能。  
-首先它对动静节点作了区分，还对静态节点做了提升。这样静态节点就只会被创建一次，在以后得每次渲染中都可以直接被重用，而不需要多次创建。
+vue3在编译阶段做了很多事情，它会充分分析模板，提取关键信息负加在对应的虚拟节点上，从而在运行阶段，渲染器能够通过这些附加的信息找到最优路径。    
+首先它对动静节点作了区分，对静态节点做了提升(hoisted)。这样静态节点就只会被创建一次，后续的每次渲染中都可以直接被重用，而不需要多次创建。
 ```js
 import { createElementVNode as _createElementVNode } from "vue"
 const _hoisted_1 = /*#__PURE__*/_createElementVNode("p", null, "hello world", -1 /* HOISTED */)
 ```
 vue3还提出了block的概念，它本质上也是一个虚拟节点，但是多了一个dynamicChildren数组，用来收集所有的动态子代节点，
-使得动态节点的对比可以忽略DOM层级结构(需要使v-if和v-for节点也作为Block)。  
-对于动态节点，还会额外打一个patchFlag标记，用于记录节点的动态内容。比如上面这个template的第二个p节点就会被打伤标记1，代表有动态的textContent。  
-这样在运行阶段，这个节点的其他属性(如果有的话)就不需要在进行对比。
+使得动态节点的对比可以忽略DOM层级结构(v-if和v-for节点也作为Block)。  
+对于动态节点，还会额外打一个patchFlag标记，用于记录节点的动态内容。比如上面这个template的第二个p节点就会被打上标记1，代表有动态的textContent。  
+这样在运行阶段，就不需要再对这个节点的其他属性进行对比。
 ```js
 import { createElementVNode as _createElementVNode, toDisplayString as _toDisplayString, openBlock as _openBlock, createElementBlock as _createElementBlock } from "vue"
 export function render(_ctx, _cache, $props, $setup, $data, $options) {
