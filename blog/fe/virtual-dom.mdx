@@ -37,7 +37,7 @@ const vnode = {
     <p>hello world</p>
 </div>
 ```
-所以说白了虚拟DOM就是一个JavaScript对象。
+所以说白了虚拟DOM就是一个JavaScript对象，而在运行的时候，渲染器会遍历整颗虚拟DOM树来构建真实的DOM树，这个过程被称之为挂载(mount)。
 
 ## 为什么要使用虚拟DOM
 关于为何要使用虚拟DOM，我一直以来的答案都是：操作真实的DOM慢，而操作JavaScript对象非常快。  
@@ -49,7 +49,7 @@ const vnode = {
 
 ### 跨平台
 虚拟DOM可以非常方便的实现跨平台，比如React Native就是通过虚拟DOM来实现的。  
-Vue中的渲染器可以被看做是一个通用的渲染器，所有平台相关的操作都作为参数传入渲染器生成器中(createRenderer)，
+Vue中的渲染器可以被看做是一个通用的渲染器，所有平台相关的操作都作为参数传入渲染器生成器中(<a href="https://cn.vuejs.org/api/custom-renderer.html" target="_blank">createRenderer</a>)，
 生成器自身就封装所有通用的方法，比如diff算法等等。
 
 ### 编程方式
@@ -95,6 +95,37 @@ const newChildren = [
 如果新头与旧尾相同，那么就复用这个节点，并且移动节点，再移动指针，旧头与新尾同理。  
 每次循环比较4个节点，减少需要移动的次数，弥补了简单diff的不足。
 
+## 区分动静节点
+diff算法会遍历节点进行对比，但其实很多节点是不会改变的，像下面这段template，会有更新的就只有第二个p子节点，其他的节点都是静态节点。
+所以遍历所有节点会有很多不必要的消耗。  
+```html
+<template>
+    <div>
+        <p>hello world</p>
+        <p>{{ name }}</p>
+    </div>
+</template>
+```
+vue3在编译阶段做了很多事情，它会充分分析模板，提取关键信息负加在对应的虚拟节点上，从而在运行阶段，渲染器能够通过这些附加的信息提升性能。  
+首先它对动静节点作了区分，还对静态节点做了提升。这样静态节点就只会被创建一次，在以后得每次渲染中都可以直接被重用，而不需要多次创建。
+```js
+import { createElementVNode as _createElementVNode } from "vue"
+const _hoisted_1 = /*#__PURE__*/_createElementVNode("p", null, "hello world", -1 /* HOISTED */)
+```
+vue3还提出了block的概念，它本质上也是一个虚拟节点，但是多了一个dynamicChildren数组，用来收集所有的动态子代节点，
+使得动态节点的对比可以忽略DOM层级结构(需要使v-if和v-for节点也作为Block)。  
+对于动态节点，还会额外打一个patchFlag标记，用于记录节点的动态内容。比如上面这个template的第二个p节点就会被打伤标记1，代表有动态的textContent。  
+这样在运行阶段，这个节点的其他属性(如果有的话)就不需要在进行对比。
+```js
+import { createElementVNode as _createElementVNode, toDisplayString as _toDisplayString, openBlock as _openBlock, createElementBlock as _createElementBlock } from "vue"
+export function render(_ctx, _cache, $props, $setup, $data, $options) {
+  return (_openBlock(), _createElementBlock("div", null, [
+    _hoisted_1,
+    _createElementVNode("p", null, _toDisplayString(_ctx.name), 1 /* TEXT */)
+  ]))
+}
+```
+
 ## 总结
 虚拟DOM有很多的优点，但是你很难说哪个优点是这些框架选择使用虚拟DOM的的根本原因，现在也有一些框架不使用虚拟DOM，比如svelte。
 直接将数据与真实DOM进行映射，在编译阶段将需要做的更新计算出来，来获得更高的性能。
@@ -104,5 +135,6 @@ const newChildren = [
 [1. Virtual DOM is pure overhead](https://www.svelte.cn/blog/virtual-dom-is-pure-overhead)  
 [2. 虚拟 DOM 到底是什么？](https://juejin.cn/post/6844903870229905422)  
 [3. 网上都说操作真实 DOM 慢，但测试结果却比 React 更快，为什么？](https://www.zhihu.com/question/31809713/answer/53544875)  
-[4. 面试官：你了解vue的diff算法吗？说说看](https://vue3js.cn/interview/vue/diff.html)
+[4. 面试官：你了解vue的diff算法吗？说说看](https://vue3js.cn/interview/vue/diff.html)  
 [5. 新兴前端框架 Svelte 从入门到原理](https://zhuanlan.zhihu.com/p/350507037)
+[6. Vue.js - 渲染机制](https://cn.vuejs.org/guide/extras/rendering-mechanism.html)
