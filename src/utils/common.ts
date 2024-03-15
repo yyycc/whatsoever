@@ -9,7 +9,7 @@ export function getArrayWithCount(data: string[], totalCount: number) {
     const tags = ele.split(',');
     tags.forEach(tag => {
       if (res[tag]) {
-        res[ele]++
+        res[tag]++
       } else {
         res[tag] = 1
       }
