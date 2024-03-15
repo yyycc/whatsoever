@@ -6,7 +6,7 @@ import { IFrontmatter } from "../data"
 
 const Category = ({ tag, setTag, data }: Partial<IFrontmatter> & { setTag: (tag: string) => void }) => {
   const tags = (data || []).map(ele => ele.frontmatter.tag)
-  const tagsInfo = getArrayWithCount(tags, true)
+  const tagsInfo = getArrayWithCount(tags, data?.length || 0)
   return (
     <div className="category">
       <div className="category-title">

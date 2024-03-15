@@ -1,16 +1,19 @@
 export const ALL_TAGS = '全部'
 
-export function getArrayWithCount(data: string[], withTotalCount = false) {
+export function getArrayWithCount(data: string[], totalCount: number) {
   const res: { [key: string]: any } = {}
-  if (withTotalCount) {
-    res[ALL_TAGS] = data.length
+  if (totalCount) {
+    res[ALL_TAGS] = totalCount
   }
   data.forEach(ele => {
-    if (res[ele]) {
-      res[ele]++
-    } else {
-      res[ele] = 1
-    }
+    const tags = ele.split(',');
+    tags.forEach(tag => {
+      if (res[tag]) {
+        res[ele]++
+      } else {
+        res[tag] = 1
+      }
+    })
   })
   return res
 }

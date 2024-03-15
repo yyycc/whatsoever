@@ -10,7 +10,7 @@ const BlogList = ({ tag, date, folder, setTotal, data }: Partial<IFrontmatter> &
   const allData = data || UseBlogHome().allMdx.nodes
   const displayList = allData.filter(
     (node: INode) =>
-      (!tag || node.frontmatter.tag === tag)
+      (!tag || node.frontmatter.tag?.split(',').includes(tag))
       && (!date || node.frontmatter.date.indexOf(date) > -1)
       && (!folder || node.frontmatter.folder?.indexOf(folder) > -1),
   )
@@ -31,10 +31,13 @@ const BlogList = ({ tag, date, folder, setTotal, data }: Partial<IFrontmatter> &
               <CalendarOutlined/>
               {ele.frontmatter.date}
             </div>
-            <div className="blog-list-list-infos__space">
-              <TagOutlined/>
-              {ele.frontmatter.tag}
-            </div>
+            {ele.frontmatter.tag?.split(',').map(tag => {
+              return <div className="blog-list-list-infos__space">
+                <TagOutlined/>
+                {tag}
+              </div>
+            })}
+            
           </div>
           <div className="blog-list-list-excerpt">
             {ele.excerpt?.replace('Before ', '')}
