@@ -83,7 +83,7 @@ Nature Language Processing，自然语言处理。它有很多的子领域，比
 NLP的研发模式也收敛到了预训练+Fine-tuning或者zero/few shot prompt的模式中。
 一种是以Bert为代表的<font color='red'>双向语言预训练模型+Fine-tuning</font>，另一种是以GPT为代表的<font color='red'>自回归语言模型+zero/few shot prompt</font>。
 而那个时候大部分都聚焦在了Bert这个模式上，直到chatGPT的出现。  
-时至今日，规模最大的模型基本都是GPT这种自回归语言模型+zero/few shot prompt的模式。
+时至今日，规模最大的模型基本都是GPT这种自回归语言模型(Autoregressive Model)+zero/few shot prompt的模式。
 
 ## Transformer
 早些时候循环神经网络(RNN)是NLP领域的主流模型。RNN模型结构天然就适配解决NLP问题，
@@ -129,8 +129,7 @@ Fine-tuning即微调是NLP中使用的一种技术，它跟着Bert一起流行�
 Prompt即提示词，GPT模式采用zero/few shot prompt的方式来解决下游任务。即通过调整提示词或者给出示例的方式来调整模型的回答。  
 这个过程不会去更新预训练模型，任何机构或者人都有能力去做。
 
-Prompt Engineer是未来最好的职业？在目前阶段来看，写Prompt的能力确实是产品中最重要的能力。能写出好的Prompt就能解决各种问题。    
-然而到真正的AGI的时候，prompt作为一个过渡阶段的产物或者一种过渡形态，可能就不复存在了。
+Prompt Engineer是未来最好的职业？在目前阶段来看，写Prompt的能力确实是产品中最重要的能力。能写出好的Prompt就能解决各种问题。
 
 ## 多模态
 多模态即多种模态的信息，包括文本、图像、音频以及视频等。目前的大模型也都在朝着多模态大模型的方向发展。  
