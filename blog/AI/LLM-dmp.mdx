@@ -27,53 +27,148 @@ tag: "AI,LLM"
 ![基本信息填写](./LLM-dmp/basic-info.jpg)
 
 ### prompt编写
-最终会生成22个新文件，理论上需要调用大语言模型22次，但是存在文件需要多个表格的数据，这会导致prompt很长，对于这种文件，
-将需要不同表格生成的内容拆分，逐个调用大语言模型生成代码，最后再进行拼接。  
-每个prompt的整体框架是类似的，都是让大模型基于给出的表格信息、变量信息以及模版代码来生成代码。将通用的部分提取出来，便于复用，也有利于后期优化prompt。  
-尝试使用像Let's think step by step这样的提示，来优化生成的代码(与其说是优化，不如说是降低错误率，因为需要生成的代码内容是确定的)。
+最终生成的新文件数量，理论上就是需要写的prompt数量，也是调用大语言模型的次数。  
+每个prompt的整体框架其实是类似的，都是让大模型基于给出的表格信息、变量信息以及模版代码来生成代码。将通用的部分提取出来，便于复用，也有利于后期统一优化prompt。    
+可以尝试使用像Let's think step by step这样的提示，来优化生成的代码(与其说是优化，不如说是降低错误率，因为需要生成的代码内容是确定的)。  
+下面举两个代表性的例子来详细说明。
 
 ### 生成枚举文件
-举生成枚举文件这个例子。这个文件中需要生成三个枚举值，分别是通过检索表格、列表表格和详情表格生成的。三个枚举值相互独立，很容易能够进行拆分。  
+这个文件中需要生成三个枚举值，分别是通过检索表格、列表表格和详情表格生成的。    
+<details>
+  <summary>查看prompt详情</summary>
+  <div>
+    根据下面表格、模版代码、变量生成一段ts代码，所有显示声明的ts类型都需要保留，模板代码中的常量内容不做任何变更，要求如下：<br/>
+    导出三个enum，分别为：<br/>
+    enum E_\{转下划线大写(name)}\_SEARCH_PARAMS，enum中的每个枚举成员为检索字段表格中的[转为大写(检索字段)]。<br/>
+    enum中的每个枚举成员的值为检索字段表格中的\[转为大写(检索字段)]。<br/>
+    enum E_\{转下划线大写(name)}\_LIST_COLUMNS，enum中的每个枚举成员为列表字段表格中的\[转为大写(列表字段)]。<br/>
+    enum中的每个枚举成员的值为列表字段表格中的\[转为大写(列表字段)]。<br/>
+    enum E_\{转下划线大写(name)}\_DOC_ITEMS，enum中的每个枚举成员为详情字段表格中的\[转为大写(详情字段)]。<br/>
+    enum中的每个枚举成员的值为详情字段表格中的\[转为大写(详情字段)]。<br/>
+    在每个字段上方一行加/** 注释 \*/格式的注释，内容为该字段在下表中对应的字段名称。<br/>
+    模板代码：<br/>
+    export const enum E_\{转下划线大写(name)}\_SEARCH_PARAMS \{<br/>
+        /** 字段名称 \*/<br/>
+        XX_XX = '\[转为大写(检索字段)]';<br/>
+    }<br/>
+    export const enum E_\{转下划线大写(name)}\_LIST_COLUMNS \{<br/>
+        /** 字段名称 \*/<br/>
+        XX_XX = '\[转为大写(列表字段)]';<br/>
+    }<br/>
+    export const enum E_\{转下划线大写(name)}\_DOC_ITEMS \{<br/>
+        /** 字段名称 \*/<br/>
+        XX_XX = '\[转为大写(详情字段)]';<br/>
+    }<br/>
+    不生成任何import语句。<br/>
+    请逐步思考，给出完整的正确的代码。<br/>
+    name=ModuleName<br/>
+    列表字段表格：<br/>
+    | 列表字段           | 字段名称 | 数据类型   | 备注  |<br/>
+    |----------------|------|--------|-----|<br/>
+    | module_name_id | 模块ID | string | KEY |<br/>
+    检索字段表格：<br/>
+    | 检索字段           | 字段名称 | 检索类型   | 备注  |<br/>
+    |----------------|------|--------|-----|<br/>
+    | module_name_id | 模块ID | string | KEY |<br/>
+    详情字段表格：<br/>
+    | 详情字段           | 字段名称 | 可编辑 | 所占列数 | 备注  |<br/>
+    |----------------|------|-----|------|-----|<br/>
+    | module_name_id | 模块ID | 0   | 1    | KEY |<br/>
+  </div>
+</details>
+
+可以使用chatGPT或者其他大语言模型工具测试一下，输出内容基本能稳定如下(只截取生成内容中的代码部分)：
 ```ts:title=enum.ts
-/* -------------------- 检索 -------------------- */
 export const enum E_MODULE_NAME_SEARCH_PARAMS {
-    MODULE_NAME_ID = 'MODULE_NAME_ID',
+/** 模块ID */
+MODULE_NAME_ID = 'MODULE_NAME_ID'
 }
-/* -------------------- 列表 -------------------- */
 export const enum E_MODULE_NAME_LIST_COLUMNS {
-    MODULE_NAME_ID = 'MODULE_NAME_ID',
+/** 模块ID */
+MODULE_NAME_ID = 'MODULE_NAME_ID'
 }
-/* -------------------- 详情 -------------------- */
 export const enum E_MODULE_NAME_DOC_ITEMS {
-    MODULE_NAME_ID = 'MODULE_NAME_ID',
+/** 模块ID */
+MODULE_NAME_ID = 'MODULE_NAME_ID'
 }
 ```
-针对每个enum，写prompt进行生成，最后拼接。prompt如下：
+使用真实数据进行多次测试，结果也是比较稳定的。  
 
->根据下面表格、示例代码、变量生成一段ts代码，所有显示声明的ts类型都需要保留，模板代码中的常量内容不做任何变更，要求如下：  
-enum名称为E_\{转下划线大写(name)}_LIST_COLUMNS。  
-enum中的每个枚举成员为下表中的\[转为大写(列表字段)]。  
-enum中的每个枚举成员的值为下表中的\[转为大写(列表字段)]。  
-在每个字段上方一行加/** 注释 \*/格式的注释，内容为该字段在下表中对应的字段名称。  
-模板代码：  
-export const enum E_XXX_LIST_COLUMNS \{  
-/** 字段名称 */  
-XX_XX = 'XX_XX';  
-}  
-不生成任何import语句。  
-请逐步思考，给出完整的正确的代码。  
-name=ModuleName  
-| 列表字段           | 字段名称 | 数据类型   | 备注  |  
-|----------------|------|--------|-----|  
-| module_name_id | 模块ID | string | KEY |  
+#### 调整过程
+当使用真实数据时，这段prompt是比较长的，在openAI的Tokenizer页面能测出来，对于GPT来说这段文本一共有2000+的token数量。
+对于那些16k的模型，这个数量还是比较能够接受的，但是4k的模型就可能会有问题了。  
+所以最开始的方案是将enum文件进行拆分生成，拆成检索、列表以及详情三块，每一块各自写prompt调用大语言模型得到代码，最后再进行拼接。  
+这样每个prompt只需要有一个表格的数据内容，token数量就会大大减少。  
+当然最后还是选择了上述方案，首先目前模型支持的token数量越来越大，其次按现在以token数量计费的模式，上述方案在总体token数量上来说还是更少的，也就意味着更便宜。
 
-可以使用chatGPT或者其他大语言模型工具测试一下，输出内容基本能稳定如下(只截取代码部分)：
+### 生成线上列表
+这个文件大部分都是固定的代码，只需要将模块名称替换进去。但其中存在两个数组变量，其值是需要根据检索表格和列表表格进行生成。
+因为这两部分代码处于中间位置，基本上无法拆分，所以需要在一个prompt中生成完整的代码。
+<details>
+  <summary>查看prompt详情</summary>
+  <div>
+    根据下面表格、模版代码、变量生成一段ts代码，所有显示声明的ts类型都需要保留，模板代码中的常量内容不做任何变更，要求如下：<br/>
+    导出一个component，名称为\{name}PreviewList。<br/>
+    component中的setup函数中的内容补全规则如下formItemConfig数组值来自于检索字段表格中的\[E_转大写下划线\{name}_SEARCH_PARAMS].\[大写(检索字段)]，以及4个来自E_BASE_SEARCH_PARAMS的基本字段。<br/>
+    columns数组值来自于列表字段表格中的\[E_转大写下划线\{name}_LIST_COLUMNS].\[大写(列表字段)]，以及5个来自E_BASE_TABLE_COLUMN的基本字段。<br/>
+    常量定义完成，最后return一个组件，名称为Base\{name}ListPage。<br/>
+    模板代码：<br/>
+    export default defineComponent(\{<br/>
+    name: '\{name}PreviewList',<br/>
+    setup() \{<br/>
+    const formItemConfig = \[<br/>
+    E_\{转下划线大写(name)}_SEARCH_PARAMS.\{大写(检索字段表格中的检索字段名)},<br/>
+    E_BASE_SEARCH_PARAMS.CREATED_BY,<br/>
+    E_BASE_SEARCH_PARAMS.CREATED_TIME_RANGE,<br/>
+    E_BASE_SEARCH_PARAMS.UPDATED_BY,<br/>
+    E_BASE_SEARCH_PARAMS.UPDATED_TIME_RANGE,<br/>
+    ];<br/>
+    const columns = \[<br/>
+    E_\{转下划线大写(name)}_LIST_COLUMNS.\{大写(列表字段)},<br/>
+    E_BASE_TABLE_COLUMN.CREATED_TS,<br/>
+    E_BASE_TABLE_COLUMN.CREATED_BY,<br/>
+    E_BASE_TABLE_COLUMN.UPDATED_TS,<br/>
+    E_BASE_TABLE_COLUMN.UPDATED_BY,<br/>
+    E_BASE_TABLE_COLUMN.DATA_STATUS,<br/>
+    ];<br/>
+    return () => \{<br/>
+    return (<br/>
+    \<Base\{name}ListPage<br/>
+    formItemConfig=\{formItemConfig}<br/>
+    columns=\{columns}<br/>
+    \>\</Base\{name}ListPage><br/>
+    );<br/>
+    };<br/>
+    },<br/>
+    });<br/>
+    保留模板中的import语句。<br/>
+    请逐步思考，给出完整的正确的代码。<br/>
+    name=TranslationalMedicine<br/>
+    列表字段表格：<br/>
+    | 列表字段           | 字段名称 | 数据类型   | 备注  |<br/>
+    |----------------|------|--------|-----|<br/>
+    | module_name_id | 模块ID | string | KEY |<br/>
+    检索字段表格：
+    | 检索字段           | 字段名称 | 检索类型   | 备注  |<br/>
+    |----------------|------|--------|-----|<br/>
+    | module_name_id | 模块ID | string | KEY |<br/>
+  </div>
+</details>
+使用以上prompt进行生成，得到的结果还是比较稳定的，但是使用真实数据时产生了很多问题。  
+- 根据表格生成的数据有字段遗漏
+- 默认写在数组中的几个值在生成的代码中被遗漏
+- 个别字段的enum没有根据规则生成，而是使用了默认写在数组中的值的enum，如下：
 ```ts
-export const enum E_MODULE_NAME_LIST_COLUMNS {
-    /** 模块ID */
-    MODULE_NAME_ID = 'MODULE_NAME_ID'
-}
+const formItemConfig = [
+  E_MODULE_NAME_SEARCH_PARAMS.MODULE_NAME_ID,
+  // 字段不全
+  E_BASE_SEARCH_PARAMS.PUB_DT, // 应该是E_MODULE_NAME_SEARCH_PARAMS.PUB_DT
+  // 几个默认值遗漏
+]
 ```
+多次测试的过程中，均有上述一个或多个问题出现。
+
+#### 调整过程
 
 ## 实现效果
 
@@ -89,7 +184,7 @@ export const enum E_MODULE_NAME_LIST_COLUMNS {
 
 ### version 2
 对生成的内容进行某些校验，不通过则自动重新生成，如：
-代码的完整性、某些生成内容的完整性、拼写错误？？
+代码的完整性、针对表格生成内容的完整性(是否有字段遗漏)、拼写错误？？
 
 ### version 3
 实现列表和表单的自动生成
