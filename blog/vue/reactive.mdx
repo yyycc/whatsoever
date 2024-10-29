@@ -1,0 +1,331 @@
+---
+title: "vue的响应式系统"
+date: "2024-01-05"
+slug: "vue-reactive"
+folder: "Front End"
+tag: "vue"
+---
+
+import { Table } from 'antd'
+export const columns = [{title:'对象内部方法',dataIndex:'name1'},{title:'处理器函数',dataIndex:'name2'}]
+export const dataSource = [{key:1,name1:'[[GetPrototypeOf]]',name2:'getPrototypeOf'},{key:2,name1:'[[SetPrototypeOf]]',name2:'setPrototypeOf'},
+    {key:3,name1:'[[IsExtensible]]',name2:'isExtensible'},{key:4,name1:'[[PreventExtensions]]',name2:'preventExtensions'},
+    {key:5,name1:'[[GetOwnProperty]]',name2:'getOwnPropertyDescriptor'}, {key:5,name1:'[[DefineOwnProperty]]',name2:'defineProperty'},
+    {key:5,name1:'[[HasProperty]]',name2:'has'}, {key:5,name1:'[[Get]]',name2:'get'},
+    {key:5,name1:'[[Set]]',name2:'set'}, {key:5,name1:'[[Delete]]',name2:'deleteProperty'},
+    {key:5,name1:'[[OwnPropertyKeys]]',name2:'ownKeys'}, {key:5,name1:'[[Call]]',name2:'apply'}, {key:5,name1:'[[Construct]]',name2:'construct'}]
+export const pagination = false
+
+## Before
+
+什么是响应式？
+```js
+let a = 1
+let b = 2
+let c = a + b
+console.log(c) // 3
+```
+此时我们更改a和b的值，观察c。
+```js
+a = 2
+b = 3
+console.log(c) // 3
+```
+c仍旧是3，不会改变。因为JavaScript语言本身是不具备响应性的。  
+那么vue是如何实现数据的响应式的呢，让我们来一步一步分析。
+
+## Proxy
+在讲响应式之前，我们先来了解一下Proxy。  
+> Proxy 对象用于创建一个对象的代理，从而实现基本操作的拦截和自定义（如属性查找、赋值、枚举、函数调用等）。  
+const p = new Proxy(target, handler)
+
+也就是说Proxy它允许我们拦截并重新定义一个对象的基本操作。目标是一个对象以及对它的基本操作。
+所以它无法代理对象值(字符串、数字等)，也无法拦截非基本操作。  
+```js
+const data = {}
+const obj = new Proxy(data, {
+    get() {},
+    set() {},
+    ...
+})
+```
+其次创建代理对象时指定的这些拦截函数(get、set等)，其实是用来自定义代理对象本身的内部方法和行为的。
+也就是上面代码的obj这个对象，而不是data。执行obj.xxx时会进入get函数，而data.xxx时不会。  
+这也说明了Proxy第二个参数中可以设置的处理器函数就是对象内部部署的所有方法。
+<Table dataSource={dataSource} columns={columns} pagination={pagination} />
+内部方法摘自<a target="_blank" href="https://262.ecma-international.org/15.0/index.html?_gl=1*shh2p9*_ga*MTM3MDUzNDQ3OS4xNzI5OTA3OTg3*_ga_TDCK4DWEPP*MTcyOTkwNzk4Ni4xLjAuMTcyOTkwNzk4Ni4wLjAuMA..#table-essential-internal-methods">ECMAScript - Object Internal Methods and Internal Slots</a>
+
+任何我们想要拦截的操作都可以在上述表格中找到对应的处理器方法传入Proxy中。
+
+## 实现响应式
+```js
+let data = {
+    text: 'one'
+}
+
+function effect() {
+    document.body.innerText = data.text
+}
+
+effect()
+
+data.text = 'two'
+```
+执行上述代码界面的展示并不会从one变成two，因为此时data并不具备响应性的，我们如何能将其变成响应式呢。  
+只需要在更改text属性值时，再次执行effect函数即可。而需要再次执行effect函数，就需要在读取text属性时，将此函数收集起来。  
+而Proxy正好可以对目标对象的读取和设置进行拦截，所以我们可以借助Proxy，在读取属性时收集effect，在设置属性值时执行effect即可实现响应式。
+```js
+const data = {
+    text: 'one',
+    ok: true,
+    content: 'content',
+    foo: 1
+}
+
+// 存储副作用函数
+const bucket = new Set()
+
+// 实现响应式
+const obj = new Proxy(data, {
+    get(target, p, receiver) {
+        bucket.add(effect)
+        return target[p]
+    },
+    set(target, p, newValue, receiver) {
+        target[p] = newValue
+        bucket.forEach(fn => fn())
+        return true
+    }
+})
+
+function effect() {
+    document.body.innerText = obj.text
+}
+
+effect()
+```
+此时修改data的text属性值，界面的展示也会从one变成two。
+```js
+obj.text = 'two'
+```
+上面代码中的effect函数，我们称之为副作用函数
+
+### 优化
+上面的实现还存在着一些问题：  
+1. 限制了副作用函数的名字，如果不叫effect就会有问题。  
+2. 此时我们给data添加新属性，也会触发副作用函数重新执行，但这并不是我们想要的。
+```js
+obj.newText = 'three'
+```
+导致这种现象的原因是我们只是单纯地把副作用函数存储在一个set中，而并没有把它与对象以及对象的属性值建立联系。
+3. 如果出现分支条件，对于不再需要监听的属性，如何去除其副作用函数的执行(当obj.ok为false时，修改obj.text不应该触发副作用执行)。 
+```js
+effect(() => {
+    document.body.innerText = obj.ok ? obj.text : 'zero'
+})
+```
+4. 如果副作用函数出现了嵌套，并不能够正确相应。副作用嵌套在真实场景中是存在的，当组件下包含组件时，就会出现副作用的嵌套。
+```js
+effect(() => {
+    console.log('effect 1')
+
+    effect(() => {
+        console.log('effect 2', obj.content)
+        document.body.innerText = obj.content
+    })
+
+    console.log('obj.text', obj.text)
+})
+```
+修改obj.text理论上应该会触发外部effect，然后触发内部effect，但是执行会发现只触发了内部effect。
+出现这种现象是因为内部effect执行时覆盖了activeEffect的值，并且不会恢复，等执行到读取obj.text是收集到的副作用函数是内部effect的副作用函数，
+所以修改obj.text触发的副作用函数就是内部effect的副作用函数了。
+5. 下面这个副作用函数执行会出现无限递归循环。
+obj.foo++也就是obj.foo = obj.foo + 1，会先读取obj.foo收集该副作用函数，然后设置值触发副作用函数执行，然而此时这个副作用函数正在执行中，这就造成了无限递归。
+```js
+effect(() => {
+    obj.foo++
+})
+```
+
+为解决这些问题，我们需要修改上述的响应式实现。
+这里就讲一下解决的思路，具体的代码实现靠各位看官自己动手，答案可以到书中找寻，
+也可以看我记录在<a target="_blank" href="https://github.com/whatsoeverYY/vue-demo/blob/main/reactive/reactive.js">github</a>中的代码。
+
+问题1：
+新增一个副作用注册函数，传入副作用函数作为参数，新增全局变量存储当前副作用函数。
+
+问题2：
+创建map来存储被代理对象下各个属性对应的副作用函数集。
+
+问题3：
+执行副作用函数时，首先将当前副作用函数从所有被依赖的集合中删除。但是当前的实现并不能找到所有被依赖的集合，所以可以在副作用函数中新增一个\{deps: \[]}，
+在收集依赖时，将依赖集合放入deps数组中。
+
+问题4：
+新增数组，在副作用函数执行前将其入栈，当副作用函数执行完后出栈，且用来存储副作用函数的全局变量始终指向栈顶
+
+问题5：
+在遍历依赖桶执行副作用函数时，先判断该副作用函数是否与当前存储副作用函数的全局变量全等，如果全等则不执行。
+
+以上是书中给出的解决方案，一定动手coding看看能否实现我们所需要的效果。
+
+### 函数封装
+这边把读取数据时收集依赖封装在track函数中，更改数据触发依赖封装在trigger函数中便于后续理解。
+```js
+let activeEffect
+// 副作用注册函数
+function effect(fn) {
+    const effectFn = (fn) => {
+        activeEffect = effectFn
+        fn()
+    }
+    effectFn()
+}
+// 代理data
+const obj = new Proxy(data, {
+    get(target, key) {
+        track(target, key)
+        return target[key]
+    },
+    set(target, key, newValue) {
+        target[key] = newValue
+        trigger(target, key)
+    },
+})
+```
+
+## 调度执行
+什么是调度执行呢？就是在trigger函数中触发副作用函数执行时，有能力决定副作用函数的执行时机、次数以及执行方式。  
+比如vue中多次修改响应式数据，但只会触发一次更新操作，这就是利用了调度器。
+
+调度器的实现也很简单，我们给副作用注册函数effect增加一个参数options，支持用户传入调度器，然后再副作用注册函数中将该调度器挂载到副作用函数上。  
+当触发副作用函数执行时，判断其是否有调度器，如果有，就调用该调度器，并将副作用函数作为参数传入。
+```js
+effect(() => {}, {
+    scheduler(fn) {
+        fn()
+    }
+})
+function effect(fn, options = {}) {
+    const effectFn = (fn) => {
+        activeEffect = effectFn
+        fn()
+    }
+    effectFn.options = options // 挂载调度器
+    effectFn()
+}
+function trigger() {
+    ...
+    effects.forEach(effect => {
+        if (effect.options.scheduler) {
+            effect.options.scheduler(effect)
+        } else {
+            effect()
+        }
+    })
+}
+```
+这样我们就可以在scheduler函数中，控制副作用函数的执行时机、次数以及执行方式。
+```js
+effect(() => {
+    console.log(obj.foo)
+})
+obj.foo++
+obj.foo++
+```
+针对上述情况，如果我们希望只输出1和3，就可以基于调度器去实现。
+
+我们可以创建一个队列Set以及一个刷新队列的函数flushJob，用一个标志isFlushing代表是否正在刷新队列，当isFlushing为false时，先将isFlushing设置为true,
+再利用Promise创建微任务来执行队列中的所有函数，最后将isFlushing设置为false。
+我们调用effect时，传入调度器函数，在这个函数中我们将副作用函数放入队列中，然后执行刷新队列的函数。  
+如此一来当副作用函数执行两次时，会两次把副作用函数放入队列，但Set会进行去重，所以队列中只会有一个副作用函数。
+同时flushJob会执行两次，但是因为标志位isFlushing存在，所以在一个事件周期内，只会刷新队列一次。
+这样就实现了我们想要的效果。  
+具体代码可以看<a target="_blank" href="https://github.com/whatsoeverYY/vue-demo/blob/main/reactive/scheduler.js">scheduler.js</a>。
+
+## computed
+计算属性是vue中非常常用的一个功能，它传入一个函数作为参数，而这个函数的返回值就是这个计算属性的值。
+```js
+const totalPrice = computed(() => obj.count * obj.price)
+```
+传入的这个函数是不需要立即执行的，只有当用到totalPrice.value时才去执行它。而我们上面介绍的副作用注册函数effect，它会立即执行传入的函数。  
+如果我们不想立即执行副作用函数，可以和上面介绍的调度实现一样，传入一个lazy选项，只有当其值为false时，才立即执行副作用函数。  
+在effectFn中我们拿到副作用函数的执行结果并return出去，然后将effectFn返回，
+这样我们执行effect函数就能拿到对应的副作用函数，就可以手动执行了并且获取到副作用函数的执行结果。
+```js
+function effect(fn, options = {}) {
+    const effectFn = () => {
+        const res = fn()
+        return res
+    }
+    effectFn.options = options
+    if (!options.lazy) {
+        effectFn()
+    }
+    return effectFn
+}
+const effectFn = effect(() => obj.count * obj.price, { lazy: true })
+function computed(getter) {
+    const effectFn = effect(getter, { lazy: true })
+    const data = {
+        get value() {
+            return effectFn()
+        }
+    }
+    return data
+}
+```
+目前我们我们实现了懒计算，但是还没有把计算值进行缓存，如果我们多次访问totalPrice.value，effectFn会多次执行，所以我们需要对值进行缓存。  
+我们可以在computed函数中增加value来存储effectFn()的结果，增加标志位dirty来判断结果是否更改，只有dirty为true时才执行effectFn()，执行后就将dirty只为false。  
+那么我们什么时候再将dirty置为true呢，就是计算结果改变的时候，也就是obj.count或者obj.price改变触发trigger的时候。    
+所以我们可以将dirty置为true的操作放在调度器中，这样当我们监听的响应式对象改变，触发副作用函数执行时，标志位就会重新置为true，
+下次访问totalPrice.value时就会重新计算了。  
+具体代码实现可以看<a target="_blank" href="https://github.com/whatsoeverYY/vue-demo/blob/main/reactive/computed.js">computed.js</a>。
+
+## watch
+vue中另一个常用的功能就是watch，watch监听一个响应式数据，当数据发生变化时，执行对应的回调函数。  
+它的第一参数可以是响应式数据，也可以是一个getter函数，在函数内容用户可以执行需要监听的响应式数据
+```js
+watch(obj, (newValue, oldValue) => {
+    console.log('data changed', newValue, oldValue)
+})
+watch(() => obj.count, (newValue, oldValue) => {
+    console.log('obj.count changed', newValue, oldValue)
+})
+```
+它的实现本质上就是利用effect以及我们前面介绍的调度器。  
+我们传入effect函数的第一个参数就是对这个响应式数据的遍历读取函数，或者getter函数。然后再传入调度器函数，函数中执行传给watch的回调函数。
+```js
+function watch(source, cb) {
+    let getter
+    if (typeof source === 'function') {
+        getter = source
+    } else {
+        getter = () => traverse(source)
+    }
+    effect(
+        () => getter(),
+        {
+            scheduler() {
+                cb()
+            }
+        }
+    )
+}
+```
+此时回调函数中还无法拿到新旧数据，我们需要利用lazy属性，在scheduler中执行副作用函数，拿到副作用函数的执行结果，传入cb函数中。  
+
+watch在使用时还可以传入immediate参数来使回调函数立即执行。我们只需要将scheduler中的方法封装一下，如果接收到\{ immediate: true }， 就立即执行封装好的函数即可。  
+同样的如果我们想实现\{ flush: post }的效果，等DOM更新结束再执行回调函数。我们只需要在scheduler中将封装好的函数放到利用Promise创建的微任务队列中执行即可。
+
+## 总结
+vue的响应式整体方案就是利用Proxy对对象进行代理，拦截并自定义其基本操作。在读取数据时，收集相关副作用函数，在更新数据时触发相关副作用函数执行。  
+computed计算属性以及watch监听器都是通过对副作用注册函数的二测封装，利用可调度性以及懒执行能力进行功能的实现。  
+
+
+## Reference
+[1. 深入响应式系统](https://cn.vuejs.org/guide/extras/reactivity-in-depth.html)  
+[2. Proxy](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Proxy)  
+[3. ECMAScript® 2025 Language Specification](https://tc39.es/ecma262/multipage/reflection.html#sec-proxy-objects)  
+
