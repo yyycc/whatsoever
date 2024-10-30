@@ -4,6 +4,7 @@ date: "2024-01-05"
 slug: "vue-reactive"
 folder: "Front End"
 tag: "vue"
+next: 'vue-data'
 ---
 
 import { Table } from 'antd'
@@ -295,7 +296,7 @@ watch(() => obj.count, (newValue, oldValue) => {
 })
 ```
 它的实现本质上就是利用effect以及我们前面介绍的调度器。  
-我们传入effect函数的第一个参数就是对这个响应式数据的遍历读取函数，或者getter函数。然后再传入调度器函数，函数中执行传给watch的回调函数。
+我们传入effect函数的第一个参数就是对这个响应式数据的遍历读取函数traverse，或者getter函数。然后再传入调度器函数，函数中执行传给watch的回调函数。
 ```js
 function watch(source, cb) {
     let getter
@@ -317,7 +318,8 @@ function watch(source, cb) {
 此时回调函数中还无法拿到新旧数据，我们需要利用lazy属性，在scheduler中执行副作用函数，拿到副作用函数的执行结果，传入cb函数中。  
 
 watch在使用时还可以传入immediate参数来使回调函数立即执行。我们只需要将scheduler中的方法封装一下，如果接收到\{ immediate: true }， 就立即执行封装好的函数即可。  
-同样的如果我们想实现\{ flush: post }的效果，等DOM更新结束再执行回调函数。我们只需要在scheduler中将封装好的函数放到利用Promise创建的微任务队列中执行即可。
+同样的如果我们想实现\{ flush: post }的效果，等DOM更新结束再执行回调函数。我们只需要在scheduler中将封装好的函数放到利用Promise创建的微任务队列中执行即可。  
+具体代码实现可以看<a target="_blank" href="https://github.com/whatsoeverYY/vue-demo/blob/main/reactive/watch.js">watch.js</a>。
 
 ## 总结
 vue的响应式整体方案就是利用Proxy对对象进行代理，拦截并自定义其基本操作。在读取数据时，收集相关副作用函数，在更新数据时触发相关副作用函数执行。  
