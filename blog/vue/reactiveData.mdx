@@ -1,0 +1,239 @@
+---
+title: "vue的响应式数据"
+date: "2024-02-05"
+slug: "vue-data"
+tag: "vue"
+folder: "Front End"
+prev: 'vue-responsive'
+next: 'vue-template'
+---
+
+## Before
+<a href="/blog/vue-reactive" target="_blank">上一篇</a>介绍了响应式的概念与基本实现，这一篇我们针对具体的响应式数据，来探讨一下如何实现完整的响应式功能。
+
+## Reflect
+上一篇中我们介绍了Proxy，列举了传入Proxy中的拦截器方法。JavaScript中还有一个全局对象叫做Reflect，其下有许多方法。
+任何在Proxy拦截器中能够定义的方法，都能在Reflect对象下找到。以Reflect.get为例，它就是用来访问对象的属性。
+下面这两个操作是等价的。
+```js
+const obj = {
+    foo: 1,
+    get bar() {
+            return this.foo
+    }
+}
+obj.bar
+Reflect.get(obj, 'bar')
+```
+那么Reflect存在的意义是什么呢，就是它的第三个参数，指定接受者receiver，可以理解为this。
+下面这段代码的结果就是2而不是1。
+```js
+const data = { foo: 2 }
+console.log(Reflect.get(obj, 'bar', data))
+```
+我们之前写的get、set方法里都是直接通过target\[key]来获取值，这个target指向的是data而非obj。
+```js
+const obj = new Proxy(data, {
+    get(target, key) {
+        track(target, key)
+        return target[key]
+    },
+    set(target, key, newValue) {
+        target[key] = newValue
+        trigger(target, key)
+    },
+})
+```
+其实拦截器方法还有第三个参数receiver，谁在读取属性，这个receiver就代表谁。访问obj.bar时这个receiver就代表obj。
+我们可以将上述代码用Reflect改写，确保访问到的始终是代理对象
+```js
+const obj = new Proxy(data, {
+    get(target, key, receiver) {
+        track(target, key)
+        return Reflect.get(target, key, receiver)
+    },
+    set(target, key, newValue, receiver) {
+        Reflect.set(target, key, newValue, receiver)
+        trigger(target, key)
+    },
+})
+```
+
+## 代理非原始值
+上一篇中我们实现了对于一个对象的代理，拦截了get和set，但是对于对象的读取和修改还有其它方式，比如操作符in，比如for...in，
+还有特殊的对象数组，它的读取和操作方式更多，每一种都需要正确拦截，正确触发副作用，才能构建完整的响应式。
+
+### 代理Object
+对于一个普通对象的读取，有以下三种：
+1. obj.foo
+2. key in obj
+3. for (const key in obj)  
+上面的代码我们自定义了get方法拦截了通过访问属性读取对象，那么对于in操作符还有for...in操作，我们要如何拦截呢。  
+这取决于JavaScript是如何实现in操作还有for...in操作的。这就需要阅读ECMA规范，找到这些操作符的运行时逻辑。  
+拦截in使用has方法，拦截for...in使用ownKeys方法。
+```js
+const obj = new Proxy(data, {
+    has(target, key) {
+        track(target, key)
+        Reflect.has(target, key)
+    },
+})
+```
+这里有个问题，has方法我们可以获取到具体的key，但是ownKeys方法，并没有具体的key，因为for...in是遍历所有的key，那么我们要如何收集副作用函数呢。  
+我们可以使用Symbol来定义一个唯一的key作为标识。  
+```js
+const ITERATE_KEY = Symbol()
+const obj = new Proxy(data, {
+    ownKeys(target) {
+        track(target, ITERATE_KEY)
+        return Reflect.ownKeys(target)
+    }
+})
+```
+收集到了副作用函数之后，我们还需要能够正确触发。那么什么时候需要触发与ITERATE_KEY相关的副作用函数呢？
+很显然就是添加和删除属性的时候，单纯地修改属性是不会影响for...in的操作结果的。  
+对于添加属性，我们需要在set操作里面判断是否是新的属性，如果是就去触发ITERATE_KEY相关的副作用函数。  
+而删除属性，我们就得载增加一个名为deleteProperty的拦截函数，在这个函数中也需要触发ITERATE_KEY相关的副作用函数。  
+具体代码实现可以看<a target="_blank" href="https://github.com/whatsoeverYY/vue-demo/blob/main/reactiveDate/object.js">object.js</a>。
+
+#### 功能优化
+上面实现了对一个对象的代理，并且能够正确地出发响应，但是还有很多可以优化的地方和功能。  
+1. 当对象属性没有变化时不需要触发副作用函数。
+2. 目前实现的其实是对于对象的浅响应，如何实现深响应。
+3. 实现对一个对象的只读代理和浅只读代理。
+
+具体代码实现可以看<a target="_blank" href="https://github.com/whatsoeverYY/vue-demo/blob/main/reactiveDate/createReactive.js">createReactive.js</a>。
+其中封装了reactive函数表示创建一个对象的深层响应式代理。后面的内容里都会用这个函数来创建代理对象。
+```js
+const obj = reactive({ foo: 1 })
+effect(() => obj.foo)
+```
+
+### 代理数组
+数组是一个特殊的对象，上面我们已经实现了对对象的代理，要实现对一个数组的代理，我们必须知道对比一个普通对象，数组有何特殊之处。  
+
+数组的读取操作：
+1. arr\[0]
+2. arr.length
+3. for...in
+4. for...of
+5. 数组的原型方法，例如：concat/join/every/some/find/findIndex/includes等等
+
+数组的设置操作：
+1. arr\[0] = 2
+2. arr.length = 0
+3. 数组的栈方法：push/pop/shift/unshift
+4. 修改原数组的原型方法：splice/fill/sort等等
+
+虽然操作很多，但是数组到底还是个对象，我们之前实现的代码大部分对数组也是生效的。比如使用索引值访问，就能够正确建立响应。
+```js
+const obj = creative([1])
+effect(() => console.log(obj[0]))
+obj[0] = 2 // 能够触发副作用函数执行
+```
+但是它跟普通对象不同的是，通过索引值设置元素值时有可能会改变length的属性值。所以当设置的索引值大于等于数组长度时，需要触发length相关的副作用函数执行。  
+同样的当修改length的属性值时，数组中那些大于或等于新length的元素需要触发响应。
+
+对于for...in操作， 和对象一样，都是用ownKeys进行拦截。而对于数组，只要length值改变，for...in操作的执行结果就会改变。
+所以在ownKeys拦截函数中增加判断，如果是数组就使用length作为key去收集副作用函数，否则还是以ITERATE_KEY去收集。
+
+接着来看for...of，它是用来遍历可迭代对象的。那么什么是可迭代对象呢，如果一个对象或者对象的原型上实现了@@iterate方法，也就是Symbol.iterate这个值，
+那么这个对象就是可迭代对象，就可以用for...of进行遍历。而数组迭代器的执行会读取数组的length属性以及数组的索引。
+所以我们当前的实现已经能够实现对for...of的正确响应。
+
+对于数组的这些原型方法，测试一下我们会发现，到这为止我们的代码已经能够让这些原型方法正确建立响应了，这是因为这些方法内部都会访问length属性或者数组元素。
+
+最后来看能够修改数组的这些方法，我们还是需要通过阅读规范来看它们的执行过程。数组的push方法会设置length属性，所以我们当前的代码能够正确建立响应。
+但是它同事还会读取length属性，这会导致两个独立的副作用函数互相影响，如下代码执行会栈溢出。
+```js
+const obj = reactive([])
+effect(() => obj.push(1))
+effect(() => obj.push(1))
+```
+所以我们需要重写数组的push方法，当它读取length属性时，不对其副作用函数进行收集。因为push实质上是设置操作而非读取操作，不需要建立响应联系。  
+我们可以增加一个标志位代表是否进行track，默认为true，调用原始方法之前置为false禁止track，调用之后恢复。并且在track函数中判断，如果标志位为false就直接return。  
+至于重写数组方法，我们可以定义一个对象，key是需要重写的方法名，value是重写的方法。
+然后在get函数中判断，如果是数组，且key在该对象的键值中，则返回对象中该键对应的值。  
+除了push之外，pop/shift/unshift/splice也都需要做这样的处理。  
+具体代码实现可以看<a target="_blank" href="https://github.com/whatsoeverYY/vue-demo/blob/main/reactiveDate/array.js">array.js</a>。
+
+## 代理原始值
+在JavaScript的世界里有原始值和非原始值两种类型的数据，上面我们说了非原始值如何变成响应式，那么那些不可更改的原始值又该如何建立响应式呢？  
+因为Proxy只能代理非原始值，所以对于原始值我们可以将其包装成非原始值，然后再用Proxy进行代理。  
+```js
+const wrapper = { value: 'vue' }
+const name = reactive(wrapper)
+```
+但是如果要求用户对每个原始值都创建一个对象非常麻烦，而且可能会不规范，所以vue中创建了一个ref函数，用来创建响应式数据。  
+```js
+function ref(val) {
+    const wrapper = { value: val }
+    return reactive(wrapper)
+}
+```
+这就引发了一个问题，我们如何判断一个值到底是原始值的包装对象，还是一个非原始值的响应式数据呢？  
+我们可以给包装对象定义一个特殊属性来区分。
+```js
+function ref(val) {
+    const wrapper = { value: val }
+    Object.defineProperty(wrapper, '__v_isRef', { value: true })
+    return reactive(wrapper)
+}
+```
+__v_isRef是一个不可枚举不可写的属性，用它就能来判断一个数据是否是ref。那么什么场景下会用到的，后面会说到。
+
+### 响应丢失
+```js
+const obj = reactive({foo: 1})
+return {
+    ...obj
+}
+```
+扩展运算符(...)会造成响应丢失，因为使用了扩展运算符，就相当于返回了\{foo:1}这个普通对象，所以当副作用函数内部使用普通对象来访问属性时，我们也需要建立响应。
+```js
+const obj = reactive({foo: 1})
+const newObj = {
+    foo: {
+        get value() {
+            return obj.foo
+        }
+    }
+}
+```
+这样访问newObj.foo时就相当于读取了obj.foo，响应就能正常建立了。  
+但是我们不能对每个属性都写一遍get，我们需要把这个结构抽象出来，这就是vue的toRef方法。
+```js
+function toRef(obj, key) {
+    const wrapper = {
+        get value() {
+            return obj[key]
+        }
+    }
+    Object.defineProperty(wrapper, '__v_isRef', { value: true })
+    return wrapper
+}
+const newObj = {
+    foo: toRef(obj, key)
+}
+```
+如果对象的键非常多，我们就需要toRefs。
+```js
+function toRefs(obj) {
+    const res = {}
+    for (var key in obj) {
+      res[key] = toRef(obj, key)
+    }
+    return res
+}
+const newObj = toRefs(obj)
+```
+如此一来响应丢失问题就解决了。
+
+### 脱ref
+toRefs解决了相应丢失的问题，但同事会导致我们必须通过.value来访问属性值，这就比较麻烦。
+然后事实上我们用vue时，在template中并不需要通过.value来访问数据，这是因为vue对暴露到模版中的响应式数据进行了脱ref。
+这就要用到我们上面提到的__v_isRef属性了。通过添加set、get拦截函数，判断是否是ref数据，如果是就通过.value进行操作。  
+具体代码实现可以看<a target="_blank" href="https://github.com/whatsoeverYY/vue-demo/blob/main/ref/ref.js">ref.js</a>。
+
+## Reference
+[1. Reflect](https://wangdoc.com/es6/reflect)  
