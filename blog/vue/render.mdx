@@ -1,0 +1,292 @@
+---
+title: "vue的渲染器"
+date: "2024-05-08"
+slug: "vue-render"
+tag: "vue"
+folder: "Front End"
+prev: 'vue-data'
+next: 'vue-component'
+---
+
+## Before
+在页面上创建出真实DOM的过程称之为渲染。浏览器中有渲染引擎它会解析HTML、css和JavaScript代码来创建DOM。
+而在vue中，需要支持用户使用模板来编写代码，所以很多原本浏览器的工作，就需要vue框架自身来提供了。
+
+## 虚拟DOM
+vue是一个声明式的UI框架，支持用户使用模版或者虚拟DOM来描述UI。下面两种表达方式在vue中是等价的。
+```html
+<h1 @click="handler"><psan></span></h1>
+```
+```js
+const title = {
+    type: 'h1',
+    props: {
+         onClick: 'handler'   
+    },
+    children: [
+        {
+            type: 'span'
+        }
+    ]
+}
+```
+用js对象来描述UI的方式就是虚拟DOM，后续我们都称之为vnode。它是树形结构的。children是子节点的数组，下面还可能会有children。  
+vue还提供了h函数来辅助用户创建vnode。
+```js
+import { h } from 'vue'
+export default {
+    render() {
+        return h('h1', { onClick: 'handler' }, [h('span')])
+    }
+}
+```
+上面代码中的render被称为渲染函数，它描述的就是一个组件要渲染的内容。vue会根据组件的render函数的返回值拿到虚拟DOM，然后就可以把组件的内容渲染出来了。
+
+## 渲染器
+将虚拟DOM渲染为真实的DOM就是通过渲染器来实现的，下面代码就实现了一个简单的渲染器。
+```js
+function render(domString, container) {
+    container.innerHTML = domString
+}
+render(`<div>renderer</div>`, document.body)
+```
+执行一下，界面上就会渲染出renderer。  
+如果渲染内容中有响应式数据，当响应式数据变化时需要自动进行重新渲染，那我们就需要将渲染函数跟响应系统结合起来。  
+```js
+const obj = creative({content: 'renderer'})
+effect(() => {
+    render(`<div>${obj.content}</div>`, document.body)
+})
+obj.content = 'vnode'
+```
+这样当数据改变时，就能自动调用render函数完成页面的更新。
+
+当然在vue中，传入渲染函数的第一个参数通常是虚拟DOM(vnode)。  
+渲染器将虚拟DOM渲染为真实DOM的过程称之为挂载(mount)，一般它会接受一个挂载点参数，用来指定具体的DOM挂载位置。
+渲染器不仅可以用来渲染，还可以用来激活已有的DOM元素(同构渲染情况下)。  
+当在同一个挂载点上多次进行渲染，渲染器会将新旧DOM进行比较，找出差异进行更新，这个过程称之为patch。挂载也是一种特殊的patch，它不存在旧的DOM。
+现在我们可以搭出一个实现渲染器的基本框架。
+```js
+function createRenderer() {
+    function render(vnode, container) {
+        if (vnode) {
+            // 挂载or更新
+            patch(container._vnode, vnode, container)
+        } else {
+            if (container._vnode) {
+                // 卸载
+            }
+        }
+        container._vnode = vnode // 存储旧的vnode
+    }
+    // 注水
+    function hydrate() {}
+}
+```
+如果存在新的vnode，就执行patch操作，否则如果存在旧的vnode，就进行卸载操作。另外我们将vnode存在挂载点的_vnode属性中作为后续渲染的旧vnode。
+
+另外使用虚拟DOM可以让渲染器设计为可配置的通用渲染器，实现跨平台渲染。只需要将特定的API抽离，然后提供可配置的接口，就能轻松实现跨平台。
+
+## 挂载
+了解了渲染器的基本概念和整体架构，接下来我们来看看渲染器的具体实现，首先是挂载操作。
+
+### 元素 
+挂载的一些操作是平台相关的，所以需要将它单独封装并设置为可配置的。可以在创建渲染函数，也就是执行createRenderer函数时传入。
+当不存在旧的vnode时，就执行挂载操作(mountElement)。
+```js
+function mountElement(vnode, container) {...}
+function createRenderer(options) {
+    const {
+        createElement, // 创建元素
+        insert, // 在给定的parent下添加指定元素
+        setElementText, // 设置元素的文本节点
+    } = options
+    function patch(n1, n2, container) {
+        if (!n1) {
+            mountElement(n2, container) // 如果不存在旧的vnode，则进行挂载
+        } else {
+            // 否则就进行更新
+        }
+    }
+    function render(vnode, container) {...}
+}
+```
+mountElement的实现非常简单，根据vnode的type属性调用createElement创建元素。
+如果children是数组，就进行遍历调用patch函数，如果是字符串就调用setElementText设置文本节点。
+最后将我们创建的元素通过insert插入到给定的container下即可。  
+具体代码可以看<a target="_blank" href="https://github.com/whatsoeverYY/vue-demo/blob/main/render/render.js">render.js</a>。
+
+### 属性
+上面处理了vnode中的type和children，还有props没有处理。props是个对象，它的键代表元素的属性名名称，值代表对应的属性值。
+我们可以通过遍历props，来讲属性设置到我们创建出来的元素上。那么这里就涉及到一个问题，如何设置属性?
+通过setAttribute函数，还是通过DOM对象直接设置呢？
+```js
+el[key] = vnode.props[key]
+el.setAttribute(key, vnode.props[key])
+```
+这就涉及到两个概念：HTML Attributes和DOM Properties。
+```html
+<div id="attr"></div>
+```
+定义在HTML标签上的属性称之为HTML Attributes。
+```js
+const el = document.getElementById('attr')
+console.log(el.id)
+```
+而通过JavaScript代码读取到的DOM对象上的属性就是DOM Properties。  
+有些属性两者会有同名的对应，比如id。
+而标签上的class属性，在DOM里的名字是className。
+el.textContent可以用来设置文本对用，但是标签上没有相关属性与之对应。  
+而它们有一个核心原则，就是HTML Attributes的作用是设置与之对应的DOM Properties的初始值。  
+在实际操作中我们需要检查props中的每一个属性，如果它在DOM Properties上有对应值，那就直接设置属性，如果没有就使用setAttribute函数。  
+然而有一些情况需要我们做特殊处理。
+
+#### disabled
+下面这段代码表示不禁用button，而如果设置el.setAttribute('disabled', false)会发现按钮还是被禁用了。
+```html
+<button :disabled="false"></button>
+```
+因为在浏览器中setAttribute函数设置的值会被字符串话，false会被转化为'false'，就变成了true。  
+而如果使用el.disabled = false设置属性值可以解决当前问题，但是又会有另一个问题。  
+下面这段代码表示禁用button，它对应的vnode下的props中disabled属性值为空字符串，而el.disabled = ''等同于el.disabled = false，
+按钮将不被禁用。
+```html
+<button disabled></button>
+```
+所以两者都会有问题，需要我们做特殊处理。
+有限设置当属性值的类型为布尔且值为空字符串时，将值矫正为true。
+```js
+if (typeof el[key] === 'boolean' && vnode.props[key] === '') {
+    el[key] = true
+}
+```
+
+#### form
+```html
+<form id="form1"></form>
+<input form="form1"/>
+```
+我们在input标签上设置form属性，它对应的DOM Properties是form，但是el.form是只读的，所以我们只能通过setAttribute来设置。
+```js
+if (key === 'form' && vnode.type === 'input') {
+    el.setAttribute(key, vnode.props[key])
+}
+```
+
+#### class
+vue对class属性做了增强，支持我们用很多种方式来设置class。
+```html
+<div class="foo bar"></div>
+
+const cls = { foo: true, bar: false }
+<div :class="cls"></div>
+
+const arr = ['foo bar', { baz: true }]
+<div :class="arr"></div>
+```
+所以我们需要对不同类型的class值正常化为字符串，然后再通过el.className(性能最好)进行属性的设置。  
+
+除了上面列举出的属性，还有很多类似的情况需要做特殊处理，但只要掌握了处理思路，再多的情况也能见招拆招啦。
+
+### 事件
+我们约定在props对象中以on开头的属性视作事件。
+```js
+const title = {
+    type: 'h1',
+    props: {
+         onClick: 'handler'   
+    },
+    children: 'text'
+}
+```
+遍历props时，当读到on开头的键值时，调用addEventListener来绑定事件。  
+更新事件时先移除之前绑定的事件，然后绑定新事件。这里有一种性能更优的更新方案。  
+绑定一个伪造的时间处理函数el._vel = invoker用于绑定，invoker.value的值为真正的事件处理函数，当事件更新时不需要执行removeEventListener，
+只需要更新invoker.value值即可。  
+另外，因为一个元素可以绑定多个事件，所以我们需要调整el._vel的数据结构，使用对象来表示。键名为事件名，键值为对应的事件处理函数。  
+具体代码可以看<a target="_blank" href="https://github.com/whatsoeverYY/vue-demo/blob/main/render/render.js">render.js</a>。
+
+## 卸载
+挂载完成后，后续执行render就会进行更新操作，卸载是一种特殊的更新操作。当传入的vnode为null，也就是什么都不渲染，即需要触发卸载操作。  
+```js
+function render(vnode, container) {
+    if (vnode) {...} else {
+        if (container._vnode) {
+            // 卸载
+            container.innerHTML = ''
+        }
+    }
+    container._vnode = vnode
+}
+```
+我们可以通过设置innerHTML = ''来进行卸载，但是这样不严谨，有以下几点：  
+首先如果页面内容由组件渲染，卸载时需要正确调用生命周期函数。  
+如果元素存在自定义指令，卸载时需要正确执行对应的钩子函数。  
+如果使用innerHTML清空容器内的元素内容，无法移除绑定在DOM元素上的事件处理函数。  
+正确的卸载操作应该是得到与vnode相关联的真实DOM元素，使用原生的DOM方法，将其移除。所以我们需要在vnode和真实DOM之间建立连接。  
+在创建元素的mountElement函数中，创建元素并将其设置到vnode.el的引用中即可。
+```js
+function mountElement(vnode, container) {
+    const el = vnode.el = document.createElement(vnode.type)
+}
+```
+封装unmount函数，接收虚拟节点作为参数。
+```js
+function unmount(vnode) {
+    const parent = vnode.el.parent
+    if (parent) {
+        parent.removeChild(vnode.el)
+    }
+}
+```
+在unmount函数内部，我们可以执行组件相关生命周期函数以及DOM元素上的指令钩子函数等。
+
+## 更新
+当新旧vnode都存在时，我们就需要进行patch操作。当然首先我们要判断新旧vnode描述的内容是否相同，如果一个是p标签，一个是input，那就没有必要patch，
+直接将旧的DOM卸载，然后将新的vnode挂载上去就可以了。只有当断新旧vnode描述的内容相同，我们才需要patch。  
+即使内容相同，我们也需要进一步确认其类型，是普通标签还是组件，来确定调用的更新方法。
+```js
+function patch(n1, n2, container) {
+    if (n1 && n1.type !== n2.type) {
+        unmount(n1)
+        n1 = null
+    }
+    const { type } = n2
+    if (typeof type === 'string') {
+        if (!n1) {
+            mountelement(n2, container)
+        } else {
+            patchElement(n1, n2) // 打补丁
+        }
+    } else if (typeof type === 'object') {
+        // 组件
+    } else {
+        // 其他类型  
+    }
+}
+```
+patchElement主要包括两部分更新，第一是标签属性的更新，第二是子节点的更新。  
+属性的更新非常简单，遍历新的props将属性值设置上去，遍历旧的props，如果其键值不在新的props中，就将其对应值置为null。  
+事件的更新在前面我们也介绍了。这边来看一下子节点的更新。  
+讨论子节点的更新需要分情况，子节点的类型有三种：
+- 没有子节点
+- 文本子节点
+- 一组子节点
+新旧子节点的类型都可能是这三种中的一种，也就存在9中情况。  
+当新的子节点不存在时：
+1. 旧的子节点也不存在，那就什么都不用做
+2. 旧的子节点是文本子节点，将元素文本内容清空
+3. 旧的子节点是一组子节点，那就遍历旧的子节点，逐个卸载
+
+当新的子节点是文本子节点：
+1. 旧的子节点不存在或者也是文本子节点，将新的文本内容设置进去
+2. 旧的子节点是一组子节点，遍历旧的子节点逐个卸载，再将新的文本内容设置进去
+
+当新的子节点是一组子节点：
+1. 旧的子节点不存在或者是文本子节点，将元素内容情况，再将新的子节点逐一挂载上去
+2. 旧的子节点是一组子节点，最简单的方法就是逐一卸载旧的子节点，再将新的子节点逐一挂载上去。
+如果要保证性能，就需要对比新旧两组子节点，也就涉及我们常说的<a target="_blank" href="/blog/fe-virtual-dom/#diff%E7%AE%97%E6%B3%95">Diff算法</a>。
+
+具体代码可以看<a target="_blank" href="https://github.com/whatsoeverYY/vue-demo/blob/main/render/render.js">render.js</a>。
+
+## Reference
