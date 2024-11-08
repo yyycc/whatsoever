@@ -1,0 +1,353 @@
+---
+title: "vue的组件化"
+date: "2024-06-28"
+slug: "vue-component"
+tag: "vue"
+folder: "Front End"
+prev: 'vue-render'
+next: 'vue-compiler'
+---
+
+## Before
+在上一篇<a target="_blank" href="/blog/vue-render">渲染器</a>中，我们了解了虚拟DOM，以及渲染器如何将虚拟DOM渲染为真实DOM。
+下面这段代码就是用虚拟DOM的结构来表述一个真实DOM。
+```js
+const title = {
+    type: 'h1',
+    props: {
+         onClick: 'handler'   
+    },
+    children: 'content'
+}
+```
+当我们编写复杂页面时，描述页面结构的虚拟DOM的代码量会很多，也就是编写的模板会很大，这时候就需要有组件化的能力，将一个页面拆分为多个组件。
+
+## 组件
+那么什么是组件呢？组件是对一组DOM元素的封装，对于渲染器来说，它就是一个特殊类型的虚拟节点。
+```js
+const MyComponent = {
+    name: "MyComponent",
+    data() {
+        return { foo: 1 }
+    }
+}
+const vnode = {
+    type: MyComponent
+}
+```
+在渲染器中，我们判断如果type值的类型为Object，就调用组件的挂载和更新方法。
+```js
+function patch(n1, n2, container) {
+    if (n1 && n1.type !== n2.type) {
+        unmount(n1)
+        n1 = null
+    }
+    const { type } = n2
+    if (typeof type === 'string') {
+        // 普通元素
+    } else if (typeof type === 'object') {
+        // 组件
+        if (!n1) {
+            mountComponent(n2, container)
+        } else {
+            patchComponent(n1, n2)
+        }
+    } else {
+        // 其他类型  
+    }
+}
+```
+这样渲染器就能够处理组件了。那么组件应该具备哪些能力来供用户使用呢。  
+首先它是用来描述页面内容的，所以必须得有一个渲染函数即render函数来返回虚拟DOM。  
+其次组件需要拥有自身状态，且是支持响应式的，当数据更新后，组件你能够进行自更新。  
+组件还需要拥有自身的生命周期，包括挂载前后，更新前后以及卸载前后等等，提供这些节点的钩子供用户使用。  
+组件还需要支持参数传入，传入的参数也需要支持响应式，当参数更新后，组件能够进行自更新。  
+除了参数，组件还要支持自定义事件。  
+当然还有我们常用到的插槽slot。  
+
+接下来我们就逐一来看这些功能是如何实现。
+
+### render
+组件中包含渲染函数render，它执行的返回值是虚拟DOM。
+```js
+const MyComponent = {
+    name: 'MyComponent',
+    render() {
+        return {
+            type: 'div',
+            children: 'my component'
+        }  
+    }
+}
+const CompVNode = {
+    type: MyComponent
+}
+```
+我们通过执行render函数拿到虚拟DOM，在通过渲染器中的patch函数就能挂载组件了。
+```js
+function mountComponent(vnode, container) {
+    const componentOptions = vnode.type
+    const { render } = componentOptions
+    const subTree = render()
+    patch(null, subTree, container)
+}
+```
+
+### data
+规定用户使用data函数来定义组件自身的状态，在渲染函数中支持使用this来访问data函数返回的状态数据。
+```js
+const MyComponent = {
+    name: 'MyComponent',
+    data() {
+        return { 
+            foo : 1 
+        }
+    },
+    render() {
+        return {
+            type: 'div',
+            children: `foo的值为${this.foo}`
+        }
+    }
+}
+const CompVNode = {
+    type: MyComponent
+}
+```
+要实现这个能力我们需要使用<a target="_blank" href="/blog/vue-data/#功能优化">reactive函数</a>将data函数返回的对象包装为响应式数据state。
+然后再调用render函数时，将其this的指向设置为响应式数据state，并将state作为render的第一个参数传进去。  
+当然我们还需要考虑到多次修改响应式数据，应当都只重新渲染一次，这就需要用到我们之前讲过的调度器，创建一个用于缓存的为任务队列，将任务进行去重后再执行。  
+
+具体代码可以看<a target="_blank" href="https://github.com/whatsoeverYY/vue-demo/blob/main/component/component.js">component.js</a>。
+
+基于当前的实现，需要更新时我们只能卸载旧的组件，挂载新的组件，正确的做法应当是patch，拿新的subTree跟上一次渲染的subTree进行比较更新。
+所以我们需要实现组件实例，用它来维护组件整个生命周期的状态，帮助渲染器在正确的时机执行相应的操作。
+
+### 组件实例
+实例的本质就是一个JavaScript对象，在这个对象中存储我们需要的相关信息，包括组件自身的状态数据、是否挂载以及渲染函数执行返回的subTree。
+当然我们也可以在实例上添加任何我们想要的属性，但是原则是尽可能地轻量。
+```js
+function mountComponent(vnode, container) {
+    ...
+    const instance = {
+        state,
+        isMounted: false,
+        subTree: null
+    }
+    effect(() => {
+        const subTree = render.call(state, state)
+        if (!instance.isMounted) {
+            patch(null, subTree, container)
+            instance.isMounted = true
+        } else {
+            patch(instance.subTree, subTree. container)
+        }
+        instance.subTree = subTree
+    }, {
+        scheduler: queueJob
+    })
+    
+}
+```
+未挂载是执行挂载操作，然后将挂载标志置为true，已挂载时就执行更新操作，拿到实例中存储的上一次渲染的subTree进行比较更新。
+
+具体代码可以看<a target="_blank" href="https://github.com/whatsoeverYY/vue-demo/blob/main/component/instance.js">instance.js</a>。  
+
+我们使用isMounted标志位区分出了挂载和更新，那么就可以在正确的时机调用组件的生命周期钩子。  
+在挂载语句前后分别执行beforeMount和mounted钩子。在更新语句前后执行beforeUpdate和updated钩子。
+
+### props
+传入组件的参数在虚拟DOM层面与普通标签的属性差别不大，都是存在props对象中。
+```html
+<MyComponent title="title" :other="val"/>
+```
+```js
+const vnode = {
+    type: MyComponent,
+    props: {
+        title: 'title',
+        other: this.val,
+    }
+}
+```
+在编写组件是，我们需要显示地指定组件会接收哪些参数。
+```js
+const MyComponent = {
+    name: 'MyComponent',
+    props: {
+        title: String
+    },
+    render() {
+        return {
+            type: 'div',
+            children: `the title is ${this.title}`
+        }
+    }
+}
+```
+所以处理组件的参数时，我们需要考虑两部分内容，首先是组件的vnode.props对象，其次是组件选项对象中定义的props选项，也就是MyComponent.props对象。  
+如果vnode.props对象中的key在MyComponent.props对象中有定义，那么就是合法的props存储在props对象中，否则就视为普通HTNK标签的属性存储在attrs对象中。  
+```js
+function resolveProps(options, propsData) {
+    const props = {}
+    const attrs = {}
+    for (const key in propsData) {
+        if (key in options) {
+            props[key] = propsData[key]
+        } else {
+            attrs[key] = propsData[key]
+        }
+    }
+    return [props, attrs]
+}
+```
+得到了处理好的props，但是现在渲染函数的作用域绑定的还是state，无法得到props中的数据，所以我们需要定义一个渲染上下文对象。
+当获取状态时，首先从state中取，没有再从props中取。赋值时也同样的先给state赋值，如果state中没有对应key，再往props上赋值。
+```js
+const renderContent = new Proxy(instance, {
+    get(target, key, receiver) {
+        const {state, props} = target
+        if (state && key in state) {
+            return state[key]
+        } else if (key in props) {
+            return props[key]
+        } else {
+            console.error('不存在')
+        }
+    }, 
+    set(target, key, newValue, receiver) {
+        ...
+    }
+})
+```
+得到了渲染上下文对象，我们就可以在渲染函数以及生命周期函数调用时绑定渲染上下文对象。  
+
+得到处理好的props还有渲染上下文对象，我们来讨论当props数据变化的问题。  
+props本质上是父组件的数据，当其发生变化会触发父组件重新渲染，而父组件下包含组件类型的虚拟节点，所以会调用patchComponent触发子组件的额更新。
+这种父组件子更新引起的子组件的更新称之为子组件的被动更新。我们需要检查子组件是否需要更新，因为子组件的props可能是不变的。  
+当props确实改变了，我们就需要用新的父组件的props以及子组件自身定义的props获得处理好的props，然后逐一更新到instance对象的props属性上去。
+如果新的props中的key在旧的props中不存在，还需要进行delete。
+
+具体代码可以看<a target="_blank" href="https://github.com/whatsoeverYY/vue-demo/blob/main/component/props.js">props.js</a>。
+
+### setup
+setup是vue23新增的组件选项，它用于配合组合式API，提供给用户一个地方来创建响应式数据、创建通用函数、注册生命周期钩子等等。
+在组件的整个生命周期中，setup函数只在被挂载时执行一次，它的返回值有两种情况：
+1. 返回一个函数，这个函数将作为组件的render函数
+2. 返回一个对象，该对象中的数据将暴露给模板使用，在渲染函数中可以使用this来访问
+
+setup函数接收两个参数，第一个是外部为组件传递的props参数对象。
+第二个通常成为setupContext对象，其中保存了与组件接口相关的数据和方法，包括slots、emit、attrs、expose。  
+知道了setup提供的能力，实现起来也非常简单。
+我们将instance用shallowReadonly作为第一个参数，包装slots、emit、attrs、expose等组装起来作为setupContext，调用setup函数，得到结果存入setupResult。  
+如果setupResult是个函数，如果此时render有值就报错，然后把其赋值给render。  
+如果setupResult是个对象，我们就需要把它也暴露到渲染环境中，所以得进一步处理渲染上下文，当取值时，如果props中也没有对应key，就从setupResult中获取。
+赋值时，如果props中也没有对应key，就给setupResult赋值。
+
+具体代码可以看<a target="_blank" href="https://github.com/whatsoeverYY/vue-demo/blob/main/component/setup.js">setup.js</a>。
+
+### emit
+上面代码中的setupContext，目前我们只实现了attrs，接下来我们来实现emit。  
+emit用来发射组件的自定义事件。
+```js
+const MyComponent = {
+    name: 'MyComponent',
+    setup(props, { emit }) {
+        emit('change', 1, 2)
+        return () => {}
+    },
+}
+```
+在虚拟DOM中，事件同样存储在props对象中，我们定义所有on开头的属性为事件，
+```js
+const CompVNode = {
+    type: MyComponent,
+    props: {
+        onChange: handler
+    }
+}
+```
+对应的在resoleProps中也需要对所有on开头的属性进行处理，无论其是否在组件的props定义中，都将其放入props对象。
+如此我们就可以定义emit函数，并把它放到setupContext对象中。
+```js
+function emit(event, ...payload) {
+    const eventName = `on${event[0].toUpperCase()}${event.slice(1)}`
+    const handler = instance.props[eventName]
+    if (handler) {
+        handler(...payload)
+    } else {
+        console.error('事件不存在')
+    }
+}
+const setupContext = { attrs, emit }
+...
+```
+
+### slots
+插槽，顾名思义是组件预留一个槽位，槽位中具体要渲染的内容由用户插入。
+```js
+const CompVNode = {
+    type: MyComponent,
+    children: {
+        header() {
+            return {
+                type: 'h1',
+                children: 'I am header'
+            }
+        }
+    }
+}
+```
+子组件的模板如下代码：
+```html
+<template>
+    <div>
+        <slot name="header" />
+    </div>
+</template>
+```
+它编译后的渲染函数如下：
+```js
+const MyComponent = {
+    name: 'MyComponent',
+    render() {
+        return [
+            {
+                type: 'div',
+                children: [this.slots.header()]
+            }
+        ]
+    }
+}
+```
+可以看出，渲染插槽内容的过程，就是调用插槽函数并渲染其返回的内容，了解了这些我们就可以对插槽进行实现。
+从虚拟DOM中获取到children，即为slots，将其放入组件实例以及setupContext中。然后进一步优化渲染上下文对象，
+当key为slots时，就返回slots，这样用户就可以通过this.slots来访问插槽内容了。
+
+完整代码可以看<a target="_blank" href="https://github.com/whatsoeverYY/vue-demo/blob/main/component/setup.js">setup.js</a>。
+
+### 注册生命周期
+最后来讲一下再setup中注册生命周期钩子函数是如何实现的。
+```js
+const MyComponent = {
+    name: 'MyComponent',
+    setup() {
+      onMounted(() => {
+          console.log('注册1')
+      })   
+      onMounted(() => {
+          console.log('注册2')
+      })  
+    },
+}
+```
+这里要注意两个问题：
+第一个是mounted生命周期钩子函数可以注册多个。
+第二个则是A组件调用onMounted注册的生命周期钩子函数需要注册到A组件上，而B组件调用onMounted注册的生命周期钩子函数需要注册到B组件上。  
+所以我们需要先创建一个变量currentInstance来存储当前的实例对象，每当初始化组件执行setup函数之前，将currentInstance的值置为当前组件的实例值。
+这样执行setup函数时，就能获取到当前的组件实例，从而将注册的钩子函数与当前组件实例进行关联。  
+执行onMounted时，将传入的函数存储进currentInstance的mounted数组中，当执行完挂载后，从实例的mounted属性值中取出来逐一执行即可。
+
+完整代码可以看<a target="_blank" href="https://github.com/whatsoeverYY/vue-demo/blob/main/component/lifeCycle.js">lifeCycle.js</a>。
+
+## Reference
