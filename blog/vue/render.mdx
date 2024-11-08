@@ -114,7 +114,7 @@ function createRenderer(options) {
 mountElement的实现非常简单，根据vnode的type属性调用createElement创建元素。
 如果children是数组，就进行遍历调用patch函数，如果是字符串就调用setElementText设置文本节点。
 最后将我们创建的元素通过insert插入到给定的container下即可。  
-具体代码可以看<a target="_blank" href="https://github.com/whatsoeverYY/vue-demo/blob/main/render/render.js">render.js</a>。
+具体代码可以看<a target="_blank" href="https://github.com/yyycc/vue-demo/blob/main/render/render.js">render.js</a>。
 
 ### 属性
 上面处理了vnode中的type和children，还有props没有处理。props是个对象，它的键代表元素的属性名名称，值代表对应的属性值。
@@ -204,7 +204,7 @@ const title = {
 绑定一个伪造的时间处理函数el._vel = invoker用于绑定，invoker.value的值为真正的事件处理函数，当事件更新时不需要执行removeEventListener，
 只需要更新invoker.value值即可。  
 另外，因为一个元素可以绑定多个事件，所以我们需要调整el._vel的数据结构，使用对象来表示。键名为事件名，键值为对应的事件处理函数。  
-具体代码可以看<a target="_blank" href="https://github.com/whatsoeverYY/vue-demo/blob/main/render/render.js">render.js</a>。
+具体代码可以看<a target="_blank" href="https://github.com/yyycc/vue-demo/blob/main/render/render.js">render.js</a>。
 
 ## 卸载
 挂载完成后，后续执行render就会进行更新操作，卸载是一种特殊的更新操作。当传入的vnode为null，也就是什么都不渲染，即需要触发卸载操作。  
@@ -289,6 +289,6 @@ patchElement主要包括两部分更新，第一是标签属性的更新，第�
 2. 旧的子节点是一组子节点，最简单的方法就是逐一卸载旧的子节点，再将新的子节点逐一挂载上去。
 如果要保证性能，就需要对比新旧两组子节点，也就涉及我们常说的<a target="_blank" href="/blog/fe-virtual-dom/#diff%E7%AE%97%E6%B3%95">Diff算法</a>。
 
-具体代码可以看<a target="_blank" href="https://github.com/whatsoeverYY/vue-demo/blob/main/render/render.js">render.js</a>。
+具体代码可以看<a target="_blank" href="https://github.com/yyycc/vue-demo/blob/main/render/render.js">render.js</a>。
 
 ## Reference

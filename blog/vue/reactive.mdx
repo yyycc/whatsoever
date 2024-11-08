@@ -151,7 +151,7 @@ effect(() => {
 
 为解决这些问题，我们需要修改上述的响应式实现。
 这里就讲一下解决的思路，具体的代码实现靠各位看官自己动手，答案可以到书中找寻，
-也可以看我记录在<a target="_blank" href="https://github.com/whatsoeverYY/vue-demo/blob/main/reactive/reactive.js">github</a>中的代码。
+也可以看我记录在<a target="_blank" href="https://github.com/yyycc/vue-demo/blob/main/reactive/reactive.js">github</a>中的代码。
 
 问题1：
 新增一个副作用注册函数，传入副作用函数作为参数，新增全局变量存储当前副作用函数。
@@ -243,7 +243,7 @@ obj.foo++
 如此一来当副作用函数执行两次时，会两次把副作用函数放入队列，但Set会进行去重，所以队列中只会有一个副作用函数。
 同时flushJob会执行两次，但是因为标志位isFlushing存在，所以在一个事件周期内，只会刷新队列一次。
 这样就实现了我们想要的效果。  
-具体代码可以看<a target="_blank" href="https://github.com/whatsoeverYY/vue-demo/blob/main/reactive/scheduler.js">scheduler.js</a>。
+具体代码可以看<a target="_blank" href="https://github.com/yyycc/vue-demo/blob/main/reactive/scheduler.js">scheduler.js</a>。
 
 ## computed
 计算属性是vue中非常常用的一个功能，它传入一个函数作为参数，而这个函数的返回值就是这个计算属性的值。
@@ -282,7 +282,7 @@ function computed(getter) {
 那么我们什么时候再将dirty置为true呢，就是计算结果改变的时候，也就是obj.count或者obj.price改变触发trigger的时候。    
 所以我们可以将dirty置为true的操作放在调度器中，这样当我们监听的响应式对象改变，触发副作用函数执行时，标志位就会重新置为true，
 下次访问totalPrice.value时就会重新计算了。  
-具体代码实现可以看<a target="_blank" href="https://github.com/whatsoeverYY/vue-demo/blob/main/reactive/computed.js">computed.js</a>。
+具体代码实现可以看<a target="_blank" href="https://github.com/yyycc/vue-demo/blob/main/reactive/computed.js">computed.js</a>。
 
 ## watch
 vue中另一个常用的功能就是watch，watch监听一个响应式数据，当数据发生变化时，执行对应的回调函数。  
@@ -319,7 +319,7 @@ function watch(source, cb) {
 
 watch在使用时还可以传入immediate参数来使回调函数立即执行。我们只需要将scheduler中的方法封装一下，如果接收到\{ immediate: true }， 就立即执行封装好的函数即可。  
 同样的如果我们想实现\{ flush: post }的效果，等DOM更新结束再执行回调函数。我们只需要在scheduler中将封装好的函数放到利用Promise创建的微任务队列中执行即可。  
-具体代码实现可以看<a target="_blank" href="https://github.com/whatsoeverYY/vue-demo/blob/main/reactive/watch.js">watch.js</a>。
+具体代码实现可以看<a target="_blank" href="https://github.com/yyycc/vue-demo/blob/main/reactive/watch.js">watch.js</a>。
 
 ## 总结
 vue的响应式整体方案就是利用Proxy对对象进行代理，拦截并自定义其基本操作。在读取数据时，收集相关副作用函数，在更新数据时触发相关副作用函数执行。  

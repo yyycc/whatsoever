@@ -118,7 +118,7 @@ const CompVNode = {
 然后再调用render函数时，将其this的指向设置为响应式数据state，并将state作为render的第一个参数传进去。  
 当然我们还需要考虑到多次修改响应式数据，应当都只重新渲染一次，这就需要用到我们之前讲过的调度器，创建一个用于缓存的为任务队列，将任务进行去重后再执行。  
 
-具体代码可以看<a target="_blank" href="https://github.com/whatsoeverYY/vue-demo/blob/main/component/component.js">component.js</a>。
+具体代码可以看<a target="_blank" href="https://github.com/yyycc/vue-demo/blob/main/component/component.js">component.js</a>。
 
 基于当前的实现，需要更新时我们只能卸载旧的组件，挂载新的组件，正确的做法应当是patch，拿新的subTree跟上一次渲染的subTree进行比较更新。
 所以我们需要实现组件实例，用它来维护组件整个生命周期的状态，帮助渲染器在正确的时机执行相应的操作。
@@ -151,7 +151,7 @@ function mountComponent(vnode, container) {
 ```
 未挂载是执行挂载操作，然后将挂载标志置为true，已挂载时就执行更新操作，拿到实例中存储的上一次渲染的subTree进行比较更新。
 
-具体代码可以看<a target="_blank" href="https://github.com/whatsoeverYY/vue-demo/blob/main/component/instance.js">instance.js</a>。  
+具体代码可以看<a target="_blank" href="https://github.com/yyycc/vue-demo/blob/main/component/instance.js">instance.js</a>。  
 
 我们使用isMounted标志位区分出了挂载和更新，那么就可以在正确的时机调用组件的生命周期钩子。  
 在挂载语句前后分别执行beforeMount和mounted钩子。在更新语句前后执行beforeUpdate和updated钩子。
@@ -228,7 +228,7 @@ props本质上是父组件的数据，当其发生变化会触发父组件重新
 当props确实改变了，我们就需要用新的父组件的props以及子组件自身定义的props获得处理好的props，然后逐一更新到instance对象的props属性上去。
 如果新的props中的key在旧的props中不存在，还需要进行delete。
 
-具体代码可以看<a target="_blank" href="https://github.com/whatsoeverYY/vue-demo/blob/main/component/props.js">props.js</a>。
+具体代码可以看<a target="_blank" href="https://github.com/yyycc/vue-demo/blob/main/component/props.js">props.js</a>。
 
 ### setup
 setup是vue23新增的组件选项，它用于配合组合式API，提供给用户一个地方来创建响应式数据、创建通用函数、注册生命周期钩子等等。
@@ -244,7 +244,7 @@ setup函数接收两个参数，第一个是外部为组件传递的props参数�
 如果setupResult是个对象，我们就需要把它也暴露到渲染环境中，所以得进一步处理渲染上下文，当取值时，如果props中也没有对应key，就从setupResult中获取。
 赋值时，如果props中也没有对应key，就给setupResult赋值。
 
-具体代码可以看<a target="_blank" href="https://github.com/whatsoeverYY/vue-demo/blob/main/component/setup.js">setup.js</a>。
+具体代码可以看<a target="_blank" href="https://github.com/yyycc/vue-demo/blob/main/component/setup.js">setup.js</a>。
 
 ### emit
 上面代码中的setupContext，目前我们只实现了attrs，接下来我们来实现emit。  
@@ -324,7 +324,7 @@ const MyComponent = {
 从虚拟DOM中获取到children，即为slots，将其放入组件实例以及setupContext中。然后进一步优化渲染上下文对象，
 当key为slots时，就返回slots，这样用户就可以通过this.slots来访问插槽内容了。
 
-完整代码可以看<a target="_blank" href="https://github.com/whatsoeverYY/vue-demo/blob/main/component/setup.js">setup.js</a>。
+完整代码可以看<a target="_blank" href="https://github.com/yyycc/vue-demo/blob/main/component/setup.js">setup.js</a>。
 
 ### 注册生命周期
 最后来讲一下再setup中注册生命周期钩子函数是如何实现的。
@@ -348,6 +348,6 @@ const MyComponent = {
 这样执行setup函数时，就能获取到当前的组件实例，从而将注册的钩子函数与当前组件实例进行关联。  
 执行onMounted时，将传入的函数存储进currentInstance的mounted数组中，当执行完挂载后，从实例的mounted属性值中取出来逐一执行即可。
 
-完整代码可以看<a target="_blank" href="https://github.com/whatsoeverYY/vue-demo/blob/main/component/lifeCycle.js">lifeCycle.js</a>。
+完整代码可以看<a target="_blank" href="https://github.com/yyycc/vue-demo/blob/main/component/lifeCycle.js">lifeCycle.js</a>。
 
 ## Reference

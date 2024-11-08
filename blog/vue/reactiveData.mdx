@@ -94,7 +94,7 @@ const obj = new Proxy(data, {
 很显然就是添加和删除属性的时候，单纯地修改属性是不会影响for...in的操作结果的。  
 对于添加属性，我们需要在set操作里面判断是否是新的属性，如果是就去触发ITERATE_KEY相关的副作用函数。  
 而删除属性，我们就得载增加一个名为deleteProperty的拦截函数，在这个函数中也需要触发ITERATE_KEY相关的副作用函数。  
-具体代码实现可以看<a target="_blank" href="https://github.com/whatsoeverYY/vue-demo/blob/main/reactiveDate/object.js">object.js</a>。
+具体代码实现可以看<a target="_blank" href="https://github.com/yyycc/vue-demo/blob/main/reactiveDate/object.js">object.js</a>。
 
 #### 功能优化
 上面实现了对一个对象的代理，并且能够正确地出发响应，但是还有很多可以优化的地方和功能。  
@@ -102,7 +102,7 @@ const obj = new Proxy(data, {
 2. 目前实现的其实是对于对象的浅响应，如何实现深响应。
 3. 实现对一个对象的只读代理和浅只读代理。
 
-具体代码实现可以看<a target="_blank" href="https://github.com/whatsoeverYY/vue-demo/blob/main/reactiveDate/createReactive.js">createReactive.js</a>。
+具体代码实现可以看<a target="_blank" href="https://github.com/yyycc/vue-demo/blob/main/reactiveDate/createReactive.js">createReactive.js</a>。
 其中封装了reactive函数表示创建一个对象的深层响应式代理。后面的内容里都会用这个函数来创建代理对象。
 ```js
 const obj = reactive({ foo: 1 })
@@ -155,7 +155,7 @@ effect(() => obj.push(1))
 至于重写数组方法，我们可以定义一个对象，key是需要重写的方法名，value是重写的方法。
 然后在get函数中判断，如果是数组，且key在该对象的键值中，则返回对象中该键对应的值。  
 除了push之外，pop/shift/unshift/splice也都需要做这样的处理。  
-具体代码实现可以看<a target="_blank" href="https://github.com/whatsoeverYY/vue-demo/blob/main/reactiveDate/array.js">array.js</a>。
+具体代码实现可以看<a target="_blank" href="https://github.com/yyycc/vue-demo/blob/main/reactiveDate/array.js">array.js</a>。
 
 ## 代理原始值
 在JavaScript的世界里有原始值和非原始值两种类型的数据，上面我们说了非原始值如何变成响应式，那么那些不可更改的原始值又该如何建立响应式呢？  
@@ -233,7 +233,7 @@ const newObj = toRefs(obj)
 toRefs解决了相应丢失的问题，但同事会导致我们必须通过.value来访问属性值，这就比较麻烦。
 然后事实上我们用vue时，在template中并不需要通过.value来访问数据，这是因为vue对暴露到模版中的响应式数据进行了脱ref。
 这就要用到我们上面提到的__v_isRef属性了。通过添加set、get拦截函数，判断是否是ref数据，如果是就通过.value进行操作。  
-具体代码实现可以看<a target="_blank" href="https://github.com/whatsoeverYY/vue-demo/blob/main/ref/ref.js">ref.js</a>。
+具体代码实现可以看<a target="_blank" href="https://github.com/yyycc/vue-demo/blob/main/ref/ref.js">ref.js</a>。
 
 ## Reference
 [1. Reflect](https://wangdoc.com/es6/reflect)  
