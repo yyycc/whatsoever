@@ -350,4 +350,141 @@ const MyComponent = {
 
 完整代码可以看<a target="_blank" href="https://github.com/yyycc/vue-demo/blob/main/component/lifeCycle.js">lifeCycle.js</a>。
 
+## 异步组件
+理论上，一步组件的实现不需要框架层面的支持，用户完全可以自行实现。
+```js
+import App from 'App.vue'
+createApp(App).mount('#app')
+```
+改为异步渲染：
+```js
+const loader = () => import('App.vue')
+loader().then(App => createApp(App).mount('#app'))
+```
+使用动态导入语句import()即可实现异步方式渲染页面。
+
+那如果只想异步渲染部分页面该怎么实现呢，我们只需要有能力异步渲染某个组件即可。
+```vue
+<template>
+    <CompA />
+    <component :is="asyncComp" />
+</template>
+<script setup>
+import { shallowRef } from 'vue'
+import CompA from 'CompA.vue'
+export default {
+    components: { CompA },
+    setup() {
+        const asyncComp = shallowRef(null)
+        import('CompB.vue').then(CompB => asyncComp.value = CompB)
+        return {
+           asyncComp 
+        }
+    }
+}
+</script>
+```
+利用动态组件component绑定asyncComp变量，通过import()动态导入来异步加载CompB组件，组件加载成功后将asyncComp的值设置为CompB，就实现了组件的渲染。  
+但是要实现完善的组件异步加载和渲染还需要以下能力：
+1. 允许用户指定加载出错时渲染的组件
+2. 允许用户指定Loading组件，以及展示该组件的延迟时间
+3. 允许用户设置异步组件的加载超时时长
+4. 组件加载失败时，为用户提供重试的能力
+
+vue中使用defineAsyncComponent来实现异步加载组件，下面我们就来介绍它是如何实现上述功能。
+
+### defineAsyncComponent
+defineAsyncComponent是一个高阶组件，它接收一个一步组件加载器作为参数，返回一个包装组件。
+```vue
+<template>
+  <AsyncComp />
+</template>
+<script>
+const AsyncComp = defineAsyncComponent(() => import('MyComponent.vue'))
+</script>
+```
+初步实现一下defineAsyncComponent函数：
+```js
+function defineAsyncComponent(loader) {
+    let innerCompo = null
+    return {
+        name: 'AsyncComponentWrapper',
+        setup() {
+            const loaded = ref(false)
+            loader().then(c => {
+                loaded.value = true
+                innerCompo = c
+            })
+            return () => {
+                return loaded.value ? { type: innerCompo } : { type: 'div', children: ''} 
+            }
+        }
+    }
+} 
+```
+加载完成则返回组件，否则返回一个占位内容。
+
+### 超时处理
+用户可以指定加载的超时时长timeout，当超过该时长，则展示指定的内容errorComponent，
+能捕捉超时以及其它的错误，同时将错误信息作为参数传入errorComponent组件：
+```js
+const AsyncComp = defineAsyncComponent({
+    loader: () => import('MyComponent.vue'),
+    errorComponent: ErrorComponent,
+    timeout: 3000,
+})
+```
+实现起来并不复杂，我们需要创建变量error来记录错误信息，给加载器loader添加catch语句，记录加载错误信息。
+如果用户传入timeout，则使用setTimeout创建定时器，当超时后，将超时错误赋值给error。
+正确加载则返回加载出的组件，有错误信息且用户传入errorComponent，则返回用户传入的errorComponent，并将error的值放入props，否则展示默认站位内容。
+加载完成后清除定时器。
+
+完整代码可以看<a target="_blank" href="https://github.com/yyycc/vue-demo/blob/main/component/defineAsyncComponent.js">defineAsyncComponent.js</a>。
+
+### loading
+异步组件的加载受网络波动的影响比较大，加载过程可能很快，也可能很慢，当加载很慢，我们就需要展示Loading组件来提供更好的用户体验。
+但如果从加载开始展示Loading组件，但加载速度很快，就会出现闪烁，所以我们需要为Loading组件设置一个延时，当超过一定时间没有加载完成，再展示Loading组件。
+```js
+const AsyncComp = defineAsyncComponent({
+    loader: () => import('MyComponent.vue'),
+    loadingComponent: LoadingComponent,
+    delay: 200,
+})
+```
+实现方案与超时处理相似，增加一个loading标志来记录是否展示Loading组件，
+如果传了delay，则创建定时器，一定时长后将loading标志置为true，没有传delay则直接置为true。
+当加载完成后将loading标志置为false，并清除定时器。
+在return中判断，若还未加载成功，没有错误信息，loading标志为true且用户传入了loadingComponent，则返回loadingComponent组件。
+
+完整代码可以看<a target="_blank" href="https://github.com/yyycc/vue-demo/blob/main/component/defineAsyncComponent.js">defineAsyncComponent.js</a>。
+
+### 重试
+加载异步组件过程中，发生错误是非常常见的，所以提供重试机制非常重要。  
+defineAsyncComponent支持你传入onError参数自定义捕获到错误之后的操作。
+```js
+const AsyncComp = defineAsyncComponent({
+    loader: () => import('MyComponent.vue'),
+    onError: onError,
+})
+```
+实现方案就是新建一个load方法，执行loader并进行catch，在其中判断，如果用户没有传onError参数，就抛出错误，否则就返回一个新的Promise实例。
+在这个promise实例中调用onError方法，传入的参数有三个：retry、fail和retries。  
+retries是重试次数，初始值为0。  
+retry是一个函数，在其中继续调用load方法使用promise的resolve包裹，然后对retries进行自增。
+fail也是一个函数，在其中调用promise的reject方法。  
+然后在返回的组件setup选项中使用load函数进行加载。  
+这样一来用户可以根据重试次数来决定是否继续重试，当执行retry时会调用load再次加载并记录一次重试，如果重试成功了，就会进入load的then方法中。
+如果超出一定次数执行fail，就会调用reject方法，进入load的catch方法中。
+
+完整代码可以看<a target="_blank" href="https://github.com/yyycc/vue-demo/blob/main/component/defineAsyncComponent.js">defineAsyncComponent.js</a>。
+
+## 函数式组件
+函数式组件本质上就是一个普通函数，它执行后的返回值是虚拟DOM。它没有自身的状态，但是可以接收外部传进来的props。  
+在有状态组件的基础上，兼容函数式组件就非常的简单了，只需要在patch和mountComponent函数中增加对function类型的支持就可以了。  
+当然函数式组件不需要初始化data以及生命周期，我们需要在这些操作上新加判断。  
+可以看出函数式组件在初始化性能的消耗上会小于有状态的组件。
+
+完整代码可以看<a target="_blank" href="https://github.com/yyycc/vue-demo/blob/main/component/function.js">function.js</a>。
+
 ## Reference
+[1. 异步组件](https://cn.vuejs.org/guide/components/async)  
