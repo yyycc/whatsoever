@@ -65,7 +65,7 @@ const KeepAlive = {
         
         return () => {
             let rawVNode = slots.default()
-            if (typeof rawVNode.type !== 'Object') {
+            if (typeof rawVNode.type !== 'object') {
                 return rawVNode
             }
             const cacheVNode = cache.get(rawVNode.type)
@@ -168,7 +168,7 @@ const KeepAlive = {
         ...
         return () => {
             let rawVNode = slots.default()
-            if (typeof rawVNode.type !== 'Object') {
+            if (typeof rawVNode.type !== 'object') {
                 return rawVNode
             }
             const name = rawVNode.type.name
