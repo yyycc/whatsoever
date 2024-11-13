@@ -23,10 +23,10 @@ const Timeline = ({ date, setDate, data }: Partial<IFrontmatter> & { setDate: (d
             <div className="timeline-list-line-count">{`(${datesInfo[info]})`}</div>
           </div>
         })}
-        <div className="timeline-list-line" onClick={() => changeClickTimes(clickTimes+1)}>
-          <div className="timeline-list-line-tag">1994-12</div>
-          {clickTimes === 4 && <a href="/blog/stories">-15</a>}
-        </div>
+        {/*<div className="timeline-list-line" onClick={() => changeClickTimes(clickTimes+1)}>*/}
+        {/*  <div className="timeline-list-line-tag">1994-12</div>*/}
+        {/*  {clickTimes === 4 && <a href="/blog/stories">-15</a>}*/}
+        {/*</div>*/}
       </div>
     </div>
   )
